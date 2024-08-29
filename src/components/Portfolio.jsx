@@ -19,14 +19,14 @@ const Portfolio = () => {
   const [tradedAmount, setTradedAmount] = useState(280000);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['assetPrices', Object.keys(portfolio)],
-    queryFn: () => fetchAssetPrices(Object.keys(portfolio)),
+    queryKey: ['assetPrices', ['bitcoin', 'ethereum', 'tether']],
+    queryFn: () => fetchAssetPrices(['bitcoin', 'ethereum', 'tether']),
   });
 
   useEffect(() => {
     if (data && data.data) {
-      const btcAsset = data.data.find(asset => asset.symbol === 'BTC');
-      const ethAsset = data.data.find(asset => asset.symbol === 'ETH');
+      const btcAsset = data.data.find(asset => asset.id === 'bitcoin');
+      const ethAsset = data.data.find(asset => asset.id === 'ethereum');
       
       if (btcAsset && ethAsset) {
         const btcPrice = parseFloat(btcAsset.priceUsd);
