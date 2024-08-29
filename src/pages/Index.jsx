@@ -60,7 +60,6 @@ const Index = () => {
         )}
         <div className={`grid grid-cols-1 md:grid-cols-2 gap-8`}>
           <div className={`md:order-2 ${!isLoggedIn ? 'blur-effect' : ''}`}>
-            <MiniGames />
             <TopCryptoAssets />
           </div>
           <div className="md:order-1">
