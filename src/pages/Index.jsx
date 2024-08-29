@@ -8,8 +8,8 @@ const queryClient = new QueryClient();
 const Index = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-yellow-200 p-8 font-mono">
-        <h1 className="text-6xl font-bold mb-8 text-black border-4 border-black p-4 inline-block">Crypto Asset Tracker</h1>
+      <div className="min-h-screen bg-black p-8 font-mono text-off-white">
+        <h1 className="text-6xl font-bold mb-8 text-neon-blue border-4 border-neon-blue p-4 inline-block shadow-[0_0_10px_#00FFFF]">Crypto Asset Tracker</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="md:order-2">
             <TopCryptoAssets />

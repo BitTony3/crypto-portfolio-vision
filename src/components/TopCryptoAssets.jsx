@@ -19,25 +19,25 @@ const TopCryptoAssets = () => {
   if (error) return <div className="text-2xl font-bold text-red-600">Error: {error.message}</div>;
 
   return (
-    <div className="bg-white border-4 border-black p-4 overflow-x-auto">
-      <h2 className="text-4xl font-bold mb-4">Top 50 Crypto Assets</h2>
+    <div className="bg-dark-blue border-4 border-neon-blue p-4 overflow-x-auto shadow-[0_0_10px_#00FFFF]">
+      <h2 className="text-4xl font-bold mb-4 text-neon-blue">Top 50 Crypto Assets</h2>
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse border-4 border-black min-w-[300px]">
+        <table className="w-full border-collapse border-4 border-neon-blue min-w-[300px]">
           <thead>
-            <tr className="bg-black text-white">
-              <th className="p-2 border-2 border-white">Rank</th>
-              <th className="p-2 border-2 border-white">Name</th>
-              <th className="p-2 border-2 border-white">Price (USD)</th>
-              <th className="p-2 border-2 border-white">Market Cap (USD)</th>
+            <tr className="bg-black text-neon-blue">
+              <th className="p-2 border-2 border-neon-blue">Rank</th>
+              <th className="p-2 border-2 border-neon-blue">Name</th>
+              <th className="p-2 border-2 border-neon-blue">Price (USD)</th>
+              <th className="p-2 border-2 border-neon-blue">Market Cap (USD)</th>
             </tr>
           </thead>
           <tbody>
             {data.data.map((asset) => (
-              <tr key={asset.id} className="hover:bg-yellow-100">
-                <td className="p-2 border-2 border-black">{asset.rank}</td>
-                <td className="p-2 border-2 border-black">{asset.name}</td>
-                <td className="p-2 border-2 border-black">${parseFloat(asset.priceUsd).toFixed(2)}</td>
-                <td className="p-2 border-2 border-black">${parseFloat(asset.marketCapUsd).toLocaleString()}</td>
+              <tr key={asset.id} className="hover:bg-black text-off-white">
+                <td className="p-2 border-2 border-neon-blue">{asset.rank}</td>
+                <td className="p-2 border-2 border-neon-blue">{asset.name}</td>
+                <td className="p-2 border-2 border-neon-blue">${parseFloat(asset.priceUsd).toFixed(2)}</td>
+                <td className="p-2 border-2 border-neon-blue">${parseFloat(asset.marketCapUsd).toLocaleString()}</td>
               </tr>
             ))}
           </tbody>

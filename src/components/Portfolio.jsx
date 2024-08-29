@@ -49,17 +49,17 @@ const Portfolio = () => {
   };
 
   return (
-    <div className="bg-white border-4 border-black p-4 overflow-x-auto">
-      <h2 className="text-4xl font-bold mb-4">Your Portfolio</h2>
+    <div className="bg-dark-blue border-4 border-neon-blue p-4 overflow-x-auto shadow-[0_0_10px_#00FFFF]">
+      <h2 className="text-4xl font-bold mb-4 text-neon-blue">Your Portfolio</h2>
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse border-4 border-black mb-4 min-w-[300px]">
+        <table className="w-full border-collapse border-4 border-neon-blue mb-4 min-w-[300px]">
           <thead>
-            <tr className="bg-black text-white">
-              <th className="p-2 border-2 border-white">Asset</th>
-              <th className="p-2 border-2 border-white">Amount</th>
-              <th className="p-2 border-2 border-white">Location</th>
-              <th className="p-2 border-2 border-white">Type</th>
-              <th className="p-2 border-2 border-white">Value (USD)</th>
+            <tr className="bg-black text-neon-blue">
+              <th className="p-2 border-2 border-neon-blue">Asset</th>
+              <th className="p-2 border-2 border-neon-blue">Amount</th>
+              <th className="p-2 border-2 border-neon-blue">Location</th>
+              <th className="p-2 border-2 border-neon-blue">Type</th>
+              <th className="p-2 border-2 border-neon-blue">Value (USD)</th>
             </tr>
           </thead>
           <tbody>
@@ -67,19 +67,19 @@ const Portfolio = () => {
               const asset = data.data.find(a => a.id === item.id);
               const value = asset ? item.amount * parseFloat(asset.priceUsd) : 0;
               return (
-                <tr key={index} className="hover:bg-yellow-100">
-                  <td className="p-2 border-2 border-black">{asset ? asset.name : item.id}</td>
-                  <td className="p-2 border-2 border-black">{item.amount.toFixed(4)}</td>
-                  <td className="p-2 border-2 border-black">{item.location}</td>
-                  <td className="p-2 border-2 border-black">{item.type}</td>
-                  <td className="p-2 border-2 border-black">${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
+                <tr key={index} className="hover:bg-black text-off-white">
+                  <td className="p-2 border-2 border-neon-blue">{asset ? asset.name : item.id}</td>
+                  <td className="p-2 border-2 border-neon-blue">{item.amount.toFixed(4)}</td>
+                  <td className="p-2 border-2 border-neon-blue">{item.location}</td>
+                  <td className="p-2 border-2 border-neon-blue">{item.type}</td>
+                  <td className="p-2 border-2 border-neon-blue">${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
                 </tr>
               );
             })}
           </tbody>
         </table>
       </div>
-      <div className="text-2xl font-bold break-words">
+      <div className="text-2xl font-bold break-words text-neon-blue">
         Total Portfolio Value: ${calculateTotalValue().toLocaleString(undefined, { maximumFractionDigits: 2 })}
       </div>
     </div>
