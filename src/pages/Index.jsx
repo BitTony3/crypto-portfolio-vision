@@ -14,10 +14,14 @@ const Index = () => {
   const [username, setUsername] = useState('');
 
   const handleLogin = (username, password) => {
-    console.log('Logging in with:', username, password);
-    setIsLoggedIn(true);
-    setUsername(username);
-    setShowLogin(false);
+    if (username === 'admin' && password === 'admin') {
+      setIsLoggedIn(true);
+      setUsername(username);
+      setShowLogin(false);
+    } else {
+      console.log('Invalid credentials');
+      // You might want to show an error message to the user here
+    }
   };
 
   const handleSignUp = (username, password) => {
@@ -34,7 +38,7 @@ const Index = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className={`min-h-screen bg-background p-8 font-sans text-text ${!isLoggedIn ? 'blur-effect' : ''}`}>
+      <div className="min-h-screen bg-background p-8 font-sans text-text">
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center">
             <img src="/cedefiai-logo.svg" alt="CeDeFiAi Logo" className="h-16 w-16 mr-4" />
@@ -54,9 +58,7 @@ const Index = () => {
             <Login onLogin={handleLogin} onSignUp={handleSignUp} onClose={() => setShowLogin(false)} />
           </div>
         )}
-        {!isLoggedIn && !showLogin && (
-          <div className="fixed inset-0 bg-transparent z-40" onClick={() => setShowLogin(true)}></div>
-        )}
+        {/* Removed the transparent overlay */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="md:order-2">
             <MiniGames />
