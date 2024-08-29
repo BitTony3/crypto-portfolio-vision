@@ -1,39 +1,49 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
-const Login = () => {
-  const [isConnected, setIsConnected] = useState(false);
-  const navigate = useNavigate();
+const Login = ({ onLogin, onSignUp }) => {
+  const [isLogin, setIsLogin] = useState(true);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-  const connectWallet = async (walletType) => {
-    // Simulating wallet connection
-    console.log(`Connecting to ${walletType}...`);
-    // Here you would typically interact with the wallet API
-    setIsConnected(true);
-    localStorage.setItem('isLoggedIn', 'true');
-    navigate('/dashboard');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isLogin) {
+      onLogin(username, password);
+    } else {
+      onSignUp(username, password);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-yellow-200 flex items-center justify-center font-mono">
-      <div className="bg-white border-4 border-black p-8 max-w-md w-full">
-        <h1 className="text-4xl font-bold mb-6 text-center">Crypto Asset Tracker</h1>
-        <div className="space-y-4">
-          <Button 
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
-            onClick={() => connectWallet('Web3')}
-          >
-            Connect with Web3 Wallet
-          </Button>
-          <Button 
-            className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 border-b-4 border-green-700 hover:border-green-500 rounded"
-            onClick={() => connectWallet('TON')}
-          >
-            Connect with TON Wallet
-          </Button>
-        </div>
-      </div>
+    <div className="bg-black border-2 border-neon-blue p-6 rounded-lg shadow-[0_0_10px_#00FFFF]">
+      <h2 className="text-2xl font-bold mb-4 text-neon-blue">{isLogin ? 'Login' : 'Sign Up'}</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="bg-black text-white border-neon-blue"
+        />
+        <Input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="bg-black text-white border-neon-blue"
+        />
+        <Button type="submit" className="w-full bg-neon-blue text-black hover:bg-blue-400">
+          {isLogin ? 'Login' : 'Sign Up'}
+        </Button>
+      </form>
+      <Button
+        onClick={() => setIsLogin(!isLogin)}
+        className="w-full mt-4 bg-transparent text-neon-blue border border-neon-blue hover:bg-neon-blue hover:text-black"
+      >
+        {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Login'}
+      </Button>
     </div>
   );
 };
