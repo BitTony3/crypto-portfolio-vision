@@ -13,7 +13,7 @@ const Portfolio = () => {
   const [portfolio, setPortfolio] = useState([
     { id: 'bitcoin', amount: 1.5, location: 'Binance', type: 'Exchange' },
     { id: 'bitcoin', amount: 1.2, location: 'OKX', type: 'Exchange' },
-    { id: 'bitcoin', amount: 0.8, location: 'Ledger Nano', type: 'Hardware Wallet' },
+    { id: 'bitcoin', amount: 0.8, location: 'Trezor', type: 'Hardware Wallet' },
     { id: 'bitcoin', amount: 1.0, location: 'KuCoin', type: 'Exchange' },
     { id: 'bitcoin', amount: 0.92, location: 'Bitcoin Network', type: 'Blockchain' },
     { id: 'ethereum', amount: 10.0, location: 'MetaMask', type: 'Software Wallet' },

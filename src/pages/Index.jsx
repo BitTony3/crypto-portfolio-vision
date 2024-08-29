@@ -58,12 +58,12 @@ const Index = () => {
             <Login onLogin={handleLogin} onSignUp={handleSignUp} onClose={() => setShowLogin(false)} />
           </div>
         )}
-        <div className={`grid grid-cols-1 md:grid-cols-2 gap-8`}>
-          <div className={`md:order-2 ${!isLoggedIn ? 'blur-effect' : ''}`}>
+        <div className={`grid grid-cols-1 md:grid-cols-2 gap-8 ${!isLoggedIn ? 'blur-effect' : ''}`}>
+          <div className="md:order-2">
             <TopCryptoAssets />
           </div>
           <div className="md:order-1">
-            <div className={`h-full ${!isLoggedIn ? 'blur-effect' : ''}`}>
+            <div className="h-full">
               <Portfolio />
             </div>
           </div>
