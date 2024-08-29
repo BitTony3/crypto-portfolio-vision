@@ -16,12 +16,13 @@ const Portfolio = () => {
     { id: 'bitcoin', amount: 0.8, location: 'Trezor', type: 'Hardware Wallet' },
     { id: 'bitcoin', amount: 1.0, location: 'KuCoin', type: 'Exchange' },
     { id: 'bitcoin', amount: 0.92, location: 'Bitcoin Network', type: 'Blockchain' },
+    { id: 'bitcoin', amount: 4.375, location: 'Bybit', type: 'Exchange' }, // New BTC from USDT trade
     { id: 'ethereum', amount: 10.0, location: 'MetaMask', type: 'Software Wallet' },
     { id: 'ethereum', amount: 8.5, location: 'KuCoin', type: 'Exchange' },
     { id: 'ethereum', amount: 7.2, location: 'Ethereum Mainnet', type: 'Blockchain' },
     { id: 'ethereum', amount: 5.0, location: 'Binance', type: 'Exchange' },
     { id: 'ethereum', amount: 3.5, location: 'OKX', type: 'Exchange' },
-    { id: 'tether', amount: 150000, location: 'Bybit', type: 'Exchange' },
+    { id: 'ethereum', amount: 46.875, location: 'Bybit', type: 'Exchange' }, // New ETH from USDT trade
     { id: 'tether', amount: 100000, location: 'Tron Network', type: 'Blockchain' },
     { id: 'tether', amount: 80000, location: 'Gate.io', type: 'Exchange' },
     { id: 'tether', amount: 70000, location: 'Binance', type: 'Exchange' },
