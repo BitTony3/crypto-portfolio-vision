@@ -24,22 +24,27 @@ const Portfolio = () => {
   });
 
   useEffect(() => {
-    if (data) {
-      const btcPrice = parseFloat(data.data.find(asset => asset.symbol === 'BTC').priceUsd);
-      const ethPrice = parseFloat(data.data.find(asset => asset.symbol === 'ETH').priceUsd);
-      const totalTradableUsd = tradedAmount;
-      const btcAllocation = Math.random();
-      const ethAllocation = 1 - btcAllocation;
+    if (data && data.data) {
+      const btcAsset = data.data.find(asset => asset.symbol === 'BTC');
+      const ethAsset = data.data.find(asset => asset.symbol === 'ETH');
+      
+      if (btcAsset && ethAsset) {
+        const btcPrice = parseFloat(btcAsset.priceUsd);
+        const ethPrice = parseFloat(ethAsset.priceUsd);
+        const totalTradableUsd = tradedAmount;
+        const btcAllocation = Math.random();
+        const ethAllocation = 1 - btcAllocation;
 
-      const tradedBtc = (totalTradableUsd * btcAllocation) / btcPrice;
-      const tradedEth = (totalTradableUsd * ethAllocation) / ethPrice;
+        const tradedBtc = (totalTradableUsd * btcAllocation) / btcPrice;
+        const tradedEth = (totalTradableUsd * ethAllocation) / ethPrice;
 
-      setPortfolio(prev => ({
-        ...prev,
-        btc: prev.btc + tradedBtc,
-        eth: prev.eth + tradedEth,
-        usdt: prev.usdt - tradedAmount,
-      }));
+        setPortfolio(prev => ({
+          ...prev,
+          btc: prev.btc + tradedBtc,
+          eth: prev.eth + tradedEth,
+          usdt: prev.usdt - tradedAmount,
+        }));
+      }
     }
   }, [data, tradedAmount]);
 
@@ -47,8 +52,9 @@ const Portfolio = () => {
   if (error) return <div className="text-2xl font-bold text-red-600">Error: {error.message}</div>;
 
   const calculateTotalValue = () => {
+    if (!data || !data.data) return 0;
     return data.data.reduce((total, asset) => {
-      const amount = portfolio[asset.symbol.toLowerCase()];
+      const amount = portfolio[asset.symbol.toLowerCase()] || 0;
       return total + amount * parseFloat(asset.priceUsd);
     }, 0);
   };
@@ -65,8 +71,8 @@ const Portfolio = () => {
           </tr>
         </thead>
         <tbody>
-          {data.data.map((asset) => {
-            const amount = portfolio[asset.symbol.toLowerCase()];
+          {data && data.data && data.data.map((asset) => {
+            const amount = portfolio[asset.symbol.toLowerCase()] || 0;
             const value = amount * parseFloat(asset.priceUsd);
             return (
               <tr key={asset.id} className="hover:bg-yellow-100">
