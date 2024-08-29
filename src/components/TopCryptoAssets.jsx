@@ -40,8 +40,8 @@ const TopCryptoAssets = () => {
   if (error) return <div className="text-2xl font-bold text-red-600">Error: {error.message}</div>;
 
   return (
-    <div className="bg-dark-blue border-4 border-neon-blue p-4 shadow-[0_0_10px_#00FFFF]">
-      <h2 className="text-4xl font-bold mb-4 text-neon-blue">Top 50 Crypto Assets</h2>
+    <div className="bg-secondary border-4 border-primary p-4 shadow-lg rounded-lg">
+      <h2 className="text-4xl font-bold mb-4 text-primary">Top 50 Crypto Assets</h2>
       {!expanded ? (
         <div 
           ref={scrollRef} 
@@ -49,36 +49,36 @@ const TopCryptoAssets = () => {
           onClick={() => setExpanded(true)}
         >
           {data.data.map((asset) => (
-            <span key={asset.id} className="inline-block mr-4 text-neon-blue">
+            <span key={asset.id} className="inline-block mr-4 text-primary">
               {asset.name}: ${parseFloat(asset.priceUsd).toFixed(2)}
             </span>
           ))}
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse border-4 border-neon-blue min-w-[300px]">
+          <table className="w-full border-collapse border-4 border-primary min-w-[300px]">
             <thead>
-              <tr className="bg-black text-neon-blue">
-                <th className="p-2 border-2 border-neon-blue">Rank</th>
-                <th className="p-2 border-2 border-neon-blue">Name</th>
-                <th className="p-2 border-2 border-neon-blue">Price (USD)</th>
-                <th className="p-2 border-2 border-neon-blue">Market Cap (USD)</th>
+              <tr className="bg-primary text-secondary">
+                <th className="p-2 border-2 border-secondary">Rank</th>
+                <th className="p-2 border-2 border-secondary">Name</th>
+                <th className="p-2 border-2 border-secondary">Price (USD)</th>
+                <th className="p-2 border-2 border-secondary">Market Cap (USD)</th>
               </tr>
             </thead>
             <tbody>
               {data.data.map((asset) => (
-                <tr key={asset.id} className="hover:bg-black text-off-white">
-                  <td className="p-2 border-2 border-neon-blue">{asset.rank}</td>
-                  <td className="p-2 border-2 border-neon-blue">{asset.name}</td>
-                  <td className="p-2 border-2 border-neon-blue">${parseFloat(asset.priceUsd).toFixed(2)}</td>
-                  <td className="p-2 border-2 border-neon-blue">${parseFloat(asset.marketCapUsd).toLocaleString()}</td>
+                <tr key={asset.id} className="hover:bg-background text-text">
+                  <td className="p-2 border-2 border-primary">{asset.rank}</td>
+                  <td className="p-2 border-2 border-primary">{asset.name}</td>
+                  <td className="p-2 border-2 border-primary">${parseFloat(asset.priceUsd).toFixed(2)}</td>
+                  <td className="p-2 border-2 border-primary">${parseFloat(asset.marketCapUsd).toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           <Button 
             onClick={() => setExpanded(false)} 
-            className="mt-4 bg-neon-blue text-black hover:bg-blue-400"
+            className="mt-4 bg-primary text-secondary hover:bg-accent"
           >
             Collapse
           </Button>
