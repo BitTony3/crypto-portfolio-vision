@@ -11,40 +11,50 @@ const fetchAssetPrices = async (ids) => {
 
 const Portfolio = () => {
   const [portfolio, setPortfolio] = useState({
-    btc: 5.44,
-    eth: 34.2,
-    usdt: 400000,
+    bitcoin: 5.44,
+    ethereum: 34.2,
+    tether: 400000,
+    cardano: 50000,
+    polkadot: 10000,
+    dogecoin: 100000,
   });
 
   const [tradedAmount, setTradedAmount] = useState(280000);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['assetPrices', ['bitcoin', 'ethereum', 'tether']],
-    queryFn: () => fetchAssetPrices(['bitcoin', 'ethereum', 'tether']),
+    queryKey: ['assetPrices', ['bitcoin', 'ethereum', 'tether', 'cardano', 'polkadot', 'dogecoin']],
+    queryFn: () => fetchAssetPrices(['bitcoin', 'ethereum', 'tether', 'cardano', 'polkadot', 'dogecoin']),
   });
 
   useEffect(() => {
     if (data && data.data) {
-      const btcAsset = data.data.find(asset => asset.id === 'bitcoin');
-      const ethAsset = data.data.find(asset => asset.id === 'ethereum');
-      
-      if (btcAsset && ethAsset) {
-        const btcPrice = parseFloat(btcAsset.priceUsd);
-        const ethPrice = parseFloat(ethAsset.priceUsd);
-        const totalTradableUsd = tradedAmount;
-        const btcAllocation = Math.random();
-        const ethAllocation = 1 - btcAllocation;
+      const assets = ['bitcoin', 'ethereum', 'cardano', 'polkadot', 'dogecoin'];
+      const assetPrices = assets.reduce((acc, id) => {
+        const asset = data.data.find(a => a.id === id);
+        if (asset) {
+          acc[id] = parseFloat(asset.priceUsd);
+        }
+        return acc;
+      }, {});
 
-        const tradedBtc = (totalTradableUsd * btcAllocation) / btcPrice;
-        const tradedEth = (totalTradableUsd * ethAllocation) / ethPrice;
+      const totalTradableUsd = tradedAmount;
+      const allocations = assets.map(() => Math.random());
+      const totalAllocation = allocations.reduce((sum, a) => sum + a, 0);
+      const normalizedAllocations = allocations.map(a => a / totalAllocation);
 
-        setPortfolio(prev => ({
-          ...prev,
-          btc: prev.btc + tradedBtc,
-          eth: prev.eth + tradedEth,
-          usdt: prev.usdt - tradedAmount,
-        }));
-      }
+      const trades = assets.reduce((acc, asset, index) => {
+        acc[asset] = (totalTradableUsd * normalizedAllocations[index]) / assetPrices[asset];
+        return acc;
+      }, {});
+
+      setPortfolio(prev => ({
+        ...prev,
+        ...assets.reduce((acc, asset) => {
+          acc[asset] = prev[asset] + trades[asset];
+          return acc;
+        }, {}),
+        tether: prev.tether - tradedAmount,
+      }));
     }
   }, [data, tradedAmount]);
 
@@ -54,7 +64,7 @@ const Portfolio = () => {
   const calculateTotalValue = () => {
     if (!data || !data.data) return 0;
     return data.data.reduce((total, asset) => {
-      const amount = portfolio[asset.symbol.toLowerCase()] || 0;
+      const amount = portfolio[asset.id] || 0;
       return total + amount * parseFloat(asset.priceUsd);
     }, 0);
   };
@@ -73,7 +83,7 @@ const Portfolio = () => {
           </thead>
           <tbody>
             {data && data.data && data.data.map((asset) => {
-              const amount = portfolio[asset.symbol.toLowerCase()] || 0;
+              const amount = portfolio[asset.id] || 0;
               const value = amount * parseFloat(asset.priceUsd);
               return (
                 <tr key={asset.id} className="hover:bg-yellow-100">
