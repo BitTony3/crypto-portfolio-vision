@@ -49,7 +49,7 @@ const Index = () => {
         </div>
         {showLogin && !isLoggedIn && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <Login onLogin={handleLogin} onSignUp={handleSignUp} />
+            <Login onLogin={handleLogin} onSignUp={handleSignUp} onClose={() => setShowLogin(false)} />
           </div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

@@ -23,7 +23,7 @@ const Portfolio = () => {
     { id: 'ethereum', amount: 3.5, location: 'OKX', type: 'Exchange' },
     { id: 'tether', amount: 150000, location: 'Bybit', type: 'Exchange' },
     { id: 'tether', amount: 100000, location: 'Tron Network', type: 'Blockchain' },
-    { id: 'tether', amount: 80000, location: 'Huobi', type: 'Exchange' },
+    { id: 'tether', amount: 80000, location: 'Gate.io', type: 'Exchange' },
     { id: 'tether', amount: 70000, location: 'Binance', type: 'Exchange' },
   ]);
 

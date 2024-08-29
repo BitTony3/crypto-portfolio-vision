@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { X } from 'lucide-react';
 
-const Login = ({ onLogin, onSignUp }) => {
+const Login = ({ onLogin, onSignUp, onClose }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -17,7 +18,14 @@ const Login = ({ onLogin, onSignUp }) => {
   };
 
   return (
-    <div className="bg-black border-2 border-neon-blue p-6 rounded-lg shadow-[0_0_10px_#00FFFF]">
+    <div className="bg-black border-2 border-neon-blue p-6 rounded-lg shadow-[0_0_10px_#00FFFF] relative">
+      <Button
+        onClick={onClose}
+        className="absolute top-2 right-2 text-neon-blue hover:text-white"
+        variant="ghost"
+      >
+        <X size={24} />
+      </Button>
       <h2 className="text-2xl font-bold mb-4 text-neon-blue">{isLogin ? 'Login' : 'Sign Up'}</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
