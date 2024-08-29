@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 const fetchAssetPrices = async (ids) => {
@@ -11,52 +11,15 @@ const fetchAssetPrices = async (ids) => {
 
 const Portfolio = () => {
   const [portfolio, setPortfolio] = useState({
-    bitcoin: 5.44,
-    ethereum: 34.2,
-    tether: 400000,
-    cardano: 50000,
-    polkadot: 10000,
-    dogecoin: 100000,
+    bitcoin: 0.5,
+    ethereum: 4.2,
+    tether: 1000,
   });
-
-  const [tradedAmount, setTradedAmount] = useState(280000);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['assetPrices', ['bitcoin', 'ethereum', 'tether', 'cardano', 'polkadot', 'dogecoin']],
-    queryFn: () => fetchAssetPrices(['bitcoin', 'ethereum', 'tether', 'cardano', 'polkadot', 'dogecoin']),
+    queryKey: ['assetPrices', ['bitcoin', 'ethereum', 'tether']],
+    queryFn: () => fetchAssetPrices(['bitcoin', 'ethereum', 'tether']),
   });
-
-  useEffect(() => {
-    if (data && data.data) {
-      const assets = ['bitcoin', 'ethereum', 'cardano', 'polkadot', 'dogecoin'];
-      const assetPrices = assets.reduce((acc, id) => {
-        const asset = data.data.find(a => a.id === id);
-        if (asset) {
-          acc[id] = parseFloat(asset.priceUsd);
-        }
-        return acc;
-      }, {});
-
-      const totalTradableUsd = tradedAmount;
-      const allocations = assets.map(() => Math.random());
-      const totalAllocation = allocations.reduce((sum, a) => sum + a, 0);
-      const normalizedAllocations = allocations.map(a => a / totalAllocation);
-
-      const trades = assets.reduce((acc, asset, index) => {
-        acc[asset] = (totalTradableUsd * normalizedAllocations[index]) / assetPrices[asset];
-        return acc;
-      }, {});
-
-      setPortfolio(prev => ({
-        ...prev,
-        ...assets.reduce((acc, asset) => {
-          acc[asset] = prev[asset] + trades[asset];
-          return acc;
-        }, {}),
-        tether: prev.tether - tradedAmount,
-      }));
-    }
-  }, [data, tradedAmount]);
 
   if (isLoading) return <div className="text-2xl font-bold">Loading portfolio...</div>;
   if (error) return <div className="text-2xl font-bold text-red-600">Error: {error.message}</div>;
