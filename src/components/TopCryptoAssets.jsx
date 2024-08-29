@@ -19,10 +19,10 @@ const TopCryptoAssets = () => {
   if (error) return <div className="text-2xl font-bold text-red-600">Error: {error.message}</div>;
 
   return (
-    <div className="bg-white border-4 border-black p-4">
+    <div className="bg-white border-4 border-black p-4 overflow-x-auto">
       <h2 className="text-4xl font-bold mb-4">Top 50 Crypto Assets</h2>
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse border-4 border-black">
+        <table className="w-full border-collapse border-4 border-black min-w-[300px]">
           <thead>
             <tr className="bg-black text-white">
               <th className="p-2 border-2 border-white">Rank</th>

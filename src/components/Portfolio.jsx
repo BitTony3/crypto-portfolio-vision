@@ -60,31 +60,33 @@ const Portfolio = () => {
   };
 
   return (
-    <div className="bg-white border-4 border-black p-4">
+    <div className="bg-white border-4 border-black p-4 overflow-x-auto">
       <h2 className="text-4xl font-bold mb-4">Your Portfolio</h2>
-      <table className="w-full border-collapse border-4 border-black mb-4">
-        <thead>
-          <tr className="bg-black text-white">
-            <th className="p-2 border-2 border-white">Asset</th>
-            <th className="p-2 border-2 border-white">Amount</th>
-            <th className="p-2 border-2 border-white">Value (USD)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data && data.data && data.data.map((asset) => {
-            const amount = portfolio[asset.symbol.toLowerCase()] || 0;
-            const value = amount * parseFloat(asset.priceUsd);
-            return (
-              <tr key={asset.id} className="hover:bg-yellow-100">
-                <td className="p-2 border-2 border-black">{asset.name}</td>
-                <td className="p-2 border-2 border-black">{amount.toFixed(4)}</td>
-                <td className="p-2 border-2 border-black">${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <div className="text-2xl font-bold">
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse border-4 border-black mb-4 min-w-[300px]">
+          <thead>
+            <tr className="bg-black text-white">
+              <th className="p-2 border-2 border-white">Asset</th>
+              <th className="p-2 border-2 border-white">Amount</th>
+              <th className="p-2 border-2 border-white">Value (USD)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data && data.data && data.data.map((asset) => {
+              const amount = portfolio[asset.symbol.toLowerCase()] || 0;
+              const value = amount * parseFloat(asset.priceUsd);
+              return (
+                <tr key={asset.id} className="hover:bg-yellow-100">
+                  <td className="p-2 border-2 border-black">{asset.name}</td>
+                  <td className="p-2 border-2 border-black">{amount.toFixed(4)}</td>
+                  <td className="p-2 border-2 border-black">${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div className="text-2xl font-bold break-words">
         Total Portfolio Value: ${calculateTotalValue().toLocaleString(undefined, { maximumFractionDigits: 2 })}
       </div>
     </div>
