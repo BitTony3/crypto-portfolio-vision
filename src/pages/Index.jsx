@@ -34,7 +34,7 @@ const Index = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-background p-8 font-sans text-text">
+      <div className={`min-h-screen bg-background p-8 font-sans text-text ${!isLoggedIn ? 'blur-effect' : ''}`}>
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center">
             <img src="/cedefiai-logo.svg" alt="CeDeFiAi Logo" className="h-16 w-16 mr-4" />
@@ -50,9 +50,12 @@ const Index = () => {
           )}
         </div>
         {showLogin && !isLoggedIn && (
-          <div className="fixed inset-0 bg-background bg-opacity-50 flex justify-center items-center">
+          <div className="fixed inset-0 bg-background bg-opacity-50 flex justify-center items-center z-50">
             <Login onLogin={handleLogin} onSignUp={handleSignUp} onClose={() => setShowLogin(false)} />
           </div>
+        )}
+        {!isLoggedIn && !showLogin && (
+          <div className="fixed inset-0 bg-transparent z-40" onClick={() => setShowLogin(true)}></div>
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="md:order-2">

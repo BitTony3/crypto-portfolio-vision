@@ -1,6 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .blur-effect {
+    @apply pointer-events-none;
+  }
+  .blur-effect > * {
+    @apply blur-sm;
+  }
+  .blur-effect > div:first-child {
+    @apply blur-none pointer-events-auto;
+  }
+}
  
 @layer base {
   :root {
