@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import TopCryptoAssets from '../components/TopCryptoAssets';
 import Portfolio from '../components/Portfolio';
 import Login from '../components/Login';
-import SnakeGame from '../components/SnakeGame';
+import MiniGames from '../components/MiniGames';
 import { Button } from "@/components/ui/button";
 
 const queryClient = new QueryClient();
@@ -56,7 +56,7 @@ const Index = () => {
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="md:order-2">
-            <SnakeGame />
+            <MiniGames />
             <TopCryptoAssets />
           </div>
           <div className="md:order-1">

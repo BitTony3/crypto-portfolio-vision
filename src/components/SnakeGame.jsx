@@ -89,8 +89,8 @@ const SnakeGame = () => {
   };
 
   return (
-    <div className="bg-secondary border-4 border-primary p-4 shadow-lg rounded-lg mb-8">
-      <h2 className="text-4xl font-bold mb-4 text-primary">Snake Game</h2>
+    <div className="bg-secondary border-4 border-primary p-4 shadow-lg rounded-lg">
+      <h3 className="text-2xl font-bold mb-2 text-primary">Snake Game</h3>
       <div className="relative" style={{ width: GRID_SIZE * CELL_SIZE, height: GRID_SIZE * CELL_SIZE }}>
         <div className="absolute inset-0 bg-background border-2 border-primary"></div>
         {snake.map((segment, index) => (
@@ -115,14 +115,14 @@ const SnakeGame = () => {
           }}
         ></div>
       </div>
-      <div className="mt-4">
-        <p className="text-xl font-bold text-primary">Score: {score}</p>
-        {gameOver && <p className="text-xl font-bold text-red-600">Game Over!</p>}
+      <div className="mt-2">
+        <p className="text-lg font-bold text-primary">Score: {score}</p>
+        {gameOver && <p className="text-lg font-bold text-red-600">Game Over!</p>}
         <Button
           onClick={resetGame}
-          className="mt-2 bg-primary text-secondary hover:bg-accent"
+          className="mt-1 bg-primary text-secondary hover:bg-accent text-sm"
         >
-          {gameStarted ? 'Restart Game' : 'Start Game'}
+          {gameStarted ? 'Restart' : 'Start'}
         </Button>
       </div>
     </div>
