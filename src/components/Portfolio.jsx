@@ -49,7 +49,7 @@ const Portfolio = () => {
   };
 
   return (
-    <div className="bg-secondary border-4 border-primary p-4 overflow-x-auto shadow-lg rounded-lg">
+    <div className="bg-secondary border-4 border-primary p-4 overflow-x-auto shadow-lg rounded-lg h-full">
       <h2 className="text-4xl font-bold mb-4 text-primary">Your Portfolio</h2>
       <div className="overflow-x-auto">
         <table className="w-full border-collapse border-4 border-primary mb-4 min-w-[300px]">

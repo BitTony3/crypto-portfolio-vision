@@ -18,7 +18,7 @@ const Login = ({ onLogin, onSignUp, onClose }) => {
   };
 
   return (
-    <div className="bg-black border-2 border-neon-blue p-6 rounded-lg shadow-[0_0_10px_#00FFFF] relative" style={{ filter: 'none', pointerEvents: 'auto' }}>
+    <div className="bg-white border-2 border-primary p-6 rounded-lg shadow-lg relative" style={{ filter: 'none', pointerEvents: 'auto' }}>
       <Button
         onClick={onClose}
         className="absolute top-2 right-2 text-neon-blue hover:text-white"
@@ -26,14 +26,14 @@ const Login = ({ onLogin, onSignUp, onClose }) => {
       >
         <X size={24} />
       </Button>
-      <h2 className="text-2xl font-bold mb-4 text-neon-blue">{isLogin ? 'Login' : 'Sign Up'}</h2>
+      <h2 className="text-2xl font-bold mb-4 text-primary">{isLogin ? 'Login' : 'Sign Up'}</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="bg-black text-white border-neon-blue"
+          className="bg-white text-black border-primary"
         />
         <Input
           type="password"
@@ -42,13 +42,13 @@ const Login = ({ onLogin, onSignUp, onClose }) => {
           onChange={(e) => setPassword(e.target.value)}
           className="bg-black text-white border-neon-blue"
         />
-        <Button type="submit" className="w-full bg-neon-blue text-black hover:bg-blue-400">
+        <Button type="submit" className="w-full bg-blue-500 text-white hover:bg-blue-600">
           {isLogin ? 'Login' : 'Sign Up'}
         </Button>
       </form>
       <Button
         onClick={() => setIsLogin(!isLogin)}
-        className="w-full mt-4 bg-transparent text-neon-blue border border-neon-blue hover:bg-neon-blue hover:text-black"
+        className="w-full mt-4 bg-transparent text-primary border border-primary hover:bg-primary hover:text-white"
       >
         {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Login'}
       </Button>
