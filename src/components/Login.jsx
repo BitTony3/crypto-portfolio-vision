@@ -18,7 +18,7 @@ const Login = ({ onLogin, onSignUp, onClose }) => {
   };
 
   return (
-    <div className="bg-black border-2 border-neon-blue p-6 rounded-lg shadow-[0_0_10px_#00FFFF] relative">
+    <div className="bg-black border-2 border-neon-blue p-6 rounded-lg shadow-[0_0_10px_#00FFFF] relative" style={{ filter: 'none', pointerEvents: 'auto' }}>
       <Button
         onClick={onClose}
         className="absolute top-2 right-2 text-neon-blue hover:text-white"

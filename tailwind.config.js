@@ -84,3 +84,13 @@ module.exports = {
   },
   plugins: [require("tailwindcss-animate")],
 };
+
+module.exports.theme.extend.utilities = {
+  '.blur-effect': {
+    '& > *:not(:first-child)': {
+      filter: 'blur(5px)',
+      pointerEvents: 'none',
+      userSelect: 'none',
+    },
+  },
+};

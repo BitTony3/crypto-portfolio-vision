@@ -58,8 +58,7 @@ const Index = () => {
             <Login onLogin={handleLogin} onSignUp={handleSignUp} onClose={() => setShowLogin(false)} />
           </div>
         )}
-        {/* Removed the transparent overlay */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className={`grid grid-cols-1 md:grid-cols-2 gap-8 ${!isLoggedIn ? 'blur-effect' : ''}`}>
           <div className="md:order-2">
             <MiniGames />
             <TopCryptoAssets />
