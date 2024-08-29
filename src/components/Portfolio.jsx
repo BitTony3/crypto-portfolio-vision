@@ -11,16 +11,20 @@ const fetchAssetPrices = async (ids) => {
 
 const Portfolio = () => {
   const [portfolio, setPortfolio] = useState([
-    { id: 'bitcoin', amount: 0.1, location: 'Binance', type: 'Exchange' },
-    { id: 'bitcoin', amount: 0.2, location: 'Coinbase', type: 'Exchange' },
-    { id: 'bitcoin', amount: 0.2, location: 'Ledger Nano', type: 'Hardware Wallet' },
-    { id: 'ethereum', amount: 1.5, location: 'MetaMask', type: 'Software Wallet' },
-    { id: 'ethereum', amount: 1.2, location: 'Kraken', type: 'Exchange' },
-    { id: 'ethereum', amount: 1.5, location: 'Ethereum Mainnet', type: 'Blockchain' },
-    { id: 'tether', amount: 500, location: 'Bitfinex', type: 'Exchange' },
-    { id: 'tether', amount: 300, location: 'Tron Network', type: 'Blockchain' },
-    { id: 'tether', amount: 200, location: 'Huobi', type: 'Exchange' },
-    { id: 'cardano', amount: 1000, location: 'Daedalus Wallet', type: 'Software Wallet' },
+    { id: 'bitcoin', amount: 1.5, location: 'Binance', type: 'Exchange' },
+    { id: 'bitcoin', amount: 1.2, location: 'Coinbase', type: 'Exchange' },
+    { id: 'bitcoin', amount: 0.8, location: 'Ledger Nano', type: 'Hardware Wallet' },
+    { id: 'bitcoin', amount: 1.0, location: 'Kraken', type: 'Exchange' },
+    { id: 'bitcoin', amount: 0.92, location: 'Bitcoin Network', type: 'Blockchain' },
+    { id: 'ethereum', amount: 10.0, location: 'MetaMask', type: 'Software Wallet' },
+    { id: 'ethereum', amount: 8.5, location: 'Kraken', type: 'Exchange' },
+    { id: 'ethereum', amount: 7.2, location: 'Ethereum Mainnet', type: 'Blockchain' },
+    { id: 'ethereum', amount: 5.0, location: 'Binance', type: 'Exchange' },
+    { id: 'ethereum', amount: 3.5, location: 'Coinbase', type: 'Exchange' },
+    { id: 'tether', amount: 150000, location: 'Bitfinex', type: 'Exchange' },
+    { id: 'tether', amount: 100000, location: 'Tron Network', type: 'Blockchain' },
+    { id: 'tether', amount: 80000, location: 'Huobi', type: 'Exchange' },
+    { id: 'tether', amount: 70000, location: 'Binance', type: 'Exchange' },
   ]);
 
   const assetIds = [...new Set(portfolio.map(item => item.id))];
