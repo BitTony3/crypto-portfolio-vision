@@ -1,13 +1,21 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import TopCryptoAssets from '../components/TopCryptoAssets';
+import Portfolio from '../components/Portfolio';
+
+const queryClient = new QueryClient();
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <QueryClientProvider client={queryClient}>
+      <div className="min-h-screen bg-yellow-200 p-8 font-mono">
+        <h1 className="text-6xl font-bold mb-8 text-black border-4 border-black p-4 inline-block">Crypto Asset Tracker</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <TopCryptoAssets />
+          <Portfolio />
+        </div>
       </div>
-    </div>
+    </QueryClientProvider>
   );
 };
 
