@@ -41,42 +41,42 @@ const MarketOverview = () => {
   const COLORS = ['#F7931A', '#627EEA', '#8884d8'];
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-background p-4 rounded-lg shadow-md">
-          <h3 className="text-sm font-semibold mb-2">Active Cryptocurrencies</h3>
+    <div className="flex flex-col h-full space-y-4">
+      <div className="grid grid-cols-2 gap-4 flex-grow">
+        <div className="bg-background p-4 rounded-lg shadow-md flex flex-col justify-between">
+          <h3 className="text-sm font-semibold">Active Cryptocurrencies</h3>
           <p className="text-3xl font-bold text-primary animate-pulse">{marketData.active_cryptocurrencies}</p>
         </div>
-        <div className="bg-background p-4 rounded-lg shadow-md">
-          <h3 className="text-sm font-semibold mb-2">Total Market Cap</h3>
-          <p className="text-3xl font-bold text-primary">${formatLargeNumber(marketData.total_market_cap.usd)}</p>
+        <div className="bg-background p-4 rounded-lg shadow-md flex flex-col justify-between">
+          <h3 className="text-sm font-semibold">Total Market Cap</h3>
+          <p className="text-2xl font-bold text-primary">${formatLargeNumber(marketData.total_market_cap.usd)}</p>
           <div className="flex items-center mt-2">
             {marketData.market_cap_change_percentage_24h_usd >= 0 ? (
-              <TrendingUp className="text-green-500 mr-1 animate-bounce" size={20} />
+              <TrendingUp className="text-green-500 mr-1 animate-bounce" size={16} />
             ) : (
-              <TrendingDown className="text-red-500 mr-1 animate-bounce" size={20} />
+              <TrendingDown className="text-red-500 mr-1 animate-bounce" size={16} />
             )}
-            <span className={`text-lg font-semibold ${marketData.market_cap_change_percentage_24h_usd >= 0 ? "text-green-500" : "text-red-500"}`}>
+            <span className={`text-sm font-semibold ${marketData.market_cap_change_percentage_24h_usd >= 0 ? "text-green-500" : "text-red-500"}`}>
               {marketData.market_cap_change_percentage_24h_usd.toFixed(2)}%
             </span>
           </div>
         </div>
       </div>
-      <div className="bg-background p-4 rounded-lg shadow-md">
+      <div className="bg-background p-4 rounded-lg shadow-md flex-grow">
         <h3 className="text-sm font-semibold mb-2">24h Trading Volume</h3>
-        <p className="text-3xl font-bold text-primary">${formatLargeNumber(marketData.total_volume.usd)}</p>
+        <p className="text-2xl font-bold text-primary">${formatLargeNumber(marketData.total_volume.usd)}</p>
         <Progress value={marketData.total_volume.usd / marketData.total_market_cap.usd * 100} className="mt-2 h-2 bg-blue-200" indicatorClassName="bg-blue-600" />
       </div>
-      <div className="bg-background p-4 rounded-lg shadow-md">
+      <div className="bg-background p-4 rounded-lg shadow-md flex-grow">
         <h3 className="text-sm font-semibold mb-2">Market Dominance</h3>
-        <ResponsiveContainer width="100%" height={200}>
+        <ResponsiveContainer width="100%" height={150}>
           <PieChart>
             <Pie
               data={dominanceData}
               cx="50%"
               cy="50%"
-              innerRadius={60}
-              outerRadius={80}
+              innerRadius={40}
+              outerRadius={60}
               fill="#8884d8"
               paddingAngle={5}
               dataKey="value"

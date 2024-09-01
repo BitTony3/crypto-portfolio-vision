@@ -44,13 +44,13 @@ const GreedFearIndex = () => {
   const COLORS = [getColor(indexValue), 'hsl(210, 20%, 90%)'];
 
   return (
-    <div className="space-y-4 bg-gradient-to-r from-blue-900/50 to-blue-700/50 p-6 rounded-lg shadow-lg border border-blue-500/30 backdrop-blur-sm">
+    <div className="flex flex-col h-full space-y-4 bg-gradient-to-r from-blue-900/50 to-blue-700/50 p-4 rounded-lg shadow-lg border border-blue-500/30 backdrop-blur-sm">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-blue-100">Fear & Greed Index</h2>
-        <div className="text-5xl font-bold" style={{ color: getColor(indexValue) }}>{indexValue}</div>
+        <h2 className="text-xl font-bold text-blue-100">Fear & Greed Index</h2>
+        <div className="text-4xl font-bold" style={{ color: getColor(indexValue) }}>{indexValue}</div>
       </div>
-      <div className="flex flex-col items-center">
-        <ResponsiveContainer width="100%" height={150}>
+      <div className="flex flex-col items-center flex-grow">
+        <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
               data={gaugeData}
@@ -58,8 +58,8 @@ const GreedFearIndex = () => {
               cy="100%"
               startAngle={180}
               endAngle={0}
-              innerRadius={60}
-              outerRadius={90}
+              innerRadius="60%"
+              outerRadius="90%"
               fill="#8884d8"
               paddingAngle={0}
               dataKey="value"
@@ -70,14 +70,14 @@ const GreedFearIndex = () => {
             </Pie>
           </PieChart>
         </ResponsiveContainer>
-        <div className="text-3xl font-semibold mt-4" style={{ color: getColor(indexValue) }}>{indexClassification}</div>
+        <div className="text-2xl font-semibold mt-2" style={{ color: getColor(indexValue) }}>{indexClassification}</div>
       </div>
       <div className="space-y-2">
-        <div className="flex justify-between text-sm font-medium">
+        <div className="flex justify-between text-xs font-medium">
           <span className="text-blue-300">Extreme Fear</span>
           <span className="text-blue-100">Extreme Greed</span>
         </div>
-        <Progress value={indexValue} className="h-3 bg-gradient-to-r from-blue-900 via-blue-600 to-blue-300" />
+        <Progress value={indexValue} className="h-2 bg-gradient-to-r from-blue-900 via-blue-600 to-blue-300" />
         <div className="flex justify-between text-xs text-blue-200">
           <span>0</span>
           <span>25</span>

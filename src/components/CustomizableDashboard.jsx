@@ -126,7 +126,7 @@ const CustomizableDashboard = () => {
     if (isExpanded) {
       return 'col-span-full row-span-full';
     }
-    return `col-span-${size.cols} row-span-${size.rows}`;
+    return `col-span-${size.cols} row-span-${size.rows} flex flex-col`;
   };
 
   return (
@@ -150,8 +150,8 @@ const CustomizableDashboard = () => {
                         {...provided.draggableProps}
                         className={`group ${getWidgetClassName(widgetName)}`}
                       >
-                        <Card className="relative h-full overflow-auto">
-                          <CardHeader className="flex flex-row items-center justify-between pb-2 sticky top-0 bg-card z-10">
+                        <Card className="relative h-full overflow-hidden flex flex-col">
+                          <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between pb-2 sticky top-0 bg-card z-10">
                             <CardTitle className="text-sm font-medium">{widgetName}</CardTitle>
                             <div className="flex items-center">
                               <TooltipProvider>
@@ -193,7 +193,7 @@ const CustomizableDashboard = () => {
                               </div>
                             </div>
                           </CardHeader>
-                          <CardContent>
+                          <CardContent className="flex-grow overflow-auto">
                             <WidgetComponent />
                           </CardContent>
                         </Card>

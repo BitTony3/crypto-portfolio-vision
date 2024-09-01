@@ -13,29 +13,29 @@ const mockData = [
 
 const TopPerformers = () => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Top 5 Gainers (Mock Data)</CardTitle>
+    <Card className="h-full flex flex-col">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-lg">Top 5 Gainers (Mock Data)</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-grow overflow-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Token</TableHead>
-              <TableHead>Chain</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>24h Change</TableHead>
+              <TableHead className="py-2">Token</TableHead>
+              <TableHead className="py-2">Chain</TableHead>
+              <TableHead className="py-2">Price</TableHead>
+              <TableHead className="py-2">24h Change</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {mockData.map((token, index) => (
               <TableRow key={index}>
-                <TableCell>{token.symbol}</TableCell>
-                <TableCell>{token.chain}</TableCell>
-                <TableCell>${token.price.toFixed(2)}</TableCell>
-                <TableCell>
+                <TableCell className="py-2">{token.symbol}</TableCell>
+                <TableCell className="py-2">{token.chain}</TableCell>
+                <TableCell className="py-2">${token.price.toFixed(2)}</TableCell>
+                <TableCell className="py-2">
                   <span className={token.priceChangePercentage24h >= 0 ? "text-green-500" : "text-red-500"}>
-                    {token.priceChangePercentage24h >= 0 ? <TrendingUp className="inline mr-1" /> : <TrendingDown className="inline mr-1" />}
+                    {token.priceChangePercentage24h >= 0 ? <TrendingUp className="inline mr-1 h-4 w-4" /> : <TrendingDown className="inline mr-1 h-4 w-4" />}
                     {token.priceChangePercentage24h.toFixed(2)}%
                   </span>
                 </TableCell>
