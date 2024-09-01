@@ -31,16 +31,24 @@ const TradingViewChart = () => {
         height: "100%",
         width: "100%",
         overrides: {
-          "paneProperties.background": theme === 'dark' ? "#0f172a" : "#ffffff",
-          "paneProperties.vertGridProperties.color": theme === 'dark' ? "#1e293b" : "#e2e8f0",
-          "paneProperties.horzGridProperties.color": theme === 'dark' ? "#1e293b" : "#e2e8f0",
-          "scalesProperties.textColor": theme === 'dark' ? "#94a3b8" : "#64748b",
+          "paneProperties.background": theme === 'dark' ? "#0f172a" : "#f0f9ff",
+          "paneProperties.vertGridProperties.color": theme === 'dark' ? "#1e293b" : "#bfdbfe",
+          "paneProperties.horzGridProperties.color": theme === 'dark' ? "#1e293b" : "#bfdbfe",
+          "scalesProperties.textColor": theme === 'dark' ? "#94a3b8" : "#3b82f6",
         },
       });
     }
   };
 
   const { theme } = useTheme();
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }, [theme]);
 
   useEffect(() => {
     const loadTradingViewScript = () => {

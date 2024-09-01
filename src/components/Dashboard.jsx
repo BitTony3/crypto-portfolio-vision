@@ -116,7 +116,7 @@ const Dashboard = () => {
 
   return (
     <div className="grid grid-cols-4 gap-2 p-2">
-      <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
+      <Card className="bg-card-light dark:bg-card-dark backdrop-blur-sm border border-primary-light/20 dark:border-primary-dark/20 gradient-border">
         <CardHeader className="p-2">
           <CardTitle className="text-sm">Market Overview</CardTitle>
         </CardHeader>

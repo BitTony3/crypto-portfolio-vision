@@ -5,6 +5,7 @@ import Login from '../components/Login';
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, UserIcon, Menu, LayoutDashboard, User } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSupabaseAuth } from '../integrations/supabase';
@@ -19,6 +20,16 @@ const Index = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLeftMenuOpen, setIsLeftMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+    root.classList.add(theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
   const [showMatrixRain, setShowMatrixRain] = useState(true);
 
   useEffect(() => {
@@ -75,7 +86,7 @@ const Index = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className={`min-h-screen bg-stormy-night text-blue-100 font-sans ${!showMatrixRain ? 'animate-fadeIn' : ''} lightning-effect`}>
+      <div className={`min-h-screen bg-gradient-light dark:bg-gradient-dark text-foreground-light dark:text-foreground-dark font-sans ${!showMatrixRain ? 'animate-fadeIn' : ''} lightning-effect`}>
         <AnimatePresence>
           {showMatrixRain && <MatrixRain key="matrix-rain" />}
         </AnimatePresence>
@@ -106,7 +117,7 @@ const Index = () => {
                 onClick={toggleTheme}
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8"
+                className="h-8 w-8 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark text-foreground-light dark:text-foreground-dark"
                 aria-label="Toggle theme"
               >
                 {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
