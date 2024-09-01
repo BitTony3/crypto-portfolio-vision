@@ -1,3 +1,14 @@
+// Comprehensive polyfill
+if (typeof globalThis === 'undefined') {
+  globalThis = Function('return this')();
+}
+if (typeof global === 'undefined') {
+  global = globalThis;
+}
+if (typeof window !== 'undefined') {
+  window.global = global;
+}
+
 import React from 'react';
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
