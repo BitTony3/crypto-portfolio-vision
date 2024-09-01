@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Dashboard from '../components/Dashboard';
 import Login from '../components/Login';
@@ -61,6 +61,8 @@ const Index = () => {
   const toggleTheme = useCallback(() => {
     setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
   }, [setTheme]);
+
+  const memoizedDashboard = useMemo(() => <Dashboard />, []);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -172,7 +174,7 @@ const Index = () => {
               <Login onLogin={handleLogin} onSignUp={handleSignUp} onClose={() => setShowLogin(false)} />
             </div>
           )}
-          <Dashboard />
+          {memoizedDashboard}
         </main>
       </div>
     </QueryClientProvider>
