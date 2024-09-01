@@ -17,7 +17,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -32,23 +31,18 @@ const fetchAllAssets = async () => {
 
 const Dashboard = () => {
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortConfig, setSortConfig] = useState({ key: 'rank', direction: 'asc' });
+  const [currentPage, setCurrentPage] = useState(1);
+  const assetsPerPage = 20;
 
   useEffect(() => {
     const handleScroll = () => {
       setShowBackToTop(window.scrollY > 300);
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortConfig, setSortConfig] = useState({ key: 'rank', direction: 'asc' });
-  const [currentPage, setCurrentPage] = useState(1);
-  const assetsPerPage = 20;
 
   const { data: assetsData, isLoading: assetsLoading, error: assetsError } = useQuery({
     queryKey: ['allAssets'],
@@ -99,157 +93,138 @@ const Dashboard = () => {
     setSortConfig({ key, direction });
   };
 
-  const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-  };
-
   if (assetsLoading) {
     return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <Skeleton className="h-[300px] col-span-2" />
-          <Skeleton className="h-[300px]" />
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <Skeleton className="h-[250px]" />
-          <Skeleton className="h-[250px]" />
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <Skeleton className="h-[200px]" />
-          <Skeleton className="h-[200px] col-span-2" />
-        </div>
-        <Skeleton className="h-[400px]" />
-        <Skeleton className="h-[500px]" />
+      <div className="grid grid-cols-3 gap-2">
+        <Skeleton className="h-[200px] col-span-3" />
+        <Skeleton className="h-[150px]" />
+        <Skeleton className="h-[150px]" />
+        <Skeleton className="h-[150px]" />
+        <Skeleton className="h-[300px] col-span-3" />
       </div>
     );
   }
 
   if (assetsError) {
     toast.error(`Error loading data: ${assetsError.message}`);
-    return <div className="text-2xl font-bold text-red-600">Error: {assetsError.message}</div>;
+    return <div className="text-lg text-red-600">Error: {assetsError.message}</div>;
   }
 
   return (
-    <div className="flex flex-col space-y-6">
-      <div className="flex flex-col lg:flex-row gap-4">
-        <div className="lg:w-1/4 space-y-4">
-          <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20 animate-glow">
-            <CardHeader>
-              <CardTitle className="text-lg">Market Overview</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <MarketOverview />
-            </CardContent>
-          </Card>
-          <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20 animate-glow">
-            <CardHeader>
-              <CardTitle className="text-lg">Fear & Greed Index</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <GreedFearIndex />
-            </CardContent>
-          </Card>
-        </div>
-        
-        <Card className="lg:w-1/2 bg-secondary/50 backdrop-blur-sm border border-primary/20">
-          <CardHeader>
-            <CardTitle className="text-lg">Advanced Chart</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <TradingViewChart />
-          </CardContent>
-        </Card>
-        
-        <div className="lg:w-1/4 space-y-4">
-          <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
-            <CardHeader>
-              <CardTitle className="text-lg">Top Performers</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <TopPerformers />
-            </CardContent>
-          </Card>
-          <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
-            <CardHeader>
-              <CardTitle className="text-lg">Trending Coins</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <TrendingCoins />
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-
-      <div className="flex flex-col lg:flex-row gap-4">
-        <Card className="lg:w-1/2 bg-secondary/50 backdrop-blur-sm border border-primary/20">
-          <CardHeader>
-            <CardTitle className="text-lg">Token Pair Explorer</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <TokenPairExplorer />
-          </CardContent>
-        </Card>
-        <Card className="lg:w-1/2 bg-secondary/50 backdrop-blur-sm border border-primary/20">
-          <CardHeader>
-            <CardTitle className="text-lg">Liquidity Pools Overview</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <LiquidityPoolsOverview />
-          </CardContent>
-        </Card>
-      </div>
+    <div className="grid grid-cols-4 gap-2 p-2">
+      <Card className="col-span-4 bg-secondary/50 backdrop-blur-sm border border-primary/20">
+        <CardContent className="p-2">
+          <TradingViewChart />
+        </CardContent>
+      </Card>
       
       <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
-        <CardHeader>
-          <CardTitle className="text-lg text-primary">Crypto Asset Search</CardTitle>
-          <CardDescription>Search and sort through cryptocurrency assets</CardDescription>
+        <CardHeader className="p-2">
+          <CardTitle className="text-sm">Market Overview</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex flex-col sm:flex-row gap-4">
+        <CardContent className="p-2">
+          <MarketOverview />
+        </CardContent>
+      </Card>
+      
+      <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
+        <CardHeader className="p-2">
+          <CardTitle className="text-sm">Fear & Greed Index</CardTitle>
+        </CardHeader>
+        <CardContent className="p-2">
+          <GreedFearIndex />
+        </CardContent>
+      </Card>
+      
+      <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
+        <CardHeader className="p-2">
+          <CardTitle className="text-sm">Top Performers</CardTitle>
+        </CardHeader>
+        <CardContent className="p-2">
+          <TopPerformers />
+        </CardContent>
+      </Card>
+      
+      <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
+        <CardHeader className="p-2">
+          <CardTitle className="text-sm">Trending Coins</CardTitle>
+        </CardHeader>
+        <CardContent className="p-2">
+          <TrendingCoins />
+        </CardContent>
+      </Card>
+
+      <Card className="col-span-2 bg-secondary/50 backdrop-blur-sm border border-primary/20">
+        <CardHeader className="p-2">
+          <CardTitle className="text-sm">Token Pair Explorer</CardTitle>
+        </CardHeader>
+        <CardContent className="p-2">
+          <TokenPairExplorer />
+        </CardContent>
+      </Card>
+      
+      <Card className="col-span-2 bg-secondary/50 backdrop-blur-sm border border-primary/20">
+        <CardHeader className="p-2">
+          <CardTitle className="text-sm">Liquidity Pools Overview</CardTitle>
+        </CardHeader>
+        <CardContent className="p-2">
+          <LiquidityPoolsOverview />
+        </CardContent>
+      </Card>
+      
+      <Card className="col-span-4 bg-secondary/50 backdrop-blur-sm border border-primary/20">
+        <CardHeader className="p-2">
+          <CardTitle className="text-sm text-primary">Crypto Asset Search</CardTitle>
+          <CardDescription className="text-xs">Search and sort through cryptocurrency assets</CardDescription>
+        </CardHeader>
+        <CardContent className="p-2">
+          <div className="flex justify-between items-center mb-2">
+            <div className="flex gap-2">
               <Input
                 type="text"
                 placeholder="Search for assets..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-grow bg-muted/50"
+                className="text-xs bg-muted/50"
               />
-              <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90">
-                <Search className="mr-2 h-4 w-4" /> Search
+              <Button className="text-xs bg-primary hover:bg-primary/90">
+                <Search className="mr-1 h-3 w-3" /> Search
               </Button>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1">
               <Button
-                onClick={() => handlePageChange(currentPage - 1)}
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
                 size="sm"
                 variant="outline"
+                className="text-xs"
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-3 w-3" />
               </Button>
               <Button
-                onClick={() => handlePageChange(currentPage + 1)}
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
                 size="sm"
                 variant="outline"
+                className="text-xs"
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-3 w-3" />
               </Button>
             </div>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+            <table className="w-full border-collapse text-xs">
               <thead>
                 <tr className="bg-muted/20">
                   {['Rank', 'Name', 'Symbol', 'Price (USD)', 'Market Cap (USD)', '24h Change (%)'].map((header, index) => (
-                    <th key={index} className="p-2 text-left font-medium text-muted-foreground">
+                    <th key={index} className="p-1 text-left font-normal text-muted-foreground">
                       <Button
                         variant="ghost"
                         onClick={() => requestSort(['rank', 'name', 'symbol', 'priceUsd', 'marketCapUsd', 'changePercent24Hr'][index])}
-                        className="hover:text-primary"
+                        className="text-xs hover:text-primary"
                       >
                         {header}
-                        <ArrowUpDown className="ml-2 h-3 w-3" />
+                        <ArrowUpDown className="ml-1 h-2 w-2" />
                       </Button>
                     </th>
                   ))}
@@ -258,12 +233,12 @@ const Dashboard = () => {
               <tbody>
                 {paginatedAssets.map((asset) => (
                   <tr key={asset.id} className="border-b border-border hover:bg-muted/10">
-                    <td className="p-2 text-sm">{asset.rank}</td>
-                    <td className="p-2 text-sm font-semibold" style={{color: `var(--crypto-${asset.symbol.toLowerCase()}, var(--primary))`}}>{asset.name}</td>
-                    <td className="p-2 text-sm">{asset.symbol}</td>
-                    <td className="p-2 text-sm">${parseFloat(asset.priceUsd).toFixed(2)}</td>
-                    <td className="p-2 text-sm">${parseFloat(asset.marketCapUsd).toLocaleString()}</td>
-                    <td className={`p-2 text-sm ${parseFloat(asset.changePercent24Hr) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    <td className="p-1">{asset.rank}</td>
+                    <td className="p-1" style={{color: `var(--crypto-${asset.symbol.toLowerCase()}, var(--primary))`}}>{asset.name}</td>
+                    <td className="p-1">{asset.symbol}</td>
+                    <td className="p-1">${parseFloat(asset.priceUsd).toFixed(2)}</td>
+                    <td className="p-1">${parseFloat(asset.marketCapUsd).toLocaleString()}</td>
+                    <td className={`p-1 ${parseFloat(asset.changePercent24Hr) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                       {parseFloat(asset.changePercent24Hr).toFixed(2)}%
                     </td>
                   </tr>
@@ -271,27 +246,9 @@ const Dashboard = () => {
               </tbody>
             </table>
           </div>
-          <div className="flex justify-between items-center mt-4 text-sm">
+          <div className="flex justify-between items-center mt-2 text-xs">
             <div>
               Page {currentPage} of {totalPages}
-            </div>
-            <div className="flex gap-2">
-              <Button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                size="sm"
-                variant="outline"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                size="sm"
-                variant="outline"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
             </div>
           </div>
         </CardContent>
@@ -302,10 +259,10 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-4 right-4"
+            className="fixed bottom-2 right-2"
           >
-            <Button onClick={scrollToTop} size="icon" className="rounded-full">
-              <ArrowUp className="h-4 w-4" />
+            <Button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} size="sm" className="rounded-full">
+              <ArrowUp className="h-3 w-3" />
             </Button>
           </motion.div>
         )}
