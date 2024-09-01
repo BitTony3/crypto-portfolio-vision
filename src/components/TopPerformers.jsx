@@ -24,7 +24,7 @@ const fetchTopPerformers = async () => {
         symbol: token.symbol,
         chain: chain.name,
         price: token.price?.usdPrice,
-        priceChangePercentage24h: token.price?.24hPercentChange,
+        priceChangePercentage24h: token.price?.['24hPercentChange'],
         address: token.address,
       }));
     } catch (error) {
