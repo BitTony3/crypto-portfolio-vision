@@ -19,11 +19,11 @@ const GreedFearIndex = () => {
   });
 
   if (isLoading) return (
-    <div className="flex justify-center items-center h-64">
-      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+    <div className="flex justify-center items-center h-full">
+      <Loader2 className="h-6 w-6 animate-spin text-primary" />
     </div>
   );
-  if (error) return <div className="text-2xl font-bold text-red-600">Error: {error.message}</div>;
+  if (error) return <div className="text-sm font-bold text-red-600">Error: {error.message}</div>;
 
   const indexValue = data?.data[0]?.value || 0;
   const indexClassification = data?.data[0]?.value_classification || 'Unknown';
@@ -34,23 +34,23 @@ const GreedFearIndex = () => {
   ];
 
   const getColor = (value) => {
-    if (value <= 20) return 'hsl(210, 100%, 20%)'; // Extreme Fear
-    if (value <= 40) return 'hsl(210, 90%, 30%)'; // Fear
-    if (value <= 60) return 'hsl(210, 80%, 40%)'; // Neutral
-    if (value <= 80) return 'hsl(210, 70%, 50%)'; // Greed
-    return 'hsl(210, 60%, 60%)'; // Extreme Greed
+    if (value <= 20) return 'hsl(0, 100%, 50%)'; // Extreme Fear
+    if (value <= 40) return 'hsl(30, 100%, 50%)'; // Fear
+    if (value <= 60) return 'hsl(60, 100%, 50%)'; // Neutral
+    if (value <= 80) return 'hsl(120, 100%, 50%)'; // Greed
+    return 'hsl(150, 100%, 50%)'; // Extreme Greed
   };
 
   const COLORS = [getColor(indexValue), 'hsl(210, 20%, 90%)'];
 
   return (
-    <div className="flex flex-col h-full space-y-2 bg-gradient-to-r from-blue-900/50 to-blue-700/50 p-2 rounded-lg shadow-lg border border-blue-500/30 backdrop-blur-sm text-xs">
+    <div className="flex flex-col h-full space-y-1 bg-card p-2 rounded-lg shadow-sm text-xs">
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold text-blue-100">Fear & Greed Index</h2>
-        <div className="text-4xl font-bold" style={{ color: getColor(indexValue) }}>{indexValue}</div>
+        <h2 className="text-sm font-bold">Fear & Greed Index</h2>
+        <div className="text-2xl font-bold" style={{ color: getColor(indexValue) }}>{indexValue}</div>
       </div>
       <div className="flex flex-col items-center flex-grow">
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height={80}>
           <PieChart>
             <Pie
               data={gaugeData}
@@ -65,25 +65,21 @@ const GreedFearIndex = () => {
               dataKey="value"
             >
               {gaugeData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="#FFFFFF" strokeWidth={2} />
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="#FFFFFF" strokeWidth={1} />
               ))}
             </Pie>
           </PieChart>
         </ResponsiveContainer>
-        <div className="text-2xl font-semibold mt-2" style={{ color: getColor(indexValue) }}>{indexClassification}</div>
+        <div className="text-sm font-semibold mt-1" style={{ color: getColor(indexValue) }}>{indexClassification}</div>
       </div>
-      <div className="space-y-2">
-        <div className="flex justify-between text-xs font-medium">
-          <span className="text-blue-300">Extreme Fear</span>
-          <span className="text-blue-100">Extreme Greed</span>
-        </div>
-        <Progress value={indexValue} className="h-2 bg-gradient-to-r from-blue-900 via-blue-600 to-blue-300" />
-        <div className="flex justify-between text-xs text-blue-200">
-          <span>0</span>
-          <span>25</span>
-          <span>50</span>
-          <span>75</span>
-          <span>100</span>
+      <div className="space-y-1">
+        <Progress value={indexValue} className="h-1.5 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500" />
+        <div className="flex justify-between text-[10px] text-muted-foreground">
+          <span>Extreme Fear</span>
+          <span>Fear</span>
+          <span>Neutral</span>
+          <span>Greed</span>
+          <span>Extreme Greed</span>
         </div>
       </div>
     </div>
