@@ -12,7 +12,9 @@ import { useSupabaseAuth } from '../integrations/supabase';
 const queryClient = new QueryClient();
 
 const Index = () => {
-  const { session, signOut } = useSupabaseAuth();
+  const auth = useSupabaseAuth();
+  const session = auth?.session;
+  const signOut = auth?.signOut;
   const [showLogin, setShowLogin] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLeftMenuOpen, setIsLeftMenuOpen] = useState(false);
