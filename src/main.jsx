@@ -16,7 +16,13 @@ if (typeof window !== 'undefined') {
   window.setImmediate = window.setImmediate || ((fn, ...args) => setTimeout(fn, 0, ...args));
 }
 
-// Polyfill for 'global' object and other Node.js specifics
+// Comprehensive polyfill
+if (typeof globalThis === 'undefined') {
+  globalThis = Function('return this')();
+}
+if (typeof global === 'undefined') {
+  global = globalThis;
+}
 if (typeof window !== 'undefined') {
   window.global = window;
   window.Buffer = window.Buffer || require('buffer').Buffer;
