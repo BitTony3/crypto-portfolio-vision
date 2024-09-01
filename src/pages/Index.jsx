@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Dashboard from '../components/Dashboard';
+import CustomizableDashboard from '../components/CustomizableDashboard';
 import Login from '../components/Login';
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, UserIcon, Menu, LayoutDashboard, User } from 'lucide-react';
@@ -209,7 +210,7 @@ const Index = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                {memoizedDashboard}
+                <CustomizableDashboard />
               </motion.div>
             )}
           </AnimatePresence>
