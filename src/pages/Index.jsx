@@ -47,37 +47,40 @@ const Index = () => {
             <img src="/cedefiai-logo.svg" alt="CeDeFiAi Logo" className="h-16 w-16 mr-4" />
             <h1 className="text-4xl font-bold text-primary">CeDeFiAi Crypto Asset Tracker</h1>
           </div>
-          {isLoggedIn ? (
-            <div className="flex items-center space-x-4">
-              <span className="text-primary">Welcome, {username}</span>
-              <Button onClick={handleLogout} className="bg-primary text-secondary hover:bg-accent">Logout</Button>
-            </div>
-          ) : (
-            <Button onClick={() => setShowLogin(true)} className="bg-primary text-secondary hover:bg-accent">Login</Button>
-          )}
-          <Button
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            variant="ghost"
-            size="icon"
-            aria-label="Toggle theme"
-          >
-            {theme === 'dark' ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
-          </Button>
+          <div className="flex items-center space-x-4">
+            {isLoggedIn ? (
+              <>
+                <span className="text-primary">Welcome, {username}</span>
+                <Button onClick={handleLogout} className="bg-primary text-secondary hover:bg-accent">Logout</Button>
+              </>
+            ) : (
+              <Button onClick={() => setShowLogin(true)} className="bg-primary text-secondary hover:bg-accent">Login</Button>
+            )}
+            <Button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              variant="ghost"
+              size="icon"
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+            </Button>
+          </div>
         </div>
         {showLogin && !isLoggedIn && (
           <div className="fixed inset-0 bg-background bg-opacity-50 flex justify-center items-center z-50">
             <Login onLogin={handleLogin} onSignUp={handleSignUp} onClose={() => setShowLogin(false)} />
           </div>
         )}
-        <div className={`grid grid-cols-1 md:grid-cols-2 gap-8 ${!isLoggedIn ? 'blur-effect' : ''}`}>
-          <div className="md:order-2">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
+            <Portfolio />
+          </div>
+          <div>
             <TopCryptoAssets />
           </div>
-          <div className="md:order-1">
-            <div className="h-full">
-              <Portfolio />
-            </div>
-          </div>
+        </div>
+        <div className="mt-8">
+          <MiniGames />
         </div>
       </div>
     </QueryClientProvider>

@@ -75,11 +75,11 @@ const Portfolio = () => {
   };
 
   return (
-    <div className="bg-secondary border-4 border-primary p-4 overflow-x-auto shadow-lg rounded-lg h-full">
+    <div className="bg-secondary border-4 border-primary p-4 shadow-lg rounded-lg h-full">
       <h2 className="text-4xl font-bold mb-4 text-primary">Your Portfolio</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse border-4 border-primary mb-4 min-w-[300px]">
+      <div className="flex flex-col lg:flex-row gap-4">
+        <div className="lg:w-2/3 overflow-x-auto">
+          <table className="w-full border-collapse border-4 border-primary mb-4">
             <thead>
               <tr className="bg-primary text-secondary">
                 <th className="p-2 border-2 border-secondary">Asset</th>
@@ -106,7 +106,7 @@ const Portfolio = () => {
             </tbody>
           </table>
         </div>
-        <div className="flex flex-col items-center justify-center">
+        <div className="lg:w-1/3 flex flex-col items-center justify-center">
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
