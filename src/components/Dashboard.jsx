@@ -90,19 +90,19 @@ const Dashboard = () => {
   if (error) return <div className="text-2xl font-bold text-red-600">Error: {error.message}</div>;
 
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="col-span-2 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800">
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <Card className="col-span-2 bg-secondary/50 backdrop-blur-sm border border-primary/20 animate-glow">
           <CardHeader>
-            <CardTitle>Market Overview</CardTitle>
+            <CardTitle className="text-lg">Market Overview</CardTitle>
           </CardHeader>
           <CardContent>
             <MarketOverview />
           </CardContent>
         </Card>
-        <Card className="bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800">
+        <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20 animate-glow">
           <CardHeader>
-            <CardTitle>Fear & Greed Index</CardTitle>
+            <CardTitle className="text-lg">Fear & Greed Index</CardTitle>
           </CardHeader>
           <CardContent>
             <GreedFearIndex />
@@ -110,55 +110,56 @@ const Dashboard = () => {
         </Card>
       </div>
       
-      <Card className="bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900 dark:to-green-800">
-        <CardHeader>
-          <CardTitle>Token Pair Explorer</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <TokenPairExplorer />
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900 dark:to-yellow-800">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
           <CardHeader>
-            <CardTitle>Top Performers</CardTitle>
+            <CardTitle className="text-lg">Token Pair Explorer</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TokenPairExplorer />
+          </CardContent>
+        </Card>
+        <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
+          <CardHeader>
+            <CardTitle className="text-lg">Top Performers</CardTitle>
           </CardHeader>
           <CardContent>
             <TopPerformers />
           </CardContent>
         </Card>
-        <Card className="bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-900 dark:to-pink-800">
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
           <CardHeader>
-            <CardTitle>Trending Coins</CardTitle>
+            <CardTitle className="text-lg">Trending Coins</CardTitle>
           </CardHeader>
           <CardContent>
             <TrendingCoins />
           </CardContent>
         </Card>
+        <Card className="col-span-2 bg-secondary/50 backdrop-blur-sm border border-primary/20">
+          <CardHeader>
+            <CardTitle className="text-lg">Liquidity Pools Overview</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <LiquidityPoolsOverview />
+          </CardContent>
+        </Card>
       </div>
 
-      <Card className="bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-900 dark:to-indigo-800">
+      <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
         <CardHeader>
-          <CardTitle>Liquidity Pools Overview</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <LiquidityPoolsOverview />
-        </CardContent>
-      </Card>
-
-      <Card className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
-        <CardHeader>
-          <CardTitle>Advanced Chart</CardTitle>
+          <CardTitle className="text-lg">Advanced Chart</CardTitle>
         </CardHeader>
         <CardContent>
           <TradingViewChart />
         </CardContent>
       </Card>
       
-      <Card className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
+      <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
         <CardHeader>
-          <CardTitle className="text-primary">Crypto Asset Search</CardTitle>
+          <CardTitle className="text-lg text-primary">Crypto Asset Search</CardTitle>
           <CardDescription>Search and sort through cryptocurrency assets</CardDescription>
         </CardHeader>
         <CardContent>
@@ -169,7 +170,7 @@ const Dashboard = () => {
                 placeholder="Search for assets..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-grow"
+                className="flex-grow bg-muted/50"
               />
               <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90">
                 <Search className="mr-2 h-4 w-4" /> Search
@@ -180,6 +181,7 @@ const Dashboard = () => {
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
                 size="sm"
+                variant="outline"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
@@ -187,6 +189,7 @@ const Dashboard = () => {
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 size="sm"
+                variant="outline"
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>
@@ -195,7 +198,7 @@ const Dashboard = () => {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-muted">
+                <tr className="bg-muted/20">
                   {['Rank', 'Name', 'Symbol', 'Price (USD)', 'Market Cap (USD)', '24h Change (%)'].map((header, index) => (
                     <th key={index} className="p-2 text-left font-medium text-muted-foreground">
                       <Button
@@ -204,7 +207,7 @@ const Dashboard = () => {
                         className="hover:text-primary"
                       >
                         {header}
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                        <ArrowUpDown className="ml-2 h-3 w-3" />
                       </Button>
                     </th>
                   ))}
@@ -212,13 +215,13 @@ const Dashboard = () => {
               </thead>
               <tbody>
                 {paginatedAssets.map((asset) => (
-                  <tr key={asset.id} className="border-b border-border hover:bg-muted/50">
-                    <td className="p-2">{asset.rank}</td>
-                    <td className="p-2 font-semibold" style={{color: `var(--crypto-${asset.symbol.toLowerCase()}, var(--primary))`}}>{asset.name}</td>
-                    <td className="p-2">{asset.symbol}</td>
-                    <td className="p-2">${parseFloat(asset.priceUsd).toFixed(2)}</td>
-                    <td className="p-2">${parseFloat(asset.marketCapUsd).toLocaleString()}</td>
-                    <td className={`p-2 ${parseFloat(asset.changePercent24Hr) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  <tr key={asset.id} className="border-b border-border hover:bg-muted/10">
+                    <td className="p-2 text-sm">{asset.rank}</td>
+                    <td className="p-2 text-sm font-semibold" style={{color: `var(--crypto-${asset.symbol.toLowerCase()}, var(--primary))`}}>{asset.name}</td>
+                    <td className="p-2 text-sm">{asset.symbol}</td>
+                    <td className="p-2 text-sm">${parseFloat(asset.priceUsd).toFixed(2)}</td>
+                    <td className="p-2 text-sm">${parseFloat(asset.marketCapUsd).toLocaleString()}</td>
+                    <td className={`p-2 text-sm ${parseFloat(asset.changePercent24Hr) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                       {parseFloat(asset.changePercent24Hr).toFixed(2)}%
                     </td>
                   </tr>
@@ -226,7 +229,7 @@ const Dashboard = () => {
               </tbody>
             </table>
           </div>
-          <div className="flex justify-between items-center mt-4">
+          <div className="flex justify-between items-center mt-4 text-sm">
             <div>
               Page {currentPage} of {totalPages}
             </div>
@@ -235,6 +238,7 @@ const Dashboard = () => {
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
                 size="sm"
+                variant="outline"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
@@ -242,6 +246,7 @@ const Dashboard = () => {
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
                 size="sm"
+                variant="outline"
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>

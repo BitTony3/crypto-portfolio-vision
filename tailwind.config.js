@@ -11,7 +11,7 @@ module.exports = {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: "1.5rem",
       screens: {
         "2xl": "1400px",
       },
@@ -21,35 +21,35 @@ module.exports = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        background: "hsl(230, 25%, 10%)",
+        foreground: "hsl(210, 40%, 98%)",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "hsl(230, 100%, 67%)",
+          foreground: "hsl(210, 40%, 98%)",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "hsl(230, 25%, 15%)",
+          foreground: "hsl(210, 40%, 98%)",
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "hsl(0, 84%, 60%)",
+          foreground: "hsl(210, 40%, 98%)",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "hsl(230, 25%, 20%)",
+          foreground: "hsl(215, 20%, 65%)",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "hsl(230, 100%, 75%)",
+          foreground: "hsl(230, 25%, 10%)",
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "hsl(230, 25%, 12%)",
+          foreground: "hsl(210, 40%, 98%)",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "hsl(230, 25%, 13%)",
+          foreground: "hsl(210, 40%, 98%)",
         },
         crypto: {
           bitcoin: "#F7931A",
@@ -60,9 +60,9 @@ module.exports = {
         },
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        lg: "0.75rem",
+        md: "0.5rem",
+        sm: "0.25rem",
       },
       keyframes: {
         "accordion-down": {
@@ -73,10 +73,15 @@ module.exports = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        glow: {
+          '0%, 100%': { boxShadow: '0 0 5px hsl(230, 100%, 67%), 0 0 10px hsl(230, 100%, 67%)' },
+          '50%': { boxShadow: '0 0 20px hsl(230, 100%, 67%), 0 0 30px hsl(230, 100%, 67%)' },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        glow: 'glow 2s ease-in-out infinite',
       },
       backdropFilter: {
         'none': 'none',
