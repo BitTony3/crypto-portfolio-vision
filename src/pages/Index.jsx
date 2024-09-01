@@ -25,7 +25,6 @@ const Index = () => {
     };
     handleBodyOverflow();
     
-    // Hide Matrix rain after 5 seconds
     const timer = setTimeout(() => {
       setShowMatrixRain(false);
     }, 5000);
@@ -36,7 +35,7 @@ const Index = () => {
     };
   }, [isMobileMenuOpen, isLeftMenuOpen]);
 
-  const MatrixRain = () => {
+  const MatrixRain = useCallback(() => {
     return (
       <div className="fixed inset-0 pointer-events-none z-50">
         {[...Array(50)].map((_, i) => (
@@ -52,7 +51,7 @@ const Index = () => {
         ))}
       </div>
     );
-  };
+  }, []);
 
   const handleLogin = useCallback((username, password) => {
     if (username === 'admin' && password === 'admin') {
@@ -92,7 +91,9 @@ const Index = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {showMatrixRain && <MatrixRain />}
+      <AnimatePresence>
+        {showMatrixRain && <MatrixRain key="matrix-rain" />}
+      </AnimatePresence>
       <div className={`min-h-screen bg-background text-foreground font-sans ${!showMatrixRain ? 'animate-fadeIn' : ''}`}>
         <header className="bg-card shadow-md sticky top-0 z-50">
           <div className="container mx-auto px-4 py-2 flex justify-between items-center">
@@ -143,6 +144,7 @@ const Index = () => {
         <AnimatePresence>
           {isLeftMenuOpen && (
             <motion.div 
+              key="left-menu"
               className="fixed inset-y-0 left-0 w-64 bg-card shadow-lg z-50"
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
@@ -163,6 +165,7 @@ const Index = () => {
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div 
+              key="mobile-menu"
               className="fixed inset-0 bg-background/95 backdrop-blur-sm z-40 md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -196,11 +199,19 @@ const Index = () => {
           )}
         </AnimatePresence>
         <main className="container mx-auto px-2 py-4">
-          {showLogin && !isLoggedIn && (
-            <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex justify-center items-center z-50">
-              <Login onLogin={handleLogin} onSignUp={handleSignUp} onClose={() => setShowLogin(false)} />
-            </div>
-          )}
+          <AnimatePresence>
+            {showLogin && !isLoggedIn && (
+              <motion.div
+                key="login-modal"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-background/80 backdrop-blur-sm flex justify-center items-center z-50"
+              >
+                <Login onLogin={handleLogin} onSignUp={handleSignUp} onClose={() => setShowLogin(false)} />
+              </motion.div>
+            )}
+          </AnimatePresence>
           {memoizedDashboard}
         </main>
       </div>
