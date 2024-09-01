@@ -28,6 +28,7 @@ import BlockchainExplorer from './BlockchainExplorer';
 import TopCryptoAssets from './TopCryptoAssets';
 import Portfolio from './Portfolio';
 import PortfolioPerformance from './PortfolioPerformance';
+import TradingViewChart from './TradingViewChart';
 
 const widgetComponents = {
   MarketOverview,
@@ -55,7 +56,7 @@ const widgetDescriptions = {
   CryptoNews: "Latest news in the crypto world",
   TokenPairExplorer: "Analyze token pair metrics",
   LiquidityPoolsOverview: "Overview of DeFi liquidity pools",
-  TradingViewChart: "Advanced price charts",
+  TradingViewChart: "Interactive price charts",
   GasTracker: "Ethereum gas price tracker",
   DeFiOverview: "Decentralized Finance market overview",
   NFTMarketplace: "Non-Fungible Token market trends",
