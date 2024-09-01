@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Dashboard from '../components/Dashboard';
 import Login from '../components/Login';
@@ -19,10 +19,16 @@ const Index = () => {
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
-    document.body.style.overflow = isMobileMenuOpen || isLeftMenuOpen ? 'hidden' : 'unset';
+    const handleBodyOverflow = () => {
+      document.body.style.overflow = isMobileMenuOpen || isLeftMenuOpen ? 'hidden' : 'unset';
+    };
+    handleBodyOverflow();
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
   }, [isMobileMenuOpen, isLeftMenuOpen]);
 
-  const handleLogin = (username, password) => {
+  const handleLogin = useCallback((username, password) => {
     if (username === 'admin' && password === 'admin') {
       setIsLoggedIn(true);
       setUsername(username);
@@ -30,19 +36,31 @@ const Index = () => {
     } else {
       console.log('Invalid credentials');
     }
-  };
+  }, []);
 
-  const handleSignUp = (username, password) => {
+  const handleSignUp = useCallback((username, password) => {
     console.log('Signing up with:', username, password);
     setIsLoggedIn(true);
     setUsername(username);
     setShowLogin(false);
-  };
+  }, []);
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     setIsLoggedIn(false);
     setUsername('');
-  };
+  }, []);
+
+  const toggleLeftMenu = useCallback(() => {
+    setIsLeftMenuOpen(prev => !prev);
+  }, []);
+
+  const toggleMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(prev => !prev);
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
+  }, [setTheme]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -53,7 +71,7 @@ const Index = () => {
               src="/crypto-logo.svg" 
               alt="Crypto Logo" 
               className="h-8 w-8 cursor-pointer"
-              onClick={() => setIsLeftMenuOpen(!isLeftMenuOpen)}
+              onClick={toggleLeftMenu}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             />
@@ -71,7 +89,7 @@ const Index = () => {
                 <Button onClick={() => setShowLogin(true)} variant="default" size="sm">Login</Button>
               )}
               <Button
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                onClick={toggleTheme}
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8"
@@ -82,7 +100,7 @@ const Index = () => {
             </div>
             <div className="md:hidden">
               <Button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                onClick={toggleMobileMenu}
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8"
@@ -103,10 +121,10 @@ const Index = () => {
               transition={{ type: 'tween' }}
             >
               <div className="p-4 space-y-4">
-                <Button variant="ghost" className="w-full justify-start" onClick={() => setIsLeftMenuOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start" onClick={toggleLeftMenu}>
                   <LayoutDashboard className="mr-2 h-4 w-4" /> Main Dashboard
                 </Button>
-                <Button variant="ghost" className="w-full justify-start" onClick={() => { setIsLeftMenuOpen(false); }}>
+                <Button variant="ghost" className="w-full justify-start" onClick={toggleLeftMenu}>
                   <User className="mr-2 h-4 w-4" /> Personal Dashboard
                 </Button>
               </div>
@@ -125,17 +143,17 @@ const Index = () => {
                 {isLoggedIn ? (
                   <>
                     <Link to="/profile">
-                      <Button variant="outline" size="sm" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Button variant="outline" size="sm" onClick={toggleMobileMenu}>
                         <UserIcon className="mr-1 h-3 w-3" /> Profile
                       </Button>
                     </Link>
-                    <Button onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }} variant="ghost" size="sm">Logout</Button>
+                    <Button onClick={() => { handleLogout(); toggleMobileMenu(); }} variant="ghost" size="sm">Logout</Button>
                   </>
                 ) : (
-                  <Button onClick={() => { setShowLogin(true); setIsMobileMenuOpen(false); }} variant="default" size="sm">Login</Button>
+                  <Button onClick={() => { setShowLogin(true); toggleMobileMenu(); }} variant="default" size="sm">Login</Button>
                 )}
                 <Button
-                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                  onClick={toggleTheme}
                   variant="ghost"
                   size="sm"
                   aria-label="Toggle theme"
@@ -143,7 +161,7 @@ const Index = () => {
                   {theme === 'dark' ? <Sun className="h-4 w-4 mr-1" /> : <Moon className="h-4 w-4 mr-1" />}
                   {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                 </Button>
-                <Button onClick={() => setIsMobileMenuOpen(false)} variant="ghost" size="sm">Close Menu</Button>
+                <Button onClick={toggleMobileMenu} variant="ghost" size="sm">Close Menu</Button>
               </div>
             </motion.div>
           )}
