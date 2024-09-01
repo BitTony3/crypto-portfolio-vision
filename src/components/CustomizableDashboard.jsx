@@ -66,21 +66,21 @@ const widgetDescriptions = {
 };
 
 const widgetSizes = {
-  MarketOverview: { cols: 2, rows: 2 },
-  GreedFearIndex: { cols: 1, rows: 1 },
-  TopPerformers: { cols: 2, rows: 2 },
-  TrendingCoins: { cols: 1, rows: 1 },
-  CryptoNews: { cols: 2, rows: 2 },
-  TokenPairExplorer: { cols: 3, rows: 3 },
-  LiquidityPoolsOverview: { cols: 2, rows: 2 },
-  TradingViewChart: { cols: 4, rows: 3 },
-  GasTracker: { cols: 1, rows: 1 },
-  DeFiOverview: { cols: 2, rows: 2 },
-  NFTMarketplace: { cols: 2, rows: 2 },
-  BlockchainExplorer: { cols: 3, rows: 3 },
-  TopCryptoAssets: { cols: 3, rows: 3 },
-  Portfolio: { cols: 3, rows: 3 },
-  PortfolioPerformance: { cols: 2, rows: 2 },
+  MarketOverview: { minWidth: 300, minHeight: 300 },
+  GreedFearIndex: { minWidth: 200, minHeight: 200 },
+  TopPerformers: { minWidth: 300, minHeight: 300 },
+  TrendingCoins: { minWidth: 200, minHeight: 200 },
+  CryptoNews: { minWidth: 300, minHeight: 300 },
+  TokenPairExplorer: { minWidth: 400, minHeight: 400 },
+  LiquidityPoolsOverview: { minWidth: 300, minHeight: 300 },
+  TradingViewChart: { minWidth: 600, minHeight: 400 },
+  GasTracker: { minWidth: 200, minHeight: 200 },
+  DeFiOverview: { minWidth: 300, minHeight: 300 },
+  NFTMarketplace: { minWidth: 300, minHeight: 300 },
+  BlockchainExplorer: { minWidth: 400, minHeight: 400 },
+  TopCryptoAssets: { minWidth: 400, minHeight: 400 },
+  Portfolio: { minWidth: 400, minHeight: 400 },
+  PortfolioPerformance: { minWidth: 300, minHeight: 300 },
 };
 
 const CustomizableDashboard = () => {
@@ -126,7 +126,7 @@ const CustomizableDashboard = () => {
     if (isExpanded) {
       return 'col-span-full row-span-full';
     }
-    return `col-span-${size.cols} row-span-${size.rows} flex flex-col`;
+    return `flex flex-col`;
   };
 
   return (
@@ -138,7 +138,7 @@ const CustomizableDashboard = () => {
             <div
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className="grid grid-cols-4 auto-rows-[minmax(100px,auto)] gap-4 h-[calc(100vh-120px)] overflow-auto"
+              className="grid grid-cols-repeat(auto-fit, minmax(200px, 1fr)) auto-rows-[minmax(200px,auto)] gap-4 h-[calc(100vh-120px)] overflow-auto"
             >
               {widgets.map((widgetName, index) => {
                 const WidgetComponent = widgetComponents[widgetName];

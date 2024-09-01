@@ -13,11 +13,11 @@ const mockData = [
 
 const TopPerformers = () => {
   return (
-    <Card className="h-full flex flex-col">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg">Top 5 Gainers (Mock Data)</CardTitle>
+    <Card className="h-full flex flex-col p-2">
+      <CardHeader className="pb-1">
+        <CardTitle className="text-sm">Top 5 Gainers (Mock Data)</CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow overflow-auto">
+      <CardContent className="flex-grow overflow-auto p-0">
         <Table>
           <TableHeader>
             <TableRow>

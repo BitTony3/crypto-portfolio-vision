@@ -44,7 +44,7 @@ const GreedFearIndex = () => {
   const COLORS = [getColor(indexValue), 'hsl(210, 20%, 90%)'];
 
   return (
-    <div className="flex flex-col h-full space-y-4 bg-gradient-to-r from-blue-900/50 to-blue-700/50 p-4 rounded-lg shadow-lg border border-blue-500/30 backdrop-blur-sm">
+    <div className="flex flex-col h-full space-y-2 bg-gradient-to-r from-blue-900/50 to-blue-700/50 p-2 rounded-lg shadow-lg border border-blue-500/30 backdrop-blur-sm text-xs">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold text-blue-100">Fear & Greed Index</h2>
         <div className="text-4xl font-bold" style={{ color: getColor(indexValue) }}>{indexValue}</div>

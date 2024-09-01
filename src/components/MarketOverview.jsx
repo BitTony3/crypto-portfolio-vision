@@ -41,7 +41,7 @@ const MarketOverview = () => {
   const COLORS = ['#F7931A', '#627EEA', '#8884d8'];
 
   return (
-    <div className="flex flex-col h-full space-y-4">
+    <div className="flex flex-col h-full space-y-2 text-sm">
       <div className="grid grid-cols-2 gap-4 flex-grow">
         <div className="bg-background p-4 rounded-lg shadow-md flex flex-col justify-between">
           <h3 className="text-sm font-semibold">Active Cryptocurrencies</h3>
@@ -69,7 +69,7 @@ const MarketOverview = () => {
       </div>
       <div className="bg-background p-4 rounded-lg shadow-md flex-grow">
         <h3 className="text-sm font-semibold mb-2">Market Dominance</h3>
-        <ResponsiveContainer width="100%" height={150}>
+        <ResponsiveContainer width="100%" height={120}>
           <PieChart>
             <Pie
               data={dominanceData}

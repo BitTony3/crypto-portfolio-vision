@@ -18,7 +18,7 @@ const TrendingCoins = () => {
   if (error) return <div className="text-red-600">Error: {error.message}</div>;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1 text-xs">
       {data.coins.slice(0, 5).map((coin) => (
         <div key={coin.item.id} className="flex justify-between items-center">
           <span className="font-medium">{coin.item.symbol}</span>
