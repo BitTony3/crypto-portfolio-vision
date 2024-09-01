@@ -5,7 +5,6 @@ import Login from '../components/Login';
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, UserIcon, Menu, LayoutDashboard, User } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSupabaseAuth } from '../integrations/supabase';
