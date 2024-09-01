@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import TopCryptoAssets from '../components/TopCryptoAssets';
 import Portfolio from '../components/Portfolio';
 import Login from '../components/Login';
-import MiniGames from '../components/MiniGames';
 import { Button } from "@/components/ui/button";
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
@@ -78,9 +77,6 @@ const Index = () => {
           <div>
             <TopCryptoAssets />
           </div>
-        </div>
-        <div className="mt-8">
-          <MiniGames />
         </div>
       </div>
     </QueryClientProvider>
