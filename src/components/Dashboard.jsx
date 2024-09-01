@@ -50,7 +50,7 @@ const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const assetsPerPage = 20;
 
-  const { data, isLoading, error } = useQuery({
+  const { data: assetsData, isLoading: assetsLoading, error: assetsError } = useQuery({
     queryKey: ['allAssets'],
     queryFn: fetchAllAssets,
   });
