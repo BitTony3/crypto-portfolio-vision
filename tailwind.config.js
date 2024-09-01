@@ -51,6 +51,13 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        crypto: {
+          bitcoin: "#F7931A",
+          ethereum: "#627EEA",
+          tether: "#26A17B",
+          ripple: "#00AAE4",
+          cardano: "#0033AD",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

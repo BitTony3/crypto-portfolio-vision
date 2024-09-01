@@ -43,6 +43,11 @@ const Dashboard = () => {
     let sortableItems = [...filteredAssets];
     if (sortConfig.key) {
       sortableItems.sort((a, b) => {
+        if (sortConfig.key === 'rank') {
+          return sortConfig.direction === 'asc' 
+            ? parseInt(a.rank) - parseInt(b.rank)
+            : parseInt(b.rank) - parseInt(a.rank);
+        }
         if (a[sortConfig.key] < b[sortConfig.key]) {
           return sortConfig.direction === 'asc' ? -1 : 1;
         }
@@ -69,7 +74,7 @@ const Dashboard = () => {
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <Card>
+        <Card className="bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800">
           <CardHeader>
             <CardTitle className="text-primary">Market Overview</CardTitle>
           </CardHeader>
@@ -77,7 +82,7 @@ const Dashboard = () => {
             <MarketOverview />
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900 dark:to-green-800">
           <CardHeader>
             <CardTitle className="text-primary">Greed & Fear Index</CardTitle>
           </CardHeader>
@@ -85,7 +90,7 @@ const Dashboard = () => {
             <GreedFearIndex />
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800">
           <CardHeader>
             <CardTitle className="text-primary">Gainer of the Day</CardTitle>
           </CardHeader>
@@ -95,7 +100,7 @@ const Dashboard = () => {
         </Card>
       </div>
       
-      <Card>
+      <Card className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
         <CardHeader>
           <CardTitle className="text-primary">Crypto Asset Search</CardTitle>
           <CardDescription>Search and sort through cryptocurrency assets</CardDescription>
@@ -109,7 +114,7 @@ const Dashboard = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="flex-grow"
             />
-            <Button className="w-full sm:w-auto">
+            <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90">
               <Search className="mr-2 h-4 w-4" /> Search
             </Button>
           </div>
@@ -135,7 +140,7 @@ const Dashboard = () => {
                 {sortedAssets.slice(0, 50).map((asset) => (
                   <tr key={asset.id} className="border-b border-border hover:bg-muted/50">
                     <td className="p-2">{asset.rank}</td>
-                    <td className="p-2">{asset.name}</td>
+                    <td className="p-2 font-semibold" style={{color: `var(--crypto-${asset.symbol.toLowerCase()}, var(--primary))`}}>{asset.name}</td>
                     <td className="p-2">{asset.symbol}</td>
                     <td className="p-2">${parseFloat(asset.priceUsd).toFixed(2)}</td>
                     <td className="p-2">${parseFloat(asset.marketCapUsd).toLocaleString()}</td>
