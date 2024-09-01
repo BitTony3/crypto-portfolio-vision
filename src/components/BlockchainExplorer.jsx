@@ -6,37 +6,31 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Search } from 'lucide-react';
 import BlockchainPicker from './BlockchainPicker';
-import Moralis from 'moralis';
 
-const MORALIS_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjlkMzc0YTFlLTFjODYtNDcwNS1hYjI1LTgzYWIzYjBlZDAxOSIsIm9yZ0lkIjoiNDA2NjEyIiwidXNlcklkIjoiNDE3ODE2IiwidHlwZUlkIjoiNDkxN2I4YTMtYzBmNS00NjEzLWEzZDctZWUxNWE0MDViNTYxIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3MjUxNTk1NjgsImV4cCI6NDg4MDkxOTU2OH0.QbulgqYN3g8wKOpU2V26Rp6sbMuuNoLuIjl2_NFrj7c';
-
-Moralis.start({ apiKey: MORALIS_API_KEY });
+const ETHERSCAN_API_KEY = 'YOUR_ETHERSCAN_API_KEY'; // Replace with your actual Etherscan API key
 
 const SUPPORTED_CHAINS = [
-  { id: 'eth', name: 'Ethereum' },
-  { id: 'bsc', name: 'Binance Smart Chain' },
-  { id: 'polygon', name: 'Polygon' },
-  { id: 'avalanche', name: 'Avalanche' },
-  { id: 'fantom', name: 'Fantom' },
-  { id: 'cronos', name: 'Cronos' },
+  { id: 'eth', name: 'Ethereum', apiUrl: 'https://api.etherscan.io/api' },
+  // Add other supported chains here if they have similar APIs
 ];
 
 const fetchBlockchainData = async (chain, query) => {
-  let result;
+  const apiUrl = SUPPORTED_CHAINS.find(c => c.id === chain)?.apiUrl;
+  if (!apiUrl) throw new Error('Unsupported blockchain');
+
+  let endpoint;
   if (query.startsWith('0x')) {
     // It's a transaction hash
-    result = await Moralis.EvmApi.transaction.getTransaction({
-      chain,
-      transactionHash: query,
-    });
+    endpoint = `${apiUrl}?module=proxy&action=eth_getTransactionByHash&txhash=${query}&apikey=${ETHERSCAN_API_KEY}`;
   } else {
     // It's a block number
-    result = await Moralis.EvmApi.block.getBlock({
-      chain,
-      blockNumberOrHash: query,
-    });
+    endpoint = `${apiUrl}?module=proxy&action=eth_getBlockByNumber&tag=${parseInt(query).toString(16)}&boolean=true&apikey=${ETHERSCAN_API_KEY}`;
   }
-  return result.toJSON();
+
+  const response = await fetch(endpoint);
+  if (!response.ok) throw new Error('Failed to fetch data');
+  const data = await response.json();
+  return data.result;
 };
 
 const BlockchainExplorer = () => {
@@ -59,7 +53,7 @@ const BlockchainExplorer = () => {
   const renderBlockchainData = () => {
     if (!data) return null;
 
-    if (data.hash) {
+    if (data.hash && data.blockNumber) {
       // This is a transaction
       return (
         <Table>
@@ -76,24 +70,24 @@ const BlockchainExplorer = () => {
             </TableRow>
             <TableRow>
               <TableCell>Block Number</TableCell>
-              <TableCell>{data.block_number}</TableCell>
+              <TableCell>{parseInt(data.blockNumber, 16)}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>From</TableCell>
-              <TableCell>{data.from_address}</TableCell>
+              <TableCell>{data.from}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>To</TableCell>
-              <TableCell>{data.to_address}</TableCell>
+              <TableCell>{data.to}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>Value</TableCell>
-              <TableCell>{data.value}</TableCell>
+              <TableCell>{parseInt(data.value, 16)} Wei</TableCell>
             </TableRow>
           </TableBody>
         </Table>
       );
-    } else {
+    } else if (data.number) {
       // This is a block
       return (
         <Table>
@@ -106,7 +100,7 @@ const BlockchainExplorer = () => {
           <TableBody>
             <TableRow>
               <TableCell>Block Number</TableCell>
-              <TableCell>{data.number}</TableCell>
+              <TableCell>{parseInt(data.number, 16)}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>Block Hash</TableCell>
@@ -114,11 +108,11 @@ const BlockchainExplorer = () => {
             </TableRow>
             <TableRow>
               <TableCell>Timestamp</TableCell>
-              <TableCell>{new Date(data.timestamp * 1000).toLocaleString()}</TableCell>
+              <TableCell>{new Date(parseInt(data.timestamp, 16) * 1000).toLocaleString()}</TableCell>
             </TableRow>
             <TableRow>
               <TableCell>Transactions</TableCell>
-              <TableCell>{data.transaction_count}</TableCell>
+              <TableCell>{data.transactions.length}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
@@ -130,7 +124,7 @@ const BlockchainExplorer = () => {
     <Card className="w-full">
       <CardHeader>
         <CardTitle>Blockchain Explorer</CardTitle>
-        <CardDescription>Explore blocks and transactions across multiple blockchains</CardDescription>
+        <CardDescription>Explore blocks and transactions on Ethereum</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col space-y-4">
