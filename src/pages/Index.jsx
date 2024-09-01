@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import TopCryptoAssets from '../components/TopCryptoAssets';
-import Portfolio from '../components/Portfolio';
+import Dashboard from '../components/Dashboard';
 import Login from '../components/Login';
 import { Button } from "@/components/ui/button";
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, UserIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { Link } from 'react-router-dom';
 
 const queryClient = new QueryClient();
 
@@ -50,6 +50,11 @@ const Index = () => {
             {isLoggedIn ? (
               <>
                 <span className="text-primary">Welcome, {username}</span>
+                <Link to="/profile">
+                  <Button className="bg-primary text-secondary hover:bg-accent">
+                    <UserIcon className="mr-2 h-4 w-4" /> Profile
+                  </Button>
+                </Link>
                 <Button onClick={handleLogout} className="bg-primary text-secondary hover:bg-accent">Logout</Button>
               </>
             ) : (
@@ -70,14 +75,7 @@ const Index = () => {
             <Login onLogin={handleLogin} onSignUp={handleSignUp} onClose={() => setShowLogin(false)} />
           </div>
         )}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <Portfolio />
-          </div>
-          <div>
-            <TopCryptoAssets />
-          </div>
-        </div>
+        <Dashboard />
       </div>
     </QueryClientProvider>
   );
