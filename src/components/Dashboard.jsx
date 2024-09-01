@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import MarketOverview from './MarketOverview';
 import GainerOfTheDay from './GainerOfTheDay';
 import GreedFearIndex from './GreedFearIndex';
-import OnChainActivity from './OnChainActivity';
+import TopPerformers from './TopPerformers';
 import TrendingCoins from './TrendingCoins';
 import BlockchainExplorer from './BlockchainExplorer';
 import { Input } from "@/components/ui/input";
@@ -119,7 +119,7 @@ const Dashboard = () => {
               <CardTitle className="text-primary text-lg">On-Chain Activity</CardTitle>
             </CardHeader>
             <CardContent>
-              <OnChainActivity />
+              <TopPerformers />
             </CardContent>
           </Card>
         </TabsContent>
