@@ -2,12 +2,10 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 
+import { apiRouter } from '../lib/apiRouter';
+
 const fetchTrendingCoins = async () => {
-  const response = await fetch('https://api.coingecko.com/api/v3/search/trending');
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
+  return apiRouter('/search/trending');
 };
 
 const TrendingCoins = () => {

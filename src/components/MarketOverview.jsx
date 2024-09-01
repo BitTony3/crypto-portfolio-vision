@@ -4,12 +4,10 @@ import { Loader2, TrendingUp, TrendingDown } from 'lucide-react';
 import { Progress } from "@/components/ui/progress";
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
+import { apiRouter } from '../lib/apiRouter';
+
 const fetchMarketData = async () => {
-  const response = await fetch('https://api.coingecko.com/api/v3/global');
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
+  return apiRouter('/global');
 };
 
 const MarketOverview = () => {
