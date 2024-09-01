@@ -112,12 +112,6 @@ const Dashboard = () => {
 
   return (
     <div className="grid grid-cols-4 gap-2 p-2">
-      <Card className="col-span-4 bg-secondary/50 backdrop-blur-sm border border-primary/20">
-        <CardContent className="p-2">
-          <TradingViewChart />
-        </CardContent>
-      </Card>
-      
       <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
         <CardHeader className="p-2">
           <CardTitle className="text-sm">Market Overview</CardTitle>
@@ -126,7 +120,7 @@ const Dashboard = () => {
           <MarketOverview />
         </CardContent>
       </Card>
-      
+  
       <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
         <CardHeader className="p-2">
           <CardTitle className="text-sm">Fear & Greed Index</CardTitle>
@@ -135,7 +129,7 @@ const Dashboard = () => {
           <GreedFearIndex />
         </CardContent>
       </Card>
-      
+  
       <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
         <CardHeader className="p-2">
           <CardTitle className="text-sm">Top Performers</CardTitle>
@@ -144,7 +138,7 @@ const Dashboard = () => {
           <TopPerformers />
         </CardContent>
       </Card>
-      
+  
       <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
         <CardHeader className="p-2">
           <CardTitle className="text-sm">Trending Coins</CardTitle>
@@ -162,13 +156,19 @@ const Dashboard = () => {
           <TokenPairExplorer />
         </CardContent>
       </Card>
-      
+  
       <Card className="col-span-2 bg-secondary/50 backdrop-blur-sm border border-primary/20">
         <CardHeader className="p-2">
           <CardTitle className="text-sm">Liquidity Pools Overview</CardTitle>
         </CardHeader>
         <CardContent className="p-2">
           <LiquidityPoolsOverview />
+        </CardContent>
+      </Card>
+
+      <Card className="col-span-4 bg-secondary/50 backdrop-blur-sm border border-primary/20">
+        <CardContent className="p-2">
+          <TradingViewChart />
         </CardContent>
       </Card>
       
