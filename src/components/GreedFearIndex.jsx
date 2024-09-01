@@ -34,14 +34,14 @@ const GreedFearIndex = () => {
   ];
 
   const getColor = (value) => {
-    if (value <= 20) return 'hsl(210, 100%, 30%)'; // Extreme Fear
-    if (value <= 40) return 'hsl(210, 90%, 40%)'; // Fear
-    if (value <= 60) return 'hsl(210, 80%, 50%)'; // Neutral
-    if (value <= 80) return 'hsl(210, 70%, 60%)'; // Greed
-    return 'hsl(210, 60%, 70%)'; // Extreme Greed
+    if (value <= 20) return 'hsl(210, 100%, 20%)'; // Extreme Fear
+    if (value <= 40) return 'hsl(210, 90%, 30%)'; // Fear
+    if (value <= 60) return 'hsl(210, 80%, 40%)'; // Neutral
+    if (value <= 80) return 'hsl(210, 70%, 50%)'; // Greed
+    return 'hsl(210, 60%, 60%)'; // Extreme Greed
   };
 
-  const COLORS = [getColor(indexValue), 'hsl(210, 20%, 80%)'];
+  const COLORS = [getColor(indexValue), 'hsl(210, 20%, 90%)'];
 
   return (
     <div className="space-y-4 bg-gradient-to-r from-blue-900/50 to-blue-700/50 p-6 rounded-lg shadow-lg border border-blue-500/30 backdrop-blur-sm">
