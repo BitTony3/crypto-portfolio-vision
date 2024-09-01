@@ -4,11 +4,16 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recha
 import { Loader2 } from 'lucide-react';
 
 const fetchAssetPrices = async (ids) => {
-  const response = await fetch(`https://api.coincap.io/v2/assets?ids=${ids.join(',')}`);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
+  // Mock data for asset prices
+  const mockPrices = {
+    bitcoin: 50000,
+    ethereum: 3000,
+    tether: 1,
+  };
+
+  return new Promise((resolve) => {
+    setTimeout(() => resolve({ data: ids.map(id => ({ id, priceUsd: mockPrices[id] })) }), 1000);
+  });
 };
 
 const Portfolio = () => {

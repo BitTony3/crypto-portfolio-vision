@@ -2,44 +2,17 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import Moralis from 'moralis';
-
 const fetchLiquidityPools = async () => {
-  try {
-    const response = await Moralis.EvmApi.defi.getPairReserves({
-      chain: '0x1',
-      limit: 10,
-    });
+  // Mock data for liquidity pools
+  const mockPools = [
+    { id: '0x1', token0: 'ETH', token1: 'USDT', tvl: 1000000, apr: 15.5, volume24h: 500000 },
+    { id: '0x2', token0: 'BTC', token1: 'USDC', tvl: 2000000, apr: 12.3, volume24h: 750000 },
+    { id: '0x3', token0: 'LINK', token1: 'ETH', tvl: 500000, apr: 18.7, volume24h: 250000 },
+  ];
 
-    const pools = response.result;
-
-    const tokenAddresses = pools.flatMap(pool => [pool.token0Address, pool.token1Address]);
-    const uniqueAddresses = [...new Set(tokenAddresses)];
-
-    const tokenDetailsPromises = uniqueAddresses.map(address =>
-      Moralis.EvmApi.token.getTokenMetadata({
-        addresses: [address],
-        chain: '0x1',
-      })
-    );
-
-    const tokenDetailsResponses = await Promise.all(tokenDetailsPromises);
-    const tokenDetails = Object.fromEntries(
-      tokenDetailsResponses.map(response => [response.result[0].address, response.result[0]])
-    );
-
-    return pools.map(pool => ({
-      id: pool.pairAddress,
-      token0: tokenDetails[pool.token0Address].name,
-      token1: tokenDetails[pool.token1Address].name,
-      tvl: parseFloat(pool.reserve0) + parseFloat(pool.reserve1),
-      apr: Math.random() * 100 + 10, // Simulated APR
-      volume24h: Math.random() * 5000000 + 500000, // Simulated 24h volume
-    }));
-  } catch (error) {
-    console.error('Error fetching liquidity pools:', error);
-    throw error;
-  }
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(mockPools), 1000); // Simulate API delay
+  });
 };
 
 const LiquidityPoolsOverview = () => {
