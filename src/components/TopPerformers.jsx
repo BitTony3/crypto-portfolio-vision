@@ -14,26 +14,31 @@ const SUPPORTED_CHAINS = [
 ];
 
 const fetchTopPerformers = async () => {
-  const results = await Promise.all(SUPPORTED_CHAINS.map(async (chain) => {
-    try {
-      const response = await Moralis.EvmApi.token.getTopERC20TokensByPriceMovers({
-        chain: chain.id,
-        limit: 10,
-      });
-      return response.result.map(token => ({
-        symbol: token.symbol,
-        chain: chain.name,
-        price: token.price?.usdPrice,
-        priceChangePercentage24h: token.price?.['24hPercentChange'],
-        address: token.address,
-      }));
-    } catch (error) {
-      console.error(`Error fetching data for ${chain.name}:`, error);
-      return [];
-    }
-  }));
+  try {
+    const results = await Promise.all(SUPPORTED_CHAINS.map(async (chain) => {
+      try {
+        const response = await Moralis.EvmApi.token.getTopERC20TokensByPriceMovers({
+          chain: chain.id,
+          limit: 10,
+        });
+        return response.result.map(token => ({
+          symbol: token.symbol,
+          chain: chain.name,
+          price: token.price?.usdPrice ?? 0,
+          priceChangePercentage24h: token.price?.['24hPercentChange'] ?? 0,
+          address: token.address,
+        }));
+      } catch (error) {
+        console.error(`Error fetching data for ${chain.name}:`, error);
+        return [];
+      }
+    }));
 
-  return results.flat().sort((a, b) => b.priceChangePercentage24h - a.priceChangePercentage24h).slice(0, 10);
+    return results.flat().sort((a, b) => b.priceChangePercentage24h - a.priceChangePercentage24h).slice(0, 10);
+  } catch (error) {
+    console.error('Error fetching top performers:', error);
+    return [];
+  }
 };
 
 const TopPerformers = () => {

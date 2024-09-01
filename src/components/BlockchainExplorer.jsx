@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Loader2, Search } from 'lucide-react';
 import BlockchainPicker from './BlockchainPicker';
 
-const ETHERSCAN_API_KEY = 'YOUR_ETHERSCAN_API_KEY'; // Replace with your actual Etherscan API key
+const ETHERSCAN_API_KEY = import.meta.env.VITE_ETHERSCAN_API_KEY;
 
 const SUPPORTED_CHAINS = [
   { id: 'eth', name: 'Ethereum', apiUrl: 'https://api.etherscan.io/api' },

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation, useNavigationType } from "react-router-dom";
 import { navItems } from "./nav-items";
 import { ThemeProvider } from "next-themes";
+import { ErrorBoundary } from 'react-error-boundary';
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,13 @@ const ScrollToTop = () => {
   return null;
 };
 
+const ErrorFallback = ({ error }) => (
+  <div role="alert">
+    <p>Something went wrong:</p>
+    <pre>{error.message}</pre>
+  </div>
+);
+
 const AppContent = () => (
   <>
     <ScrollToTop />
@@ -34,16 +42,18 @@ const AppContent = () => (
 );
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-      <TooltipProvider>
-        <Toaster />
-        <BrowserRouter>
-          <AppContent />
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
+  <ErrorBoundary FallbackComponent={ErrorFallback}>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <TooltipProvider>
+          <Toaster />
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
+        </TooltipProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
