@@ -130,28 +130,58 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="col-span-2 bg-secondary/50 backdrop-blur-sm border border-primary/20 animate-glow">
+    <div className="flex flex-col space-y-6">
+      <div className="flex flex-col lg:flex-row gap-4">
+        <div className="lg:w-1/4 space-y-4">
+          <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20 animate-glow">
+            <CardHeader>
+              <CardTitle className="text-lg">Market Overview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <MarketOverview />
+            </CardContent>
+          </Card>
+          <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20 animate-glow">
+            <CardHeader>
+              <CardTitle className="text-lg">Fear & Greed Index</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <GreedFearIndex />
+            </CardContent>
+          </Card>
+        </div>
+        
+        <Card className="lg:w-1/2 bg-secondary/50 backdrop-blur-sm border border-primary/20">
           <CardHeader>
-            <CardTitle className="text-lg">Market Overview</CardTitle>
+            <CardTitle className="text-lg">Advanced Chart</CardTitle>
           </CardHeader>
-          <CardContent>
-            <MarketOverview />
+          <CardContent className="p-0">
+            <TradingViewChart />
           </CardContent>
         </Card>
-        <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20 animate-glow">
-          <CardHeader>
-            <CardTitle className="text-lg">Fear & Greed Index</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <GreedFearIndex />
-          </CardContent>
-        </Card>
+        
+        <div className="lg:w-1/4 space-y-4">
+          <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
+            <CardHeader>
+              <CardTitle className="text-lg">Top Performers</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TopPerformers />
+            </CardContent>
+          </Card>
+          <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
+            <CardHeader>
+              <CardTitle className="text-lg">Trending Coins</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TrendingCoins />
+            </CardContent>
+          </Card>
+        </div>
       </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
+
+      <div className="flex flex-col lg:flex-row gap-4">
+        <Card className="lg:w-1/2 bg-secondary/50 backdrop-blur-sm border border-primary/20">
           <CardHeader>
             <CardTitle className="text-lg">Token Pair Explorer</CardTitle>
           </CardHeader>
@@ -159,26 +189,7 @@ const Dashboard = () => {
             <TokenPairExplorer />
           </CardContent>
         </Card>
-        <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
-          <CardHeader>
-            <CardTitle className="text-lg">Top Performers</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <TopPerformers />
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
-          <CardHeader>
-            <CardTitle className="text-lg">Trending Coins</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <TrendingCoins />
-          </CardContent>
-        </Card>
-        <Card className="col-span-2 bg-secondary/50 backdrop-blur-sm border border-primary/20">
+        <Card className="lg:w-1/2 bg-secondary/50 backdrop-blur-sm border border-primary/20">
           <CardHeader>
             <CardTitle className="text-lg">Liquidity Pools Overview</CardTitle>
           </CardHeader>
@@ -187,15 +198,6 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
-
-      <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
-        <CardHeader>
-          <CardTitle className="text-lg">Advanced Chart</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <TradingViewChart />
-        </CardContent>
-      </Card>
       
       <Card className="bg-secondary/50 backdrop-blur-sm border border-primary/20">
         <CardHeader>
