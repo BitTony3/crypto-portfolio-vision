@@ -21,35 +21,35 @@ module.exports = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(120, 100%, 3%)",
-        foreground: "hsl(120, 100%, 90%)",
+        background: "hsl(210, 100%, 98%)",
+        foreground: "hsl(210, 100%, 10%)",
         primary: {
-          DEFAULT: "hsl(120, 100%, 50%)",
-          foreground: "hsl(120, 100%, 10%)",
+          DEFAULT: "hsl(210, 100%, 50%)",
+          foreground: "hsl(210, 100%, 98%)",
         },
         secondary: {
-          DEFAULT: "hsl(120, 100%, 10%)",
-          foreground: "hsl(120, 100%, 90%)",
+          DEFAULT: "hsl(210, 100%, 90%)",
+          foreground: "hsl(210, 100%, 10%)",
         },
         destructive: {
           DEFAULT: "hsl(0, 100%, 50%)",
-          foreground: "hsl(120, 100%, 90%)",
+          foreground: "hsl(210, 100%, 98%)",
         },
         muted: {
-          DEFAULT: "hsl(120, 100%, 5%)",
-          foreground: "hsl(120, 100%, 70%)",
+          DEFAULT: "hsl(210, 100%, 95%)",
+          foreground: "hsl(210, 100%, 30%)",
         },
         accent: {
-          DEFAULT: "hsl(120, 100%, 60%)",
-          foreground: "hsl(120, 100%, 10%)",
+          DEFAULT: "hsl(210, 100%, 60%)",
+          foreground: "hsl(210, 100%, 98%)",
         },
         popover: {
-          DEFAULT: "hsl(120, 100%, 5%)",
-          foreground: "hsl(120, 100%, 90%)",
+          DEFAULT: "hsl(210, 100%, 98%)",
+          foreground: "hsl(210, 100%, 10%)",
         },
         card: {
-          DEFAULT: "hsl(120, 100%, 7%)",
-          foreground: "hsl(120, 100%, 90%)",
+          DEFAULT: "hsl(210, 100%, 95%)",
+          foreground: "hsl(210, 100%, 10%)",
         },
         crypto: {
           bitcoin: "#F7931A",
@@ -74,8 +74,8 @@ module.exports = {
           to: { height: "0" },
         },
         glow: {
-          '0%, 100%': { boxShadow: '0 0 5px hsl(120, 100%, 50%), 0 0 10px hsl(120, 100%, 50%)' },
-          '50%': { boxShadow: '0 0 20px hsl(120, 100%, 50%), 0 0 30px hsl(120, 100%, 50%)' },
+          '0%, 100%': { boxShadow: '0 0 5px hsl(210, 100%, 50%), 0 0 10px hsl(210, 100%, 50%)' },
+          '50%': { boxShadow: '0 0 20px hsl(210, 100%, 50%), 0 0 30px hsl(210, 100%, 50%)' },
         },
         pulse: {
           '0%, 100%': { opacity: 1 },
