@@ -1,60 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Loader2, TrendingUp, TrendingDown } from 'lucide-react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import Moralis from 'moralis';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
-const SUPPORTED_CHAINS = [
-  { id: 'eth', name: 'Ethereum' },
-  { id: 'bsc', name: 'Binance Smart Chain' },
-  { id: 'polygon', name: 'Polygon' },
-  { id: 'avalanche', name: 'Avalanche' },
-  { id: 'fantom', name: 'Fantom' },
+const mockData = [
+  { symbol: 'BTC', chain: 'Bitcoin', price: 50000, priceChangePercentage24h: 5.2 },
+  { symbol: 'ETH', chain: 'Ethereum', price: 3000, priceChangePercentage24h: 3.8 },
+  { symbol: 'BNB', chain: 'Binance Smart Chain', price: 400, priceChangePercentage24h: 2.5 },
+  { symbol: 'ADA', chain: 'Cardano', price: 1.5, priceChangePercentage24h: 1.9 },
+  { symbol: 'SOL', chain: 'Solana', price: 100, priceChangePercentage24h: 4.1 },
 ];
 
-const fetchTopPerformers = async () => {
-  try {
-    const results = await Promise.all(SUPPORTED_CHAINS.map(async (chain) => {
-      try {
-        const response = await Moralis.EvmApi.token.getTopERC20TokensByPriceMovers({
-          chain: chain.id,
-          limit: 10,
-        });
-        return response.result.map(token => ({
-          symbol: token.symbol,
-          chain: chain.name,
-          price: token.price?.usdPrice ?? 0,
-          priceChangePercentage24h: token.price?.['24hPercentChange'] ?? 0,
-          address: token.address,
-        }));
-      } catch (error) {
-        console.error(`Error fetching data for ${chain.name}:`, error);
-        return [];
-      }
-    }));
-
-    return results.flat().sort((a, b) => b.priceChangePercentage24h - a.priceChangePercentage24h).slice(0, 10);
-  } catch (error) {
-    console.error('Error fetching top performers:', error);
-    return [];
-  }
-};
-
 const TopPerformers = () => {
-  const { data: topGainers, isLoading, error } = useQuery({
-    queryKey: ['topPerformers'],
-    queryFn: fetchTopPerformers,
-    refetchInterval: 60000, // Refetch every minute
-  });
-
-  if (isLoading) return <Loader2 className="h-8 w-8 animate-spin text-primary" />;
-  if (error) return <div className="text-red-600">Error: {error.message}</div>;
-
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Top 10 Gainers Across Chains</CardTitle>
+        <CardTitle>Top 5 Gainers (Mock Data)</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>
@@ -67,11 +28,11 @@ const TopPerformers = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {topGainers?.map((token, index) => (
-              <TableRow key={`${token.chain}-${token.address}`}>
+            {mockData.map((token, index) => (
+              <TableRow key={index}>
                 <TableCell>{token.symbol}</TableCell>
                 <TableCell>{token.chain}</TableCell>
-                <TableCell>${parseFloat(token.price).toFixed(4)}</TableCell>
+                <TableCell>${token.price.toFixed(2)}</TableCell>
                 <TableCell>
                   <span className={token.priceChangePercentage24h >= 0 ? "text-green-500" : "text-red-500"}>
                     {token.priceChangePercentage24h >= 0 ? <TrendingUp className="inline mr-1" /> : <TrendingDown className="inline mr-1" />}
