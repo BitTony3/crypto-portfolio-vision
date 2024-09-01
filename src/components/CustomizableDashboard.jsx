@@ -28,7 +28,6 @@ import BlockchainExplorer from './BlockchainExplorer';
 import TopCryptoAssets from './TopCryptoAssets';
 import Portfolio from './Portfolio';
 import PortfolioPerformance from './PortfolioPerformance';
-import TradingViewChart from './TradingViewChart';
 
 const widgetComponents = {
   MarketOverview,
