@@ -11,22 +11,22 @@ const fetchAssetPrices = async (ids) => {
 
 const Portfolio = () => {
   const [portfolio, setPortfolio] = useState([
-    { id: 'bitcoin', amount: 2.4, location: 'Binance', type: 'Exchange' },
-    { id: 'bitcoin', amount: 1.6, location: 'OKX', type: 'Exchange' },
-    { id: 'bitcoin', amount: 3.0, location: 'Trezor', type: 'Hardware Wallet' },
-    { id: 'bitcoin', amount: 1.4, location: 'KuCoin', type: 'Exchange' },
-    { id: 'bitcoin', amount: 2.44, location: 'Bitcoin Network', type: 'Blockchain' },
-    { id: 'bitcoin', amount: 7.0, location: 'Binance', type: 'Exchange' },
-    { id: 'ethereum', amount: 16.0, location: 'MetaMask', type: 'Software Wallet' },
-    { id: 'ethereum', amount: 13.0, location: 'KuCoin', type: 'Exchange' },
-    { id: 'ethereum', amount: 18.4, location: 'Ethereum Mainnet', type: 'Blockchain' },
-    { id: 'ethereum', amount: 11.6, location: 'Binance', type: 'Exchange' },
-    { id: 'ethereum', amount: 10.0, location: 'OKX', type: 'Exchange' },
-    { id: 'ethereum', amount: 60.0, location: 'Binance', type: 'Exchange' },
-    { id: 'tether', amount: 10000, location: 'Tron Network', type: 'Blockchain' },
-    { id: 'tether', amount: 80000, location: 'Gate.io', type: 'Exchange' },
-    { id: 'tether', amount: 114000, location: 'Binance', type: 'Exchange' },
-    { id: 'tether', amount: 80000, location: 'Trezor', type: 'Hardware Wallet' },
+    { id: 'bitcoin', amount: 1.2, location: 'Binance', type: 'Exchange' },
+    { id: 'bitcoin', amount: 0.8, location: 'OKX', type: 'Exchange' },
+    { id: 'bitcoin', amount: 1.5, location: 'Trezor', type: 'Hardware Wallet' },
+    { id: 'bitcoin', amount: 0.7, location: 'KuCoin', type: 'Exchange' },
+    { id: 'bitcoin', amount: 1.22, location: 'Bitcoin Network', type: 'Blockchain' },
+    { id: 'bitcoin', amount: 3.5, location: 'Binance', type: 'Exchange' },
+    { id: 'ethereum', amount: 8.0, location: 'MetaMask', type: 'Software Wallet' },
+    { id: 'ethereum', amount: 6.5, location: 'KuCoin', type: 'Exchange' },
+    { id: 'ethereum', amount: 9.2, location: 'Ethereum Mainnet', type: 'Blockchain' },
+    { id: 'ethereum', amount: 5.8, location: 'Binance', type: 'Exchange' },
+    { id: 'ethereum', amount: 5.0, location: 'OKX', type: 'Exchange' },
+    { id: 'ethereum', amount: 30.0, location: 'Binance', type: 'Exchange' },
+    { id: 'tether', amount: 20000, location: 'Tron Network', type: 'Blockchain' },
+    { id: 'tether', amount: 40000, location: 'Gate.io', type: 'Exchange' },
+    { id: 'tether', amount: 57000, location: 'Binance', type: 'Exchange' },
+    { id: 'tether', amount: 40000, location: 'Trezor', type: 'Hardware Wallet' },
   ]);
 
   const assetIds = [...new Set(portfolio.map(item => item.id))];
