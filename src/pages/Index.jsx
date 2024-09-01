@@ -91,10 +91,10 @@ const Index = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AnimatePresence>
-        {showMatrixRain && <MatrixRain key="matrix-rain" />}
-      </AnimatePresence>
       <div className={`min-h-screen bg-background text-foreground font-sans ${!showMatrixRain ? 'animate-fadeIn' : ''}`}>
+        <AnimatePresence>
+          {showMatrixRain && <MatrixRain key="matrix-rain" />}
+        </AnimatePresence>
         <header className="bg-card shadow-md sticky top-0 z-50">
           <div className="container mx-auto px-4 py-2 flex justify-between items-center">
             <motion.img 
@@ -199,8 +199,8 @@ const Index = () => {
           )}
         </AnimatePresence>
         <main className="container mx-auto px-2 py-4">
-          <AnimatePresence>
-            {showLogin && !isLoggedIn && (
+          <AnimatePresence mode="wait">
+            {showLogin && !isLoggedIn ? (
               <motion.div
                 key="login-modal"
                 initial={{ opacity: 0 }}
@@ -210,9 +210,17 @@ const Index = () => {
               >
                 <Login onLogin={handleLogin} onSignUp={handleSignUp} onClose={() => setShowLogin(false)} />
               </motion.div>
+            ) : (
+              <motion.div
+                key="dashboard"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                {memoizedDashboard}
+              </motion.div>
             )}
           </AnimatePresence>
-          {memoizedDashboard}
         </main>
       </div>
     </QueryClientProvider>
