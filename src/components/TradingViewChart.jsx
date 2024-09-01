@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useRef, memo } from 'react';
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { Maximize2, Minimize2 } from 'lucide-react';
 
 let tvScriptLoadingPromise;
 
 const TradingViewChart = () => {
   const [layout, setLayout] = useState('1');
   const [symbols, setSymbols] = useState(['BINANCE:BTCUSDT']);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [chartSize, setChartSize] = useState(60);
   const containerRef = useRef(null);
 
   const createWidget = (containerId, symbol) => {
@@ -80,14 +84,43 @@ const TradingViewChart = () => {
       gridTemplateColumns: `repeat(${columns}, 1fr)`,
       gridTemplateRows: `repeat(${rows}, 1fr)`,
       gap: '10px',
-      height: 'calc(60vh - 120px)',
+      height: isFullscreen ? '100vh' : `calc(${chartSize}vh - 120px)`,
       width: '100%',
     };
   };
 
+  const toggleFullscreen = () => {
+    if (!isFullscreen) {
+      if (containerRef.current.requestFullscreen) {
+        containerRef.current.requestFullscreen();
+      } else if (containerRef.current.webkitRequestFullscreen) {
+        containerRef.current.webkitRequestFullscreen();
+      } else if (containerRef.current.msRequestFullscreen) {
+        containerRef.current.msRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen();
+      }
+    }
+    setIsFullscreen(!isFullscreen);
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center space-x-4">
+    <div className={`space-y-4 ${isFullscreen ? 'fixed inset-0 z-50 bg-background' : ''}`}>
+      <div className="flex items-center space-x-4 p-4">
         <Select value={layout} onValueChange={handleLayoutChange}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select layout" />
@@ -99,8 +132,23 @@ const TradingViewChart = () => {
           </SelectContent>
         </Select>
         <Button onClick={() => handleLayoutChange(layout)}>Apply Layout</Button>
+        <div className="flex items-center space-x-2 flex-grow">
+          <span className="text-sm">Chart Size:</span>
+          <Slider
+            value={[chartSize]}
+            onValueChange={([value]) => setChartSize(value)}
+            max={100}
+            min={20}
+            step={1}
+            className="w-[200px]"
+          />
+          <span className="text-sm">{chartSize}%</span>
+        </div>
+        <Button onClick={toggleFullscreen} variant="outline" size="icon">
+          {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+        </Button>
       </div>
-      <div ref={containerRef} style={getGridStyle()}>
+      <div ref={containerRef} style={getGridStyle()} className="p-4">
         {symbols.map((symbol, index) => (
           <div key={index} className="relative">
             <Select value={symbol} onValueChange={(newSymbol) => handleSymbolChange(index, newSymbol)}>

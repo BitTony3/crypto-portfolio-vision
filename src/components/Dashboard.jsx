@@ -152,7 +152,7 @@ const Dashboard = () => {
         <CardHeader>
           <CardTitle className="text-lg">Advanced Chart</CardTitle>
         </CardHeader>
-        <CardContent className="p-2">
+        <CardContent className="p-0">
           <TradingViewChart />
         </CardContent>
       </Card>
