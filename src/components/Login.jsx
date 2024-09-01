@@ -7,30 +7,38 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { toast } from 'sonner';
+import { useSupabaseAuth } from '../integrations/supabase';
 
 const formSchema = z.object({
-  username: z.string().min(3, 'Username must be at least 3 characters'),
+  email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-const Login = ({ onLogin, onSignUp, onClose }) => {
+const Login = ({ onClose }) => {
   const [isLogin, setIsLogin] = useState(true);
+  const { signIn, signUp } = useSupabaseAuth();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: '',
+      email: '',
       password: '',
     },
   });
 
-  const handleSubmit = (values) => {
-    if (isLogin) {
-      onLogin(values.username, values.password);
-    } else {
-      onSignUp(values.username, values.password);
+  const handleSubmit = async (values) => {
+    try {
+      if (isLogin) {
+        await signIn(values.email, values.password);
+        toast.success('Logged in successfully!');
+      } else {
+        await signUp(values.email, values.password);
+        toast.success('Signed up successfully! Please check your email to confirm your account.');
+      }
+      onClose();
+    } catch (error) {
+      toast.error(error.message);
     }
-    toast.success(`${isLogin ? 'Logged in' : 'Signed up'} successfully!`);
   };
 
   return (
@@ -47,12 +55,12 @@ const Login = ({ onLogin, onSignUp, onClose }) => {
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
           <FormField
             control={form.control}
-            name="username"
+            name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input {...field} className="bg-background text-foreground border-input" />
+                  <Input {...field} type="email" className="bg-background text-foreground border-input" />
                 </FormControl>
                 <FormMessage />
               </FormItem>

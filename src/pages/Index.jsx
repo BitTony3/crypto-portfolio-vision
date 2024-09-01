@@ -7,13 +7,13 @@ import { Moon, Sun, UserIcon, Menu, LayoutDashboard, User } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSupabaseAuth } from '../integrations/supabase';
 
 const queryClient = new QueryClient();
 
 const Index = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { session, signOut } = useSupabaseAuth();
   const [showLogin, setShowLogin] = useState(false);
-  const [username, setUsername] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLeftMenuOpen, setIsLeftMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
@@ -53,27 +53,9 @@ const Index = () => {
     );
   }, []);
 
-  const handleLogin = useCallback((username, password) => {
-    if (username === 'admin' && password === 'admin') {
-      setIsLoggedIn(true);
-      setUsername(username);
-      setShowLogin(false);
-    } else {
-      console.log('Invalid credentials');
-    }
-  }, []);
-
-  const handleSignUp = useCallback((username, password) => {
-    console.log('Signing up with:', username, password);
-    setIsLoggedIn(true);
-    setUsername(username);
-    setShowLogin(false);
-  }, []);
-
-  const handleLogout = useCallback(() => {
-    setIsLoggedIn(false);
-    setUsername('');
-  }, []);
+  const handleLogout = useCallback(async () => {
+    await signOut();
+  }, [signOut]);
 
   const toggleLeftMenu = useCallback(() => {
     setIsLeftMenuOpen(prev => !prev);
@@ -106,7 +88,7 @@ const Index = () => {
               whileTap={{ scale: 0.9 }}
             />
             <div className="hidden md:flex items-center space-x-2">
-              {isLoggedIn ? (
+              {session ? (
                 <>
                   <Link to="/profile">
                     <Button variant="outline" size="sm">
@@ -172,7 +154,7 @@ const Index = () => {
               exit={{ opacity: 0 }}
             >
               <div className="flex flex-col items-center justify-center h-full space-y-4">
-                {isLoggedIn ? (
+                {session ? (
                   <>
                     <Link to="/profile">
                       <Button variant="outline" size="sm" onClick={toggleMobileMenu}>
@@ -200,7 +182,7 @@ const Index = () => {
         </AnimatePresence>
         <main className="container mx-auto px-2 py-4">
           <AnimatePresence mode="wait">
-            {showLogin && !isLoggedIn ? (
+            {showLogin && !session ? (
               <motion.div
                 key="login-modal"
                 initial={{ opacity: 0 }}
@@ -208,7 +190,7 @@ const Index = () => {
                 exit={{ opacity: 0 }}
                 className="fixed inset-0 bg-background/80 backdrop-blur-sm flex justify-center items-center z-50"
               >
-                <Login onLogin={handleLogin} onSignUp={handleSignUp} onClose={() => setShowLogin(false)} />
+                <Login onClose={() => setShowLogin(false)} />
               </motion.div>
             ) : (
               <motion.div
