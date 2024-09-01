@@ -19,29 +19,33 @@ const ScrollToTop = () => {
   return null;
 }
 
+const AppContent = () => (
+  <>
+    <ScrollToTop />
+    <Routes>
+      {navItems.map(({ to, page }) => (
+        <Route key={to} path={to} element={page} />
+      ))}
+    </Routes>
+  </>
+);
+
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-      <TooltipProvider>
-        <Toaster />
-        <BrowserRouter>
-          <ScrollToTop />
-          <Routes>
-            {navItems.map(({ to, page }) => (
-              <Route key={to} path={to} element={page} />
-            ))}
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <TooltipProvider>
+          <Toaster />
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
+        </TooltipProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  </React.StrictMode>
 );
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+root.render(<App />);
 
 export default App;
