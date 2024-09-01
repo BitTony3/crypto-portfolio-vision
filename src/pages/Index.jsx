@@ -8,6 +8,7 @@ import { useTheme } from 'next-themes';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSupabaseAuth } from '../integrations/supabase';
+import { Switch } from "@/components/ui/switch";
 
 const queryClient = new QueryClient();
 
@@ -96,35 +97,35 @@ const Index = () => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             />
-            <div className="hidden md:flex items-center space-x-2">
+            <div className="hidden md:flex items-center space-x-4">
               {session ? (
                 <>
                   <Link to="/profile">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="bg-blue-100 text-blue-600 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800">
                       <UserIcon className="mr-1 h-3 w-3" /> Profile
                     </Button>
                   </Link>
-                  <Button onClick={handleLogout} variant="ghost" size="sm">Logout</Button>
+                  <Button onClick={handleLogout} variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-200">Logout</Button>
                 </>
               ) : (
-                <Button onClick={() => setShowLogin(true)} variant="default" size="sm">Login</Button>
+                <Button onClick={() => setShowLogin(true)} variant="default" size="sm" className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600">Login</Button>
               )}
-              <Button
-                onClick={toggleTheme}
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 bg-gradient-to-r from-primary-light to-secondary-light dark:from-primary-dark dark:to-secondary-dark text-foreground-light dark:text-foreground-dark"
-                aria-label="Toggle theme"
-              >
-                {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Sun className="h-4 w-4 text-yellow-500 dark:text-yellow-300" />
+                <Switch
+                  checked={theme === 'dark'}
+                  onCheckedChange={toggleTheme}
+                  className="bg-blue-200 dark:bg-blue-700"
+                />
+                <Moon className="h-4 w-4 text-blue-800 dark:text-blue-200" />
+              </div>
             </div>
             <div className="md:hidden">
               <Button
                 onClick={toggleMobileMenu}
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8"
+                className="h-8 w-8 text-blue-600 dark:text-blue-300"
                 aria-label="Toggle menu"
               >
                 <Menu className="h-5 w-5" />
@@ -136,17 +137,17 @@ const Index = () => {
           {isLeftMenuOpen && (
             <motion.div 
               key="left-menu"
-              className="fixed inset-y-0 left-0 w-64 bg-card shadow-lg z-50"
+              className="fixed inset-y-0 left-0 w-64 bg-blue-50 dark:bg-blue-900 shadow-lg z-50"
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'tween' }}
             >
               <div className="p-4 space-y-4">
-                <Button variant="ghost" className="w-full justify-start" onClick={toggleLeftMenu}>
+                <Button variant="ghost" className="w-full justify-start text-blue-600 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800" onClick={toggleLeftMenu}>
                   <LayoutDashboard className="mr-2 h-4 w-4" /> Main Dashboard
                 </Button>
-                <Button variant="ghost" className="w-full justify-start" onClick={toggleLeftMenu}>
+                <Button variant="ghost" className="w-full justify-start text-blue-600 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800" onClick={toggleLeftMenu}>
                   <User className="mr-2 h-4 w-4" /> Personal Dashboard
                 </Button>
               </div>
@@ -157,7 +158,7 @@ const Index = () => {
           {isMobileMenuOpen && (
             <motion.div 
               key="mobile-menu"
-              className="fixed inset-0 bg-background/95 backdrop-blur-sm z-40 md:hidden"
+              className="fixed inset-0 bg-blue-50/95 dark:bg-blue-900/95 backdrop-blur-sm z-40 md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -166,25 +167,25 @@ const Index = () => {
                 {session ? (
                   <>
                     <Link to="/profile">
-                      <Button variant="outline" size="sm" onClick={toggleMobileMenu}>
+                      <Button variant="outline" size="sm" onClick={toggleMobileMenu} className="bg-blue-100 text-blue-600 hover:bg-blue-200 dark:bg-blue-800 dark:text-blue-300 dark:hover:bg-blue-700">
                         <UserIcon className="mr-1 h-3 w-3" /> Profile
                       </Button>
                     </Link>
-                    <Button onClick={() => { handleLogout(); toggleMobileMenu(); }} variant="ghost" size="sm">Logout</Button>
+                    <Button onClick={() => { handleLogout(); toggleMobileMenu(); }} variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-200">Logout</Button>
                   </>
                 ) : (
-                  <Button onClick={() => { setShowLogin(true); toggleMobileMenu(); }} variant="default" size="sm">Login</Button>
+                  <Button onClick={() => { setShowLogin(true); toggleMobileMenu(); }} variant="default" size="sm" className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600">Login</Button>
                 )}
-                <Button
-                  onClick={toggleTheme}
-                  variant="ghost"
-                  size="sm"
-                  aria-label="Toggle theme"
-                >
-                  {theme === 'dark' ? <Sun className="h-4 w-4 mr-1" /> : <Moon className="h-4 w-4 mr-1" />}
-                  {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-                </Button>
-                <Button onClick={toggleMobileMenu} variant="ghost" size="sm">Close Menu</Button>
+                <div className="flex items-center space-x-2">
+                  <Sun className="h-4 w-4 text-yellow-500 dark:text-yellow-300" />
+                  <Switch
+                    checked={theme === 'dark'}
+                    onCheckedChange={toggleTheme}
+                    className="bg-blue-200 dark:bg-blue-700"
+                  />
+                  <Moon className="h-4 w-4 text-blue-800 dark:text-blue-200" />
+                </div>
+                <Button onClick={toggleMobileMenu} variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-200">Close Menu</Button>
               </div>
             </motion.div>
           )}
@@ -197,7 +198,7 @@ const Index = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-background/80 backdrop-blur-sm flex justify-center items-center z-50"
+                className="fixed inset-0 bg-blue-50/80 dark:bg-blue-900/80 backdrop-blur-sm flex justify-center items-center z-50"
               >
                 <Login onClose={() => setShowLogin(false)} />
               </motion.div>
