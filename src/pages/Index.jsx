@@ -76,8 +76,8 @@ const Index = () => {
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
-  }, [setTheme]);
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  }, [theme, setTheme]);
 
   const memoizedDashboard = useMemo(() => <Dashboard />, []);
 
