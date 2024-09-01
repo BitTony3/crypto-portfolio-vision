@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import Dashboard from '../components/Dashboard';
 import CustomizableDashboard from '../components/CustomizableDashboard';
 import Login from '../components/Login';
 import { Button } from "@/components/ui/button";
@@ -80,7 +79,7 @@ const Index = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   }, [theme, setTheme]);
 
-  const memoizedDashboard = useMemo(() => <Dashboard />, []);
+  const memoizedDashboard = useMemo(() => <CustomizableDashboard />, []);
 
   return (
     <QueryClientProvider client={queryClient}>
