@@ -21,8 +21,11 @@ const fetchTopPerformers = async () => {
         limit: 10,
       });
       return response.result.map(token => ({
-        ...token,
+        symbol: token.symbol,
         chain: chain.name,
+        price: token.price?.usdPrice,
+        priceChangePercentage24h: token.price?.24hPercentChange,
+        address: token.address,
       }));
     } catch (error) {
       console.error(`Error fetching data for ${chain.name}:`, error);
@@ -34,40 +37,11 @@ const fetchTopPerformers = async () => {
 };
 
 const TopPerformers = () => {
-  const [topGainers, setTopGainers] = useState([]);
-
-  const { data, isLoading, error } = useQuery({
+  const { data: topGainers, isLoading, error } = useQuery({
     queryKey: ['topPerformers'],
     queryFn: fetchTopPerformers,
     refetchInterval: 60000, // Refetch every minute
   });
-
-  useEffect(() => {
-    if (data) {
-      setTopGainers(data);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    const stream = Moralis.Streams.open('TopPerformersStream', (data) => {
-      setTopGainers(prevGainers => {
-        const updatedGainers = [...prevGainers];
-        const index = updatedGainers.findIndex(g => g.address === data.address && g.chain === data.chain);
-        if (index !== -1) {
-          updatedGainers[index] = { ...updatedGainers[index], ...data };
-        } else if (updatedGainers.length < 10) {
-          updatedGainers.push(data);
-        } else if (data.priceChangePercentage24h > updatedGainers[updatedGainers.length - 1].priceChangePercentage24h) {
-          updatedGainers[updatedGainers.length - 1] = data;
-        }
-        return updatedGainers.sort((a, b) => b.priceChangePercentage24h - a.priceChangePercentage24h);
-      });
-    });
-
-    return () => {
-      stream.close();
-    };
-  }, []);
 
   if (isLoading) return <Loader2 className="h-8 w-8 animate-spin text-primary" />;
   if (error) return <div className="text-red-600">Error: {error.message}</div>;
@@ -88,7 +62,7 @@ const TopPerformers = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {topGainers.map((token, index) => (
+            {topGainers?.map((token, index) => (
               <TableRow key={`${token.chain}-${token.address}`}>
                 <TableCell>{token.symbol}</TableCell>
                 <TableCell>{token.chain}</TableCell>
