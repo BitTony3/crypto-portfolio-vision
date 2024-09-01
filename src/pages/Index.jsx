@@ -17,16 +17,42 @@ const Index = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLeftMenuOpen, setIsLeftMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const [showMatrixRain, setShowMatrixRain] = useState(true);
 
   useEffect(() => {
     const handleBodyOverflow = () => {
       document.body.style.overflow = isMobileMenuOpen || isLeftMenuOpen ? 'hidden' : 'unset';
     };
     handleBodyOverflow();
+    
+    // Hide Matrix rain after 5 seconds
+    const timer = setTimeout(() => {
+      setShowMatrixRain(false);
+    }, 5000);
+
     return () => {
       document.body.style.overflow = 'unset';
+      clearTimeout(timer);
     };
   }, [isMobileMenuOpen, isLeftMenuOpen]);
+
+  const MatrixRain = () => {
+    return (
+      <div className="fixed inset-0 pointer-events-none z-50">
+        {[...Array(50)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute top-0 left-0 w-px h-px bg-primary animate-matrixRain"
+            style={{
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              opacity: Math.random(),
+            }}
+          />
+        ))}
+      </div>
+    );
+  };
 
   const handleLogin = useCallback((username, password) => {
     if (username === 'admin' && password === 'admin') {
@@ -66,7 +92,8 @@ const Index = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-background text-foreground font-sans">
+      {showMatrixRain && <MatrixRain />}
+      <div className={`min-h-screen bg-background text-foreground font-sans ${!showMatrixRain ? 'animate-fadeIn' : ''}`}>
         <header className="bg-card shadow-md sticky top-0 z-50">
           <div className="container mx-auto px-4 py-2 flex justify-between items-center">
             <motion.img 
