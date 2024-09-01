@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import MarketOverview from './MarketOverview';
 import GreedFearIndex from './GreedFearIndex';
@@ -9,7 +9,7 @@ import LiquidityPoolsOverview from './LiquidityPoolsOverview';
 import TradingViewChart from './TradingViewChart';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, ArrowUpDown, ChevronLeft, ChevronRight, ArrowUp } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -18,6 +18,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const fetchAllAssets = async () => {
   const response = await fetch('https://api.coincap.io/v2/assets?limit=2000');
@@ -28,6 +31,20 @@ const fetchAllAssets = async () => {
 };
 
 const Dashboard = () => {
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'rank', direction: 'asc' });
   const [currentPage, setCurrentPage] = useState(1);
@@ -88,6 +105,37 @@ const Dashboard = () => {
 
   if (isLoading) return <div className="text-2xl font-bold">Loading...</div>;
   if (error) return <div className="text-2xl font-bold text-red-600">Error: {error.message}</div>;
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['allAssets'],
+    queryFn: fetchAllAssets,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <Skeleton className="h-[300px] col-span-2" />
+          <Skeleton className="h-[300px]" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Skeleton className="h-[250px]" />
+          <Skeleton className="h-[250px]" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <Skeleton className="h-[200px]" />
+          <Skeleton className="h-[200px] col-span-2" />
+        </div>
+        <Skeleton className="h-[400px]" />
+        <Skeleton className="h-[500px]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    toast.error(`Error loading data: ${error.message}`);
+    return <div className="text-2xl font-bold text-red-600">Error: {error.message}</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -254,6 +302,20 @@ const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
+      <AnimatePresence>
+        {showBackToTop && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-4 right-4"
+          >
+            <Button onClick={scrollToTop} size="icon" className="rounded-full">
+              <ArrowUp className="h-4 w-4" />
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
