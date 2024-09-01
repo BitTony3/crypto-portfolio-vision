@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import MarketOverview from './MarketOverview';
 import GainerOfTheDay from './GainerOfTheDay';
+import GreedFearIndex from './GreedFearIndex';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from 'lucide-react';
@@ -35,7 +36,10 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8">
-      <MarketOverview />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <MarketOverview />
+        <GreedFearIndex />
+      </div>
       
       <Tabs defaultValue="search" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
