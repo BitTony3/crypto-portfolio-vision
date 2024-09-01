@@ -64,9 +64,9 @@ const GainerOfTheDay = () => {
           </Label>
         </div>
       </div>
-      <div className="space-y-2">
+      <div className="space-y-2 overflow-y-auto">
         {topAssets.map((asset, index) => (
-          <div key={asset.id} className="flex justify-between items-center p-2 bg-card rounded-lg">
+          <div key={asset.id} className={`flex justify-between items-center p-2 rounded-lg ${showGainers ? 'bg-card' : 'bg-red-100 dark:bg-red-900'}`}>
             <div>
               <p className="font-semibold">{asset.name} ({asset.symbol})</p>
               <p className="text-sm">Rank: {asset.rank}</p>

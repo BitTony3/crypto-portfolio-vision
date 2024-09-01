@@ -89,27 +89,18 @@ const Dashboard = () => {
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-primary text-lg">Market Overview</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card className="bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800 h-[400px] overflow-hidden">
+          <CardContent className="h-full overflow-y-auto">
             <MarketOverview />
           </CardContent>
         </Card>
-        <Card className="bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-primary text-lg">Greed & Fear Index</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card className="bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800 h-[400px] overflow-hidden">
+          <CardContent className="h-full overflow-y-auto">
             <GreedFearIndex />
           </CardContent>
         </Card>
-        <Card className="bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900 dark:to-green-800">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-primary text-lg">Gainer of the Day</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card className="bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900 dark:to-green-800 h-[400px] overflow-hidden">
+          <CardContent className="h-full overflow-y-auto">
             <GainerOfTheDay />
           </CardContent>
         </Card>
