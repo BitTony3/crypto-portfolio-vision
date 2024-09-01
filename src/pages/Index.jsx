@@ -26,9 +26,6 @@ const Index = () => {
     root.classList.add(theme);
   }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
   const [showMatrixRain, setShowMatrixRain] = useState(true);
 
   useEffect(() => {
