@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import MarketOverview from './MarketOverview';
 import GainerOfTheDay from './GainerOfTheDay';
 import GreedFearIndex from './GreedFearIndex';
+import TopPerformers from './TopPerformers';
+import TrendingCoins from './TrendingCoins';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -86,29 +88,48 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800">
-          <CardHeader>
-            <CardTitle className="text-primary">Market Overview</CardTitle>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-primary text-lg">Market Overview</CardTitle>
           </CardHeader>
           <CardContent>
             <MarketOverview />
           </CardContent>
         </Card>
-        <Card className="bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900 dark:to-green-800">
-          <CardHeader>
-            <CardTitle className="text-primary">Greed & Fear Index</CardTitle>
+        <Card className="bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-primary text-lg">Greed & Fear Index</CardTitle>
           </CardHeader>
           <CardContent>
             <GreedFearIndex />
           </CardContent>
         </Card>
-        <Card className="bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800">
-          <CardHeader>
-            <CardTitle className="text-primary">Gainer of the Day</CardTitle>
+        <Card className="bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900 dark:to-green-800">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-primary text-lg">Gainer of the Day</CardTitle>
           </CardHeader>
           <CardContent>
             <GainerOfTheDay />
+          </CardContent>
+        </Card>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card className="bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900 dark:to-yellow-800">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-primary text-lg">Top Performers (24h)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TopPerformers />
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-900 dark:to-pink-800">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-primary text-lg">Trending Coins</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TrendingCoins />
           </CardContent>
         </Card>
       </div>
@@ -119,32 +140,35 @@ const Dashboard = () => {
           <CardDescription>Search and sort through cryptocurrency assets</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-col sm:flex-row gap-4 mb-6">
-            <Input
-              type="text"
-              placeholder="Search for assets..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-grow"
-            />
-            <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90">
-              <Search className="mr-2 h-4 w-4" /> Search
-            </Button>
-          </div>
-          <div className="flex justify-end mb-4">
-            <Button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="mr-2"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Input
+                type="text"
+                placeholder="Search for assets..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="flex-grow"
+              />
+              <Button className="w-full sm:w-auto bg-primary hover:bg-primary/90">
+                <Search className="mr-2 h-4 w-4" /> Search
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                size="sm"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                size="sm"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
@@ -184,17 +208,18 @@ const Dashboard = () => {
             <div>
               Page {currentPage} of {totalPages}
             </div>
-            <div>
+            <div className="flex gap-2">
               <Button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="mr-2"
+                size="sm"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
               <Button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
+                size="sm"
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>
