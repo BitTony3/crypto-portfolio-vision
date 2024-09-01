@@ -12,6 +12,19 @@ const fetchAssets = async () => {
   return response.json();
 };
 
+const formatPrice = (price) => {
+  const numPrice = parseFloat(price);
+  if (numPrice < 0.01) {
+    return numPrice.toFixed(8);
+  } else if (numPrice < 1) {
+    return numPrice.toFixed(6);
+  } else if (numPrice < 1000) {
+    return numPrice.toFixed(4);
+  } else {
+    return numPrice.toFixed(2);
+  }
+};
+
 const GainerOfTheDay = () => {
   const [showGainers, setShowGainers] = useState(true);
   const { data, isLoading, error } = useQuery({
@@ -59,7 +72,7 @@ const GainerOfTheDay = () => {
               <p className="text-sm">Rank: {asset.rank}</p>
             </div>
             <div className="text-right">
-              <p className="font-bold">${parseFloat(asset.priceUsd).toFixed(2)}</p>
+              <p className="font-bold">${formatPrice(asset.priceUsd)}</p>
               <p className={`text-sm font-semibold ${parseFloat(asset.changePercent24Hr) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {parseFloat(asset.changePercent24Hr) >= 0 ? '+' : ''}
                 {parseFloat(asset.changePercent24Hr).toFixed(2)}%
