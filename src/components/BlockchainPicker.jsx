@@ -1,27 +1,16 @@
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const blockchains = [
-  { value: 'ethereum', label: 'Ethereum', logo: '/ethereum-logo.svg' },
-  { value: 'solana', label: 'Solana', logo: '/solana-logo.svg' },
-  { value: 'bitcoin', label: 'Bitcoin', logo: '/bitcoin-logo.svg' },
-  { value: 'tron', label: 'Tron', logo: '/tron-logo.svg' },
-  { value: 'ton', label: 'TON', logo: '/ton-logo.svg' },
-];
-
-const BlockchainPicker = ({ selectedBlockchain, onBlockchainChange }) => {
+const BlockchainPicker = ({ selectedBlockchain, onBlockchainChange, blockchains }) => {
   return (
     <Select value={selectedBlockchain} onValueChange={onBlockchainChange}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Select blockchain">
           {({ value }) => {
-            const selected = blockchains.find(b => b.value === value);
+            const selected = blockchains.find(b => b.id === value);
             return (
               <div className="flex items-center">
-                {selected && (
-                  <img src={selected.logo} alt={`${selected.label} logo`} className="w-5 h-5 mr-2" />
-                )}
-                {selected ? selected.label : "Select blockchain"}
+                {selected ? selected.name : "Select blockchain"}
               </div>
             );
           }}
@@ -29,10 +18,9 @@ const BlockchainPicker = ({ selectedBlockchain, onBlockchainChange }) => {
       </SelectTrigger>
       <SelectContent>
         {blockchains.map((blockchain) => (
-          <SelectItem key={blockchain.value} value={blockchain.value}>
+          <SelectItem key={blockchain.id} value={blockchain.id}>
             <div className="flex items-center">
-              <img src={blockchain.logo} alt={`${blockchain.label} logo`} className="w-5 h-5 mr-2" />
-              {blockchain.label}
+              {blockchain.name}
             </div>
           </SelectItem>
         ))}

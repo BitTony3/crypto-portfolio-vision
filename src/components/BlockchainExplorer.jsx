@@ -6,62 +6,41 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Search } from 'lucide-react';
 import BlockchainPicker from './BlockchainPicker';
+import Moralis from 'moralis';
 
-const API_ENDPOINTS = {
-  ethereum: 'https://api.etherscan.io/api',
-  solana: 'https://api.solscan.io/block',
-  bitcoin: 'https://blockchain.info',
-  tron: 'https://api.trongrid.io',
-  ton: 'https://toncenter.com/api/v2',
-};
+const MORALIS_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjlkMzc0YTFlLTFjODYtNDcwNS1hYjI1LTgzYWIzYjBlZDAxOSIsIm9yZ0lkIjoiNDA2NjEyIiwidXNlcklkIjoiNDE3ODE2IiwidHlwZUlkIjoiNDkxN2I4YTMtYzBmNS00NjEzLWEzZDctZWUxNWE0MDViNTYxIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3MjUxNTk1NjgsImV4cCI6NDg4MDkxOTU2OH0.QbulgqYN3g8wKOpU2V26Rp6sbMuuNoLuIjl2_NFrj7c';
 
-const API_KEYS = {
-  ethereum: 'YOUR_ETHERSCAN_API_KEY',
-  solana: 'YOUR_SOLSCAN_API_KEY',
-  bitcoin: '', // No API key required for blockchain.info
-  tron: 'YOUR_TRONGRID_API_KEY',
-  ton: '', // No API key required for toncenter
-};
+Moralis.start({ apiKey: MORALIS_API_KEY });
 
-const fetchBlockchainData = async (blockchain, query) => {
-  let url;
-  let params = new URLSearchParams();
+const SUPPORTED_CHAINS = [
+  { id: 'eth', name: 'Ethereum' },
+  { id: 'bsc', name: 'Binance Smart Chain' },
+  { id: 'polygon', name: 'Polygon' },
+  { id: 'avalanche', name: 'Avalanche' },
+  { id: 'fantom', name: 'Fantom' },
+  { id: 'cronos', name: 'Cronos' },
+];
 
-  switch (blockchain) {
-    case 'ethereum':
-      params.append('module', 'proxy');
-      params.append('action', query.startsWith('0x') ? 'eth_getTransactionByHash' : 'eth_getBlockByNumber');
-      params.append('txhash', query);
-      params.append('tag', 'latest');
-      params.append('boolean', 'true');
-      params.append('apikey', API_KEYS.ethereum);
-      url = `${API_ENDPOINTS.ethereum}?${params.toString()}`;
-      break;
-    case 'solana':
-      url = `${API_ENDPOINTS.solana}?block=${query}`;
-      break;
-    case 'bitcoin':
-      url = `${API_ENDPOINTS.bitcoin}/rawblock/${query}`;
-      break;
-    case 'tron':
-      url = `${API_ENDPOINTS.tron}/wallet/getblockbynum?num=${query}`;
-      break;
-    case 'ton':
-      url = `${API_ENDPOINTS.ton}/getBlockHeader?workchain=-1&shard=-9223372036854775808&seqno=${query}`;
-      break;
-    default:
-      throw new Error('Unsupported blockchain');
+const fetchBlockchainData = async (chain, query) => {
+  let result;
+  if (query.startsWith('0x')) {
+    // It's a transaction hash
+    result = await Moralis.EvmApi.transaction.getTransaction({
+      chain,
+      transactionHash: query,
+    });
+  } else {
+    // It's a block number
+    result = await Moralis.EvmApi.block.getBlock({
+      chain,
+      blockNumberOrHash: query,
+    });
   }
-
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
+  return result.toJSON();
 };
 
 const BlockchainExplorer = () => {
-  const [selectedBlockchain, setSelectedBlockchain] = useState('ethereum');
+  const [selectedBlockchain, setSelectedBlockchain] = useState('eth');
   const [query, setQuery] = useState('');
   const [searchTrigger, setSearchTrigger] = useState(0);
 
@@ -80,134 +59,70 @@ const BlockchainExplorer = () => {
   const renderBlockchainData = () => {
     if (!data) return null;
 
-    switch (selectedBlockchain) {
-      case 'ethereum':
-        return (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Property</TableHead>
-                <TableHead>Value</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>Block Number</TableCell>
-                <TableCell>{parseInt(data.result.number, 16)}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Timestamp</TableCell>
-                <TableCell>{new Date(parseInt(data.result.timestamp, 16) * 1000).toLocaleString()}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Transactions</TableCell>
-                <TableCell>{data.result.transactions.length}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        );
-      case 'solana':
-        return (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Property</TableHead>
-                <TableHead>Value</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>Block Number</TableCell>
-                <TableCell>{data.result.blocknumber}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Timestamp</TableCell>
-                <TableCell>{new Date(data.result.blocktime * 1000).toLocaleString()}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Transactions</TableCell>
-                <TableCell>{data.result.txs.length}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        );
-      case 'bitcoin':
-        return (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Property</TableHead>
-                <TableHead>Value</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>Block Hash</TableCell>
-                <TableCell>{data.hash}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Timestamp</TableCell>
-                <TableCell>{new Date(data.time * 1000).toLocaleString()}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Transactions</TableCell>
-                <TableCell>{data.tx.length}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        );
-      case 'tron':
-        return (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Property</TableHead>
-                <TableHead>Value</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>Block Number</TableCell>
-                <TableCell>{data.block_header.raw_data.number}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Timestamp</TableCell>
-                <TableCell>{new Date(data.block_header.raw_data.timestamp).toLocaleString()}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Transactions</TableCell>
-                <TableCell>{data.transactions ? data.transactions.length : 0}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        );
-      case 'ton':
-        return (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Property</TableHead>
-                <TableHead>Value</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell>Workchain</TableCell>
-                <TableCell>{data.result.workchain}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Shard</TableCell>
-                <TableCell>{data.result.shard}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Seqno</TableCell>
-                <TableCell>{data.result.seqno}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        );
-      default:
-        return <p>Unsupported blockchain</p>;
+    if (data.hash) {
+      // This is a transaction
+      return (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Property</TableHead>
+              <TableHead>Value</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell>Transaction Hash</TableCell>
+              <TableCell>{data.hash}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Block Number</TableCell>
+              <TableCell>{data.block_number}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>From</TableCell>
+              <TableCell>{data.from_address}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>To</TableCell>
+              <TableCell>{data.to_address}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Value</TableCell>
+              <TableCell>{data.value}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      );
+    } else {
+      // This is a block
+      return (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Property</TableHead>
+              <TableHead>Value</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell>Block Number</TableCell>
+              <TableCell>{data.number}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Block Hash</TableCell>
+              <TableCell>{data.hash}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Timestamp</TableCell>
+              <TableCell>{new Date(data.timestamp * 1000).toLocaleString()}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Transactions</TableCell>
+              <TableCell>{data.transaction_count}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      );
     }
   };
 
@@ -222,11 +137,12 @@ const BlockchainExplorer = () => {
           <BlockchainPicker
             selectedBlockchain={selectedBlockchain}
             onBlockchainChange={setSelectedBlockchain}
+            blockchains={SUPPORTED_CHAINS}
           />
           <div className="flex space-x-2">
             <Input
               type="text"
-              placeholder={`Enter ${selectedBlockchain === 'ethereum' ? 'block number or tx hash' : 'block number'}`}
+              placeholder="Enter block number or tx hash"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
