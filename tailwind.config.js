@@ -94,6 +94,14 @@ module.exports = {
           '0%': { opacity: 0 },
           '100%': { opacity: 1 },
         },
+        lightning: {
+          '0%, 100%': { opacity: 0 },
+          '10%, 90%': { opacity: 0.1 },
+          '20%, 80%': { opacity: 0.3 },
+          '30%, 70%': { opacity: 0.5 },
+          '40%, 60%': { opacity: 0.7 },
+          '50%': { opacity: 1 },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -103,6 +111,7 @@ module.exports = {
         float: 'float 3s ease-in-out infinite',
         matrixRain: 'matrixRain 5s linear infinite',
         fadeIn: 'fadeIn 1s ease-out',
+        lightning: 'lightning 2s ease-in-out infinite',
       },
       backdropFilter: {
         'none': 'none',
@@ -111,6 +120,9 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
         mono: ['Roboto Mono', 'monospace'],
+      },
+      backgroundImage: {
+        'stormy-night': 'linear-gradient(to bottom, #0f172a, #1e293b)',
       },
     },
   },
@@ -123,6 +135,20 @@ module.exports.theme.extend.utilities = {
       filter: 'blur(5px)',
       pointerEvents: 'none',
       userSelect: 'none',
+    },
+  },
+  '.lightning-effect': {
+    position: 'relative',
+    '&::before': {
+      content: '""',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
+      clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
+      animation: 'lightning 5s infinite',
     },
   },
 };

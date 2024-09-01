@@ -75,7 +75,7 @@ const Index = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className={`min-h-screen bg-background text-foreground font-sans ${!showMatrixRain ? 'animate-fadeIn' : ''}`}>
+      <div className={`min-h-screen bg-stormy-night text-blue-100 font-sans ${!showMatrixRain ? 'animate-fadeIn' : ''} lightning-effect`}>
         <AnimatePresence>
           {showMatrixRain && <MatrixRain key="matrix-rain" />}
         </AnimatePresence>

@@ -13,25 +13,33 @@ const TradingViewChart = () => {
   const [chartSize, setChartSize] = useState(60);
   const containerRef = useRef(null);
 
-  const createWidget = (containerId, symbol) => {
+  const createWidget = (containerId, symbol, theme) => {
     if (document.getElementById(containerId) && 'TradingView' in window) {
       new window.TradingView.widget({
         autosize: true,
         symbol: symbol,
         interval: "D",
         timezone: "Etc/UTC",
-        theme: "dark",
+        theme: theme,
         style: "1",
         locale: "en",
-        toolbar_bg: "#f1f3f6",
+        toolbar_bg: theme === 'dark' ? "#1a2035" : "#f1f3f6",
         enable_publishing: false,
         allow_symbol_change: true,
         container_id: containerId,
         height: "100%",
         width: "100%",
+        overrides: {
+          "paneProperties.background": theme === 'dark' ? "#0f172a" : "#ffffff",
+          "paneProperties.vertGridProperties.color": theme === 'dark' ? "#1e293b" : "#e2e8f0",
+          "paneProperties.horzGridProperties.color": theme === 'dark' ? "#1e293b" : "#e2e8f0",
+          "scalesProperties.textColor": theme === 'dark' ? "#94a3b8" : "#64748b",
+        },
       });
     }
   };
+
+  const { theme } = useTheme();
 
   useEffect(() => {
     const loadTradingViewScript = () => {
@@ -50,10 +58,10 @@ const TradingViewChart = () => {
 
     loadTradingViewScript().then(() => {
       symbols.forEach((symbol, index) => {
-        createWidget(`tradingview_chart_${index}`, symbol);
+        createWidget(`tradingview_chart_${index}`, symbol, theme);
       });
     });
-  }, [layout, symbols]);
+  }, [layout, symbols, theme]);
 
   const handleLayoutChange = (newLayout) => {
     setLayout(newLayout);

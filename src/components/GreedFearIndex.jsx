@@ -34,19 +34,19 @@ const GreedFearIndex = () => {
   ];
 
   const getColor = (value) => {
-    if (value <= 20) return '#FF4136'; // Extreme Fear
-    if (value <= 40) return '#FF851B'; // Fear
-    if (value <= 60) return '#FFDC00'; // Neutral
-    if (value <= 80) return '#2ECC40'; // Greed
-    return '#0074D9'; // Extreme Greed
+    if (value <= 20) return 'hsl(0, 100%, 65%)'; // Extreme Fear
+    if (value <= 40) return 'hsl(30, 100%, 65%)'; // Fear
+    if (value <= 60) return 'hsl(60, 100%, 65%)'; // Neutral
+    if (value <= 80) return 'hsl(120, 100%, 65%)'; // Greed
+    return 'hsl(210, 100%, 65%)'; // Extreme Greed
   };
 
-  const COLORS = [getColor(indexValue), '#E0E0E0'];
+  const COLORS = [getColor(indexValue), 'hsl(210, 20%, 80%)'];
 
   return (
-    <div className="space-y-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900 dark:to-purple-900 p-6 rounded-lg shadow-lg">
+    <div className="space-y-4 bg-gradient-to-r from-blue-900/50 to-purple-900/50 p-6 rounded-lg shadow-lg border border-blue-500/30 backdrop-blur-sm">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-primary">Fear & Greed Index</h2>
+        <h2 className="text-2xl font-bold text-blue-300">Fear & Greed Index</h2>
         <div className="text-5xl font-bold" style={{ color: getColor(indexValue) }}>{indexValue}</div>
       </div>
       <div className="flex flex-col items-center">
@@ -74,11 +74,11 @@ const GreedFearIndex = () => {
       </div>
       <div className="space-y-2">
         <div className="flex justify-between text-sm font-medium">
-          <span className="text-red-600">Extreme Fear</span>
-          <span className="text-blue-600">Extreme Greed</span>
+          <span className="text-red-400">Extreme Fear</span>
+          <span className="text-blue-400">Extreme Greed</span>
         </div>
         <Progress value={indexValue} className="h-3 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500" />
-        <div className="flex justify-between text-xs text-gray-600 dark:text-gray-300">
+        <div className="flex justify-between text-xs text-blue-200">
           <span>0</span>
           <span>25</span>
           <span>50</span>
