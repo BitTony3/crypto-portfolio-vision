@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,7 +13,7 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
   const navigationType = useNavigationType();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (navigationType !== 'POP') {
       window.scrollTo(0, 0);
     }
