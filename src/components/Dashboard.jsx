@@ -5,8 +5,7 @@ import GainerOfTheDay from './GainerOfTheDay';
 import GreedFearIndex from './GreedFearIndex';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, ArrowUpDown } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Search, ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -26,6 +25,9 @@ const fetchAllAssets = async () => {
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: 'rank', direction: 'asc' });
+  const [currentPage, setCurrentPage] = useState(1);
+  const assetsPerPage = 20;
+
   const { data, isLoading, error } = useQuery({
     queryKey: ['allAssets'],
     queryFn: fetchAllAssets,
@@ -60,12 +62,23 @@ const Dashboard = () => {
     return sortableItems;
   }, [filteredAssets, sortConfig]);
 
+  const paginatedAssets = sortedAssets.slice(
+    (currentPage - 1) * assetsPerPage,
+    currentPage * assetsPerPage
+  );
+
+  const totalPages = Math.ceil(sortedAssets.length / assetsPerPage);
+
   const requestSort = (key) => {
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
       direction = 'desc';
     }
     setSortConfig({ key, direction });
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
   };
 
   if (isLoading) return <div className="text-2xl font-bold">Loading...</div>;
@@ -118,6 +131,21 @@ const Dashboard = () => {
               <Search className="mr-2 h-4 w-4" /> Search
             </Button>
           </div>
+          <div className="flex justify-end mb-4">
+            <Button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="mr-2"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
@@ -137,7 +165,7 @@ const Dashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {sortedAssets.slice(0, 50).map((asset) => (
+                {paginatedAssets.map((asset) => (
                   <tr key={asset.id} className="border-b border-border hover:bg-muted/50">
                     <td className="p-2">{asset.rank}</td>
                     <td className="p-2 font-semibold" style={{color: `var(--crypto-${asset.symbol.toLowerCase()}, var(--primary))`}}>{asset.name}</td>
@@ -151,6 +179,26 @@ const Dashboard = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className="flex justify-between items-center mt-4">
+            <div>
+              Page {currentPage} of {totalPages}
+            </div>
+            <div>
+              <Button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="mr-2"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <Button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
