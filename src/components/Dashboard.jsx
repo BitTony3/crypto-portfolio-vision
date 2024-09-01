@@ -5,6 +5,7 @@ import GainerOfTheDay from './GainerOfTheDay';
 import GreedFearIndex from './GreedFearIndex';
 import OnChainActivity from './TopPerformers';
 import TrendingCoins from './TrendingCoins';
+import BlockchainExplorer from './BlockchainExplorer';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -15,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const fetchAllAssets = async () => {
   const response = await fetch('https://api.coincap.io/v2/assets?limit=2000');
@@ -106,24 +108,34 @@ const Dashboard = () => {
         </Card>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900 dark:to-yellow-800">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-primary text-lg">On-Chain Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <OnChainActivity />
-          </CardContent>
-        </Card>
-        <Card className="bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-900 dark:to-pink-800">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-primary text-lg">Trending Coins</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <TrendingCoins />
-          </CardContent>
-        </Card>
-      </div>
+      <Tabs defaultValue="on-chain-activity" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="on-chain-activity">On-Chain Activity</TabsTrigger>
+          <TabsTrigger value="blockchain-explorer">Blockchain Explorer</TabsTrigger>
+        </TabsList>
+        <TabsContent value="on-chain-activity">
+          <Card className="bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900 dark:to-yellow-800">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-primary text-lg">On-Chain Activity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <OnChainActivity />
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="blockchain-explorer">
+          <BlockchainExplorer />
+        </TabsContent>
+      </Tabs>
+      
+      <Card className="bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-900 dark:to-pink-800">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-primary text-lg">Trending Coins</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <TrendingCoins />
+        </CardContent>
+      </Card>
       
       <Card className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
         <CardHeader>
