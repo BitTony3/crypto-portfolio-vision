@@ -56,12 +56,12 @@ const Dashboard = () => {
   });
 
   const filteredAssets = React.useMemo(() => {
-    if (!data || !data.data) return [];
-    return data.data.filter(asset =>
+    if (!assetsData || !assetsData.data) return [];
+    return assetsData.data.filter(asset =>
       asset.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       asset.symbol.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [data, searchTerm]);
+  }, [assetsData, searchTerm]);
 
   const sortedAssets = React.useMemo(() => {
     let sortableItems = [...filteredAssets];
@@ -103,15 +103,7 @@ const Dashboard = () => {
     setCurrentPage(newPage);
   };
 
-  if (isLoading) return <div className="text-2xl font-bold">Loading...</div>;
-  if (error) return <div className="text-2xl font-bold text-red-600">Error: {error.message}</div>;
-
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['allAssets'],
-    queryFn: fetchAllAssets,
-  });
-
-  if (isLoading) {
+  if (assetsLoading) {
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -132,9 +124,9 @@ const Dashboard = () => {
     );
   }
 
-  if (error) {
-    toast.error(`Error loading data: ${error.message}`);
-    return <div className="text-2xl font-bold text-red-600">Error: {error.message}</div>;
+  if (assetsError) {
+    toast.error(`Error loading data: ${assetsError.message}`);
+    return <div className="text-2xl font-bold text-red-600">Error: {assetsError.message}</div>;
   }
 
   return (
