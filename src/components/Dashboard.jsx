@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import TopCryptoAssets from './TopCryptoAssets';
+import MarketOverview from './MarketOverview';
 import GainerOfTheDay from './GainerOfTheDay';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8">
-      <TopCryptoAssets />
+      <MarketOverview />
       
       <Tabs defaultValue="search" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
@@ -66,6 +66,7 @@ const Dashboard = () => {
                     <th className="p-2 border-2 border-secondary">Symbol</th>
                     <th className="p-2 border-2 border-secondary">Price (USD)</th>
                     <th className="p-2 border-2 border-secondary">Market Cap (USD)</th>
+                    <th className="p-2 border-2 border-secondary">24h Change (%)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -76,6 +77,9 @@ const Dashboard = () => {
                       <td className="p-2 border-2 border-primary">{asset.symbol}</td>
                       <td className="p-2 border-2 border-primary">${parseFloat(asset.priceUsd).toFixed(2)}</td>
                       <td className="p-2 border-2 border-primary">${parseFloat(asset.marketCapUsd).toLocaleString()}</td>
+                      <td className={`p-2 border-2 border-primary ${parseFloat(asset.changePercent24Hr) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {parseFloat(asset.changePercent24Hr).toFixed(2)}%
+                      </td>
                     </tr>
                   ))}
                 </tbody>
