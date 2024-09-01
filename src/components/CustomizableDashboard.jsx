@@ -121,12 +121,11 @@ const CustomizableDashboard = () => {
   };
 
   const getWidgetClassName = (widgetName) => {
-    const size = widgetSizes[widgetName];
     const isExpanded = expandedWidgets[widgetName];
     if (isExpanded) {
       return 'col-span-full row-span-full';
     }
-    return `flex flex-col`;
+    return `col-span-1 row-span-1`;
   };
 
   return (
@@ -138,7 +137,7 @@ const CustomizableDashboard = () => {
             <div
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className="grid grid-cols-repeat(auto-fit, minmax(200px, 1fr)) auto-rows-[minmax(200px,auto)] gap-4 h-[calc(100vh-120px)] overflow-auto"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 h-[calc(100vh-120px)] overflow-auto auto-rows-fr"
             >
               {widgets.map((widgetName, index) => {
                 const WidgetComponent = widgetComponents[widgetName];
@@ -151,9 +150,9 @@ const CustomizableDashboard = () => {
                         className={`group ${getWidgetClassName(widgetName)}`}
                       >
                         <Card className="relative h-full overflow-hidden flex flex-col">
-                          <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between pb-2 sticky top-0 bg-card z-10">
-                            <CardTitle className="text-sm font-medium">{widgetName}</CardTitle>
-                            <div className="flex items-center">
+                          <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between p-2 sticky top-0 bg-card z-10">
+                            <CardTitle className="text-xs font-medium">{widgetName}</CardTitle>
+                            <div className="flex items-center space-x-1">
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
@@ -161,9 +160,9 @@ const CustomizableDashboard = () => {
                                       variant="ghost"
                                       size="icon"
                                       onClick={() => toggleWidgetExpansion(widgetName)}
-                                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                                     >
-                                      {expandedWidgets[widgetName] ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                                      {expandedWidgets[widgetName] ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
                                     </Button>
                                   </TooltipTrigger>
                                   <TooltipContent>
@@ -178,9 +177,9 @@ const CustomizableDashboard = () => {
                                       variant="ghost"
                                       size="icon"
                                       onClick={() => removeWidget(index)}
-                                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                                     >
-                                      <X className="h-4 w-4" />
+                                      <X className="h-3 w-3" />
                                     </Button>
                                   </TooltipTrigger>
                                   <TooltipContent>
@@ -188,12 +187,12 @@ const CustomizableDashboard = () => {
                                   </TooltipContent>
                                 </Tooltip>
                               </TooltipProvider>
-                              <div {...provided.dragHandleProps}>
-                                <GripVertical className="h-4 w-4 cursor-move" />
+                              <div {...provided.dragHandleProps} className="cursor-move">
+                                <GripVertical className="h-3 w-3" />
                               </div>
                             </div>
                           </CardHeader>
-                          <CardContent className="flex-grow overflow-auto">
+                          <CardContent className="flex-grow overflow-auto p-2">
                             <WidgetComponent />
                           </CardContent>
                         </Card>
@@ -210,8 +209,8 @@ const CustomizableDashboard = () => {
       <div className="fixed bottom-4 right-4">
         <Dialog open={isAddWidgetOpen} onOpenChange={setIsAddWidgetOpen}>
           <DialogTrigger asChild>
-            <Button>
-              <PlusCircle className="mr-2 h-4 w-4" /> Add Widget
+            <Button size="sm">
+              <PlusCircle className="mr-2 h-3 w-3" /> Add Widget
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
@@ -229,8 +228,9 @@ const CustomizableDashboard = () => {
                     onClick={() => addWidget(widgetName)}
                     className="w-full justify-start"
                     variant="ghost"
+                    size="sm"
                   >
-                    <PlusCircle className="mr-2 h-4 w-4" />
+                    <PlusCircle className="mr-2 h-3 w-3" />
                     {widgetName}
                     <span className="ml-2 text-xs text-muted-foreground">
                       {widgetDescriptions[widgetName]}
