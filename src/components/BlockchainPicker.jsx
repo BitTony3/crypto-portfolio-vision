@@ -13,7 +13,19 @@ const BlockchainPicker = ({ selectedBlockchain, onBlockchainChange }) => {
   return (
     <Select value={selectedBlockchain} onValueChange={onBlockchainChange}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select blockchain" />
+        <SelectValue placeholder="Select blockchain">
+          {({ value }) => {
+            const selected = blockchains.find(b => b.value === value);
+            return (
+              <div className="flex items-center">
+                {selected && (
+                  <img src={selected.logo} alt={`${selected.label} logo`} className="w-5 h-5 mr-2" />
+                )}
+                {selected ? selected.label : "Select blockchain"}
+              </div>
+            );
+          }}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         {blockchains.map((blockchain) => (

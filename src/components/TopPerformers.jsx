@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2, Activity, Cpu, Database, Zap } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
@@ -8,11 +8,11 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 import BlockchainPicker from './BlockchainPicker';
 
 const API_KEYS = {
-  ethereum: 'YOUR_ETHERSCAN_API_KEY',
-  solana: 'YOUR_SOLANA_API_KEY',
-  bitcoin: 'YOUR_BITCOIN_API_KEY',
-  tron: 'YOUR_TRON_API_KEY',
-  ton: 'YOUR_TON_API_KEY',
+  ethereum: 'YourEtherscanAPIKey',
+  solana: 'YourSolanaAPIKey',
+  bitcoin: 'YourBitcoinAPIKey',
+  tron: 'YourTronAPIKey',
+  ton: 'YourTONAPIKey',
 };
 
 const fetchOnChainData = async (blockchain) => {
@@ -40,62 +40,131 @@ const fetchEthereumData = async () => {
     `https://api.etherscan.io/api?module=proxy&action=eth_blockNumber&apikey=${API_KEYS.ethereum}`
   ];
 
-  const responses = await Promise.all(endpoints.map(url => fetch(url).then(res => res.json())));
-  return {
-    price: responses[0].result.ethusd,
-    gasPrice: responses[1].result.ProposeGasPrice,
-    supply: responses[2].result,
-    latestBlock: parseInt(responses[3].result, 16)
-  };
+  try {
+    const responses = await Promise.all(endpoints.map(url => fetch(url).then(res => res.json())));
+    return {
+      price: responses[0].result.ethusd,
+      gasPrice: responses[1].result.ProposeGasPrice,
+      supply: responses[2].result,
+      latestBlock: parseInt(responses[3].result, 16)
+    };
+  } catch (error) {
+    console.error('Error fetching Ethereum data:', error);
+    throw error;
+  }
 };
 
 const fetchSolanaData = async () => {
-  // Implement Solana data fetching
-  // This is a placeholder implementation
-  return {
-    price: 0,
-    gasPrice: 0,
-    supply: 0,
-    latestBlock: 0
-  };
+  try {
+    const [priceResponse, supplyResponse, blockResponse] = await Promise.all([
+      fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd'),
+      fetch('https://api.mainnet-beta.solana.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "getSupply",
+          "params": [{"commitment": "finalized"}]
+        })
+      }),
+      fetch('https://api.mainnet-beta.solana.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "getBlockHeight"
+        })
+      })
+    ]);
+
+    const priceData = await priceResponse.json();
+    const supplyData = await supplyResponse.json();
+    const blockData = await blockResponse.json();
+
+    return {
+      price: priceData.solana.usd,
+      gasPrice: 0, // Solana doesn't have gas prices
+      supply: supplyData.result.value.total,
+      latestBlock: blockData.result
+    };
+  } catch (error) {
+    console.error('Error fetching Solana data:', error);
+    throw error;
+  }
 };
 
 const fetchBitcoinData = async () => {
-  // Implement Bitcoin data fetching
-  // This is a placeholder implementation
-  return {
-    price: 0,
-    gasPrice: 0,
-    supply: 0,
-    latestBlock: 0
-  };
+  try {
+    const [priceResponse, blockchainInfoResponse] = await Promise.all([
+      fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd'),
+      fetch('https://blockchain.info/q/getblockcount')
+    ]);
+
+    const priceData = await priceResponse.json();
+    const latestBlock = await blockchainInfoResponse.text();
+
+    return {
+      price: priceData.bitcoin.usd,
+      gasPrice: 0, // Bitcoin doesn't have gas prices
+      supply: 21000000, // Fixed supply
+      latestBlock: parseInt(latestBlock)
+    };
+  } catch (error) {
+    console.error('Error fetching Bitcoin data:', error);
+    throw error;
+  }
 };
 
 const fetchTronData = async () => {
-  // Implement Tron data fetching
-  // This is a placeholder implementation
-  return {
-    price: 0,
-    gasPrice: 0,
-    supply: 0,
-    latestBlock: 0
-  };
+  try {
+    const [priceResponse, nodeResponse] = await Promise.all([
+      fetch('https://api.coingecko.com/api/v3/simple/price?ids=tron&vs_currencies=usd'),
+      fetch('https://api.trongrid.io/wallet/getnowblock')
+    ]);
+
+    const priceData = await priceResponse.json();
+    const nodeData = await nodeResponse.json();
+
+    return {
+      price: priceData.tron.usd,
+      gasPrice: 0, // Tron uses bandwidth and energy instead of gas
+      supply: 100000000000, // Total TRX supply
+      latestBlock: nodeData.block_header.raw_data.number
+    };
+  } catch (error) {
+    console.error('Error fetching Tron data:', error);
+    throw error;
+  }
 };
 
 const fetchTonData = async () => {
-  // Implement TON data fetching
-  // This is a placeholder implementation
-  return {
-    price: 0,
-    gasPrice: 0,
-    supply: 0,
-    latestBlock: 0
-  };
+  try {
+    const [priceResponse, tonResponse] = await Promise.all([
+      fetch('https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=usd'),
+      fetch('https://toncenter.com/api/v2/getmasterchaininfo')
+    ]);
+
+    const priceData = await priceResponse.json();
+    const tonData = await tonResponse.json();
+
+    return {
+      price: priceData['the-open-network'].usd,
+      gasPrice: 0, // TON doesn't use gas in the same way as Ethereum
+      supply: 5000000000, // Total TON supply
+      latestBlock: tonData.result.last.seqno
+    };
+  } catch (error) {
+    console.error('Error fetching TON data:', error);
+    throw error;
+  }
 };
 
 const OnChainActivity = () => {
   const [showChart, setShowChart] = useState(false);
   const [selectedBlockchain, setSelectedBlockchain] = useState('ethereum');
+  const [chartData, setChartData] = useState([]);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['onChainData', selectedBlockchain],
@@ -103,16 +172,21 @@ const OnChainActivity = () => {
     refetchInterval: 30000, // Refetch every 30 seconds
   });
 
+  useEffect(() => {
+    if (data) {
+      setChartData(prevData => [
+        ...prevData,
+        { name: new Date().toLocaleTimeString(), value: parseFloat(data.gasPrice) || 0 }
+      ].slice(-10)); // Keep only the last 10 data points
+    }
+  }, [data]);
+
   if (isLoading) return <Loader2 className="h-8 w-8 animate-spin text-primary" />;
   if (error) return <div className="text-red-600">Error: {error.message}</div>;
 
   const formatNumber = (num) => {
     return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(num);
   };
-
-  const gasChartData = [
-    { name: 'Gas Price', value: parseFloat(data.gasPrice) },
-  ];
 
   return (
     <div className="space-y-4">
@@ -140,12 +214,22 @@ const OnChainActivity = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Gas Price
+              {selectedBlockchain === 'ethereum' ? 'Gas Price' : 'Network Fee'}
             </CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatNumber(data.gasPrice)}</div>
+            <div className="text-2xl font-bold">
+              {selectedBlockchain === 'ethereum' 
+                ? `${formatNumber(data.gasPrice)} Gwei` 
+                : selectedBlockchain === 'solana'
+                ? 'Variable'
+                : selectedBlockchain === 'bitcoin'
+                ? 'Variable (sat/vB)'
+                : selectedBlockchain === 'tron'
+                ? 'Bandwidth/Energy'
+                : 'Variable'}
+            </div>
           </CardContent>
         </Card>
 
@@ -181,19 +265,19 @@ const OnChainActivity = () => {
           onCheckedChange={setShowChart}
         />
         <Label htmlFor="show-chart">
-          {showChart ? "Hide Chart" : "Show Gas Price Chart"}
+          {showChart ? "Hide Chart" : `Show ${selectedBlockchain === 'ethereum' ? 'Gas Price' : 'Network Fee'} Chart`}
         </Label>
       </div>
 
       {showChart && (
         <Card>
           <CardHeader>
-            <CardTitle>Gas Price Chart</CardTitle>
-            <CardDescription>Gas price over time</CardDescription>
+            <CardTitle>{selectedBlockchain === 'ethereum' ? 'Gas Price' : 'Network Fee'} Chart</CardTitle>
+            <CardDescription>{selectedBlockchain === 'ethereum' ? 'Gas price' : 'Network fee'} over time</CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={gasChartData}>
+              <LineChart data={chartData}>
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
