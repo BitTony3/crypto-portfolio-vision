@@ -134,18 +134,18 @@ const CustomizableDashboard = () => {
   const getWidgetClassName = (size) => {
     switch (size) {
       case 'small':
-        return 'col-span-1';
+        return 'min-w-[200px] min-h-[200px]';
       case 'medium':
-        return 'col-span-2';
+        return 'min-w-[300px] min-h-[300px]';
       case 'large':
-        return 'col-span-3';
+        return 'min-w-[400px] min-h-[400px]';
       default:
-        return 'col-span-2';
+        return 'min-w-[300px] min-h-[300px]';
     }
   };
 
   return (
-    <div className="p-4">
+    <div className="fixed inset-0 overflow-hidden bg-background p-4">
       <h2 className="text-2xl font-bold mb-4">Your Personalized Dashboard</h2>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="widgets">
@@ -153,7 +153,7 @@ const CustomizableDashboard = () => {
             <div
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-min"
+              className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] auto-rows-[minmax(200px,auto)] gap-4 h-[calc(100vh-120px)] overflow-auto"
             >
               {widgets.map((widgetName, index) => {
                 const WidgetComponent = widgetComponents[widgetName];
@@ -166,8 +166,8 @@ const CustomizableDashboard = () => {
                         {...provided.draggableProps}
                         className={`group ${getWidgetClassName(widgetSize)}`}
                       >
-                        <Card className="relative h-full">
-                          <CardHeader className="flex flex-row items-center justify-between pb-2">
+                        <Card className="relative h-full overflow-auto">
+                          <CardHeader className="flex flex-row items-center justify-between pb-2 sticky top-0 bg-card z-10">
                             <CardTitle className="text-sm font-medium">{widgetName}</CardTitle>
                             <div className="flex items-center">
                               <Button
@@ -197,7 +197,7 @@ const CustomizableDashboard = () => {
           )}
         </Droppable>
       </DragDropContext>
-      <div className="mt-4">
+      <div className="fixed bottom-4 right-4">
         <Dialog open={isAddWidgetOpen} onOpenChange={setIsAddWidgetOpen}>
           <DialogTrigger asChild>
             <Button>
