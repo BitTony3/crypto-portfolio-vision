@@ -40,42 +40,46 @@ const Index = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-background p-8 font-sans text-text">
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center">
-            <img src="/cedefiai-logo.svg" alt="CeDeFiAi Logo" className="h-16 w-16 mr-4" />
-            <h1 className="text-4xl font-bold text-primary">CeDeFiAi Crypto Asset Tracker</h1>
+      <div className="min-h-screen bg-background text-foreground">
+        <header className="bg-card shadow-md">
+          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div className="flex items-center">
+              <img src="/cedefiai-logo.svg" alt="CeDeFiAi Logo" className="h-12 w-12 mr-4" />
+              <h1 className="text-2xl md:text-3xl font-bold text-primary">CeDeFiAi Crypto Asset Tracker</h1>
+            </div>
+            <div className="flex items-center space-x-4">
+              {isLoggedIn ? (
+                <>
+                  <span className="text-foreground hidden md:inline">Welcome, {username}</span>
+                  <Link to="/profile">
+                    <Button variant="outline" size="sm">
+                      <UserIcon className="mr-2 h-4 w-4" /> Profile
+                    </Button>
+                  </Link>
+                  <Button onClick={handleLogout} variant="ghost" size="sm">Logout</Button>
+                </>
+              ) : (
+                <Button onClick={() => setShowLogin(true)} variant="default" size="sm">Login</Button>
+              )}
+              <Button
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                variant="ghost"
+                size="icon"
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center space-x-4">
-            {isLoggedIn ? (
-              <>
-                <span className="text-primary">Welcome, {username}</span>
-                <Link to="/profile">
-                  <Button className="bg-primary text-secondary hover:bg-accent">
-                    <UserIcon className="mr-2 h-4 w-4" /> Profile
-                  </Button>
-                </Link>
-                <Button onClick={handleLogout} className="bg-primary text-secondary hover:bg-accent">Logout</Button>
-              </>
-            ) : (
-              <Button onClick={() => setShowLogin(true)} className="bg-primary text-secondary hover:bg-accent">Login</Button>
-            )}
-            <Button
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              variant="ghost"
-              size="icon"
-              aria-label="Toggle theme"
-            >
-              {theme === 'dark' ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
-            </Button>
-          </div>
-        </div>
-        {showLogin && !isLoggedIn && (
-          <div className="fixed inset-0 bg-background bg-opacity-50 flex justify-center items-center z-50">
-            <Login onLogin={handleLogin} onSignUp={handleSignUp} onClose={() => setShowLogin(false)} />
-          </div>
-        )}
-        <Dashboard />
+        </header>
+        <main className="container mx-auto px-4 py-8">
+          {showLogin && !isLoggedIn && (
+            <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex justify-center items-center z-50">
+              <Login onLogin={handleLogin} onSignUp={handleSignUp} onClose={() => setShowLogin(false)} />
+            </div>
+          )}
+          <Dashboard />
+        </main>
       </div>
     </QueryClientProvider>
   );

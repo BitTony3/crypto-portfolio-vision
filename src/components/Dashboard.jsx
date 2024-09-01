@@ -71,7 +71,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <Card>
           <CardHeader>
-            <CardTitle>Market Overview</CardTitle>
+            <CardTitle className="text-primary">Market Overview</CardTitle>
           </CardHeader>
           <CardContent>
             <MarketOverview />
@@ -79,7 +79,7 @@ const Dashboard = () => {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Greed & Fear Index</CardTitle>
+            <CardTitle className="text-primary">Greed & Fear Index</CardTitle>
           </CardHeader>
           <CardContent>
             <GreedFearIndex />
@@ -87,7 +87,7 @@ const Dashboard = () => {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Gainer of the Day</CardTitle>
+            <CardTitle className="text-primary">Gainer of the Day</CardTitle>
           </CardHeader>
           <CardContent>
             <GainerOfTheDay />
@@ -97,11 +97,11 @@ const Dashboard = () => {
       
       <Card>
         <CardHeader>
-          <CardTitle>Crypto Asset Search</CardTitle>
+          <CardTitle className="text-primary">Crypto Asset Search</CardTitle>
           <CardDescription>Search and sort through cryptocurrency assets</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-2 mb-4">
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <Input
               type="text"
               placeholder="Search for assets..."
@@ -109,20 +109,20 @@ const Dashboard = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="flex-grow"
             />
-            <Button className="bg-primary text-secondary hover:bg-accent">
+            <Button className="w-full sm:w-auto">
               <Search className="mr-2 h-4 w-4" /> Search
             </Button>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse border-4 border-primary">
+            <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-primary text-secondary">
+                <tr className="bg-muted">
                   {['Rank', 'Name', 'Symbol', 'Price (USD)', 'Market Cap (USD)', '24h Change (%)'].map((header, index) => (
-                    <th key={index} className="p-2 border-2 border-secondary">
+                    <th key={index} className="p-2 text-left font-medium text-muted-foreground">
                       <Button
                         variant="ghost"
                         onClick={() => requestSort(['rank', 'name', 'symbol', 'priceUsd', 'marketCapUsd', 'changePercent24Hr'][index])}
-                        className="text-secondary hover:text-accent"
+                        className="hover:text-primary"
                       >
                         {header}
                         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -133,13 +133,13 @@ const Dashboard = () => {
               </thead>
               <tbody>
                 {sortedAssets.slice(0, 50).map((asset) => (
-                  <tr key={asset.id} className="hover:bg-background text-text">
-                    <td className="p-2 border-2 border-primary">{asset.rank}</td>
-                    <td className="p-2 border-2 border-primary">{asset.name}</td>
-                    <td className="p-2 border-2 border-primary">{asset.symbol}</td>
-                    <td className="p-2 border-2 border-primary">${parseFloat(asset.priceUsd).toFixed(2)}</td>
-                    <td className="p-2 border-2 border-primary">${parseFloat(asset.marketCapUsd).toLocaleString()}</td>
-                    <td className={`p-2 border-2 border-primary ${parseFloat(asset.changePercent24Hr) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  <tr key={asset.id} className="border-b border-border hover:bg-muted/50">
+                    <td className="p-2">{asset.rank}</td>
+                    <td className="p-2">{asset.name}</td>
+                    <td className="p-2">{asset.symbol}</td>
+                    <td className="p-2">${parseFloat(asset.priceUsd).toFixed(2)}</td>
+                    <td className="p-2">${parseFloat(asset.marketCapUsd).toLocaleString()}</td>
+                    <td className={`p-2 ${parseFloat(asset.changePercent24Hr) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                       {parseFloat(asset.changePercent24Hr).toFixed(2)}%
                     </td>
                   </tr>
