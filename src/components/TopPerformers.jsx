@@ -208,9 +208,9 @@ const OnChainActivity = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['onChainData', selectedBlockchain],
     queryFn: () => fetchOnChainData(selectedBlockchain),
-    refetchInterval: 30000, // Refetch every 30 seconds
-    staleTime: 15000, // Consider data fresh for 15 seconds
-    cacheTime: 60000, // Keep unused data in cache for 1 minute
+    refetchInterval: 30000,
+    staleTime: 15000,
+    cacheTime: 60000,
   });
 
   useEffect(() => {
@@ -221,19 +221,20 @@ const OnChainActivity = () => {
           name: new Date().toLocaleTimeString(), 
           value: selectedBlockchain === 'ethereum' ? parseFloat(data.gasPrice) : data.transactions
         }
-      ].slice(-10)); // Keep only the last 10 data points
+      ].slice(-10));
     }
   }, [data, selectedBlockchain]);
 
   if (isLoading) return <Loader2 className="h-8 w-8 animate-spin text-primary" />;
   if (error) return <div className="text-red-600">Error: {error.message}</div>;
+  if (!data) return <div className="text-yellow-600">No data available</div>;
 
   const formatNumber = (num) => {
-    return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(num);
+    return num !== undefined ? new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(num) : 'N/A';
   };
 
   const formatTimestamp = (timestamp) => {
-    return new Date(timestamp).toLocaleString();
+    return timestamp ? new Date(timestamp).toLocaleString() : 'N/A';
   };
 
   return (
@@ -305,7 +306,7 @@ const OnChainActivity = () => {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatNumber(data.nodeCount || 'N/A')}</div>
+            <div className="text-2xl font-bold">{formatNumber(data.nodeCount)}</div>
           </CardContent>
         </Card>
 
