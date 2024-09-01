@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, X } from 'lucide-react';
+import { PlusCircle, X, GripVertical } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -79,6 +79,29 @@ const widgetDescriptions = {
   TetrisGame: "Play Tetris",
 };
 
+const widgetSizes = {
+  MarketOverview: 'medium',
+  GreedFearIndex: 'small',
+  TopPerformers: 'medium',
+  TrendingCoins: 'small',
+  CryptoNews: 'medium',
+  TokenPairExplorer: 'large',
+  LiquidityPoolsOverview: 'medium',
+  TradingViewChart: 'large',
+  GasTracker: 'small',
+  DeFiOverview: 'medium',
+  NFTMarketplace: 'medium',
+  BlockchainExplorer: 'large',
+  TopCryptoAssets: 'large',
+  Portfolio: 'large',
+  PortfolioPerformance: 'medium',
+  MiniGames: 'medium',
+  CandyCrushGame: 'medium',
+  MarioGame: 'medium',
+  SnakeGame: 'medium',
+  TetrisGame: 'medium',
+};
+
 const CustomizableDashboard = () => {
   const [widgets, setWidgets] = useState(() => {
     const savedWidgets = localStorage.getItem('dashboardWidgets');
@@ -108,35 +131,57 @@ const CustomizableDashboard = () => {
     setWidgets(newWidgets);
   };
 
+  const getWidgetClassName = (size) => {
+    switch (size) {
+      case 'small':
+        return 'col-span-1';
+      case 'medium':
+        return 'col-span-2';
+      case 'large':
+        return 'col-span-3';
+      default:
+        return 'col-span-2';
+    }
+  };
+
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Your Personalized Dashboard</h2>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="widgets">
           {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-min"
+            >
               {widgets.map((widgetName, index) => {
                 const WidgetComponent = widgetComponents[widgetName];
+                const widgetSize = widgetSizes[widgetName];
                 return (
                   <Draggable key={widgetName + index} draggableId={widgetName + index} index={index}>
                     {(provided) => (
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        className="group"
+                        className={`group ${getWidgetClassName(widgetSize)}`}
                       >
-                        <Card className="relative">
-                          <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle>{widgetName}</CardTitle>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => removeWidget(index)}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <X className="h-4 w-4" />
-                            </Button>
+                        <Card className="relative h-full">
+                          <CardHeader className="flex flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-sm font-medium">{widgetName}</CardTitle>
+                            <div className="flex items-center">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => removeWidget(index)}
+                                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <X className="h-4 w-4" />
+                              </Button>
+                              <div {...provided.dragHandleProps}>
+                                <GripVertical className="h-4 w-4 cursor-move" />
+                              </div>
+                            </div>
                           </CardHeader>
                           <CardContent>
                             <WidgetComponent />
