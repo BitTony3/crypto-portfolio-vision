@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, useLocation, useNavigationType } from "re
 import { navItems } from "./nav-items";
 import { ThemeProvider } from "next-themes";
 import { ErrorBoundary } from 'react-error-boundary';
+import { SupabaseAuthProvider } from './integrations/supabase';
 
 const queryClient = new QueryClient();
 
@@ -44,14 +45,16 @@ const AppContent = () => (
 const App = () => (
   <ErrorBoundary FallbackComponent={ErrorFallback}>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-        <TooltipProvider>
-          <Toaster />
-          <BrowserRouter>
-            <AppContent />
-          </BrowserRouter>
-        </TooltipProvider>
-      </ThemeProvider>
+      <SupabaseAuthProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <TooltipProvider>
+            <Toaster />
+            <BrowserRouter>
+              <AppContent />
+            </BrowserRouter>
+          </TooltipProvider>
+        </ThemeProvider>
+      </SupabaseAuthProvider>
     </QueryClientProvider>
   </ErrorBoundary>
 );
