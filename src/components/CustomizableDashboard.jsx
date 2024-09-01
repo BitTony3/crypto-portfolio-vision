@@ -27,11 +27,6 @@ import BlockchainExplorer from './BlockchainExplorer';
 import TopCryptoAssets from './TopCryptoAssets';
 import Portfolio from './Portfolio';
 import PortfolioPerformance from './PortfolioPerformance';
-import MiniGames from './MiniGames';
-import CandyCrushGame from './CandyCrushGame';
-import MarioGame from './MarioGame';
-import SnakeGame from './SnakeGame';
-import TetrisGame from './TetrisGame';
 
 const widgetComponents = {
   MarketOverview,
@@ -49,11 +44,6 @@ const widgetComponents = {
   TopCryptoAssets,
   Portfolio,
   PortfolioPerformance,
-  MiniGames,
-  CandyCrushGame,
-  MarioGame,
-  SnakeGame,
-  TetrisGame,
 };
 
 const widgetDescriptions = {
@@ -72,11 +62,6 @@ const widgetDescriptions = {
   TopCryptoAssets: "Top cryptocurrencies by market cap",
   Portfolio: "Your cryptocurrency portfolio",
   PortfolioPerformance: "Track your portfolio performance",
-  MiniGames: "Collection of mini-games",
-  CandyCrushGame: "Play Candy Crush",
-  MarioGame: "Play Mario",
-  SnakeGame: "Play Snake",
-  TetrisGame: "Play Tetris",
 };
 
 const widgetSizes = {
@@ -95,11 +80,6 @@ const widgetSizes = {
   TopCryptoAssets: 'large',
   Portfolio: 'large',
   PortfolioPerformance: 'medium',
-  MiniGames: 'medium',
-  CandyCrushGame: 'medium',
-  MarioGame: 'medium',
-  SnakeGame: 'medium',
-  TetrisGame: 'medium',
 };
 
 const CustomizableDashboard = () => {
