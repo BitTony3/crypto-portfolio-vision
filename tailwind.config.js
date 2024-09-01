@@ -11,7 +11,7 @@ module.exports = {
   theme: {
     container: {
       center: true,
-      padding: "1.5rem",
+      padding: "1rem",
       screens: {
         "2xl": "1400px",
       },
@@ -21,35 +21,35 @@ module.exports = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(230, 25%, 10%)",
-        foreground: "hsl(210, 40%, 98%)",
+        background: "hsl(230, 30%, 8%)",
+        foreground: "hsl(210, 60%, 98%)",
         primary: {
-          DEFAULT: "hsl(230, 100%, 67%)",
-          foreground: "hsl(210, 40%, 98%)",
+          DEFAULT: "hsl(230, 100%, 70%)",
+          foreground: "hsl(210, 60%, 98%)",
         },
         secondary: {
-          DEFAULT: "hsl(230, 25%, 15%)",
-          foreground: "hsl(210, 40%, 98%)",
+          DEFAULT: "hsl(230, 30%, 12%)",
+          foreground: "hsl(210, 60%, 98%)",
         },
         destructive: {
-          DEFAULT: "hsl(0, 84%, 60%)",
-          foreground: "hsl(210, 40%, 98%)",
+          DEFAULT: "hsl(0, 90%, 65%)",
+          foreground: "hsl(210, 60%, 98%)",
         },
         muted: {
-          DEFAULT: "hsl(230, 25%, 20%)",
-          foreground: "hsl(215, 20%, 65%)",
+          DEFAULT: "hsl(230, 30%, 15%)",
+          foreground: "hsl(215, 30%, 70%)",
         },
         accent: {
-          DEFAULT: "hsl(230, 100%, 75%)",
-          foreground: "hsl(230, 25%, 10%)",
+          DEFAULT: "hsl(230, 100%, 80%)",
+          foreground: "hsl(230, 30%, 8%)",
         },
         popover: {
-          DEFAULT: "hsl(230, 25%, 12%)",
-          foreground: "hsl(210, 40%, 98%)",
+          DEFAULT: "hsl(230, 30%, 10%)",
+          foreground: "hsl(210, 60%, 98%)",
         },
         card: {
-          DEFAULT: "hsl(230, 25%, 13%)",
-          foreground: "hsl(210, 40%, 98%)",
+          DEFAULT: "hsl(230, 30%, 11%)",
+          foreground: "hsl(210, 60%, 98%)",
         },
         crypto: {
           bitcoin: "#F7931A",
@@ -74,18 +74,32 @@ module.exports = {
           to: { height: "0" },
         },
         glow: {
-          '0%, 100%': { boxShadow: '0 0 5px hsl(230, 100%, 67%), 0 0 10px hsl(230, 100%, 67%)' },
-          '50%': { boxShadow: '0 0 20px hsl(230, 100%, 67%), 0 0 30px hsl(230, 100%, 67%)' },
+          '0%, 100%': { boxShadow: '0 0 5px hsl(230, 100%, 70%), 0 0 10px hsl(230, 100%, 70%)' },
+          '50%': { boxShadow: '0 0 20px hsl(230, 100%, 70%), 0 0 30px hsl(230, 100%, 70%)' },
+        },
+        pulse: {
+          '0%, 100%': { opacity: 1 },
+          '50%': { opacity: 0.5 },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         glow: 'glow 2s ease-in-out infinite',
+        pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        float: 'float 3s ease-in-out infinite',
       },
       backdropFilter: {
         'none': 'none',
         'blur': 'blur(5px)',
+      },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        mono: ['Roboto Mono', 'monospace'],
       },
     },
   },
