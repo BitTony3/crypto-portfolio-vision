@@ -38,12 +38,12 @@ import React from 'react';
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import Moralis from 'moralis';
 
-// Initialize Moralis
-Moralis.start({
-  apiKey: import.meta.env.VITE_MORALIS_API_KEY
-});
+// Moralis initialization is commented out for now to avoid potential issues
+// import Moralis from 'moralis';
+// Moralis.start({
+//   apiKey: import.meta.env.VITE_MORALIS_API_KEY
+// });
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
