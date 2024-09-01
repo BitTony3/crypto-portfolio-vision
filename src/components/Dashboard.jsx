@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import MarketOverview from './MarketOverview';
 import GainerOfTheDay from './GainerOfTheDay';
 import GreedFearIndex from './GreedFearIndex';
-import OnChainActivity from './TopPerformers';
+import OnChainActivity from './OnChainActivity';
 import TrendingCoins from './TrendingCoins';
 import BlockchainExplorer from './BlockchainExplorer';
 import { Input } from "@/components/ui/input";
