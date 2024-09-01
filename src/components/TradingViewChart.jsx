@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, memo } from 'react';
+import { useTheme } from 'next-themes';
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
@@ -178,4 +179,7 @@ const TradingViewChart = () => {
   );
 };
 
-export default memo(TradingViewChart);
+export default memo(TradingViewChart, (prevProps, nextProps) => {
+  // Add any prop comparisons if needed
+  return true;
+});

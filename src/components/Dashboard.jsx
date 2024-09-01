@@ -172,7 +172,7 @@ const Dashboard = () => {
 
       <Card className="col-span-4 bg-secondary/50 backdrop-blur-sm border border-primary/20">
         <CardContent className="p-2">
-          <TradingViewChart />
+          <TradingViewChart key="trading-view-chart" />
         </CardContent>
       </Card>
       
