@@ -6,7 +6,7 @@ if (typeof global === 'undefined') {
   global = globalThis;
 }
 if (typeof window !== 'undefined') {
-  window.global = global;
+  window.global = window;
 }
 
 import React from 'react';
@@ -15,7 +15,7 @@ import App from "./App.jsx";
 import "./index.css";
 import Moralis from 'moralis';
 
-// Polyfill for 'global' object
+// Polyfill for 'global' object and other Node.js specifics
 if (typeof window !== 'undefined') {
   window.global = window;
   window.Buffer = window.Buffer || require('buffer').Buffer;
@@ -24,6 +24,7 @@ if (typeof window !== 'undefined') {
     version: [],
     nextTick: function(fn) { setTimeout(fn, 0); }
   };
+  window.setImmediate = window.setImmediate || ((fn, ...args) => setTimeout(fn, 0, ...args));
 }
 
 // Initialize Moralis
