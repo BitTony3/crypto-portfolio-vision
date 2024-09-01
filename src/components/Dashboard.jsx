@@ -7,6 +7,10 @@ import TrendingCoins from './TrendingCoins';
 import TokenPairExplorer from './TokenPairExplorer';
 import LiquidityPoolsOverview from './LiquidityPoolsOverview';
 import TradingViewChart from './TradingViewChart';
+import CryptoNews from './CryptoNews';
+import GasTracker from './GasTracker';
+import DeFiOverview from './DeFiOverview';
+import NFTMarketplace from './NFTMarketplace';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, ArrowUpDown, ChevronLeft, ChevronRight, ArrowUp } from 'lucide-react';
@@ -169,6 +173,42 @@ const Dashboard = () => {
       <Card className="col-span-4 bg-secondary/50 backdrop-blur-sm border border-primary/20">
         <CardContent className="p-2">
           <TradingViewChart />
+        </CardContent>
+      </Card>
+      
+      <Card className="col-span-2 bg-secondary/50 backdrop-blur-sm border border-primary/20">
+        <CardHeader className="p-2">
+          <CardTitle className="text-sm">Crypto News</CardTitle>
+        </CardHeader>
+        <CardContent className="p-2">
+          <CryptoNews />
+        </CardContent>
+      </Card>
+
+      <Card className="col-span-2 bg-secondary/50 backdrop-blur-sm border border-primary/20">
+        <CardHeader className="p-2">
+          <CardTitle className="text-sm">Gas Tracker</CardTitle>
+        </CardHeader>
+        <CardContent className="p-2">
+          <GasTracker />
+        </CardContent>
+      </Card>
+
+      <Card className="col-span-2 bg-secondary/50 backdrop-blur-sm border border-primary/20">
+        <CardHeader className="p-2">
+          <CardTitle className="text-sm">DeFi Overview</CardTitle>
+        </CardHeader>
+        <CardContent className="p-2">
+          <DeFiOverview />
+        </CardContent>
+      </Card>
+
+      <Card className="col-span-2 bg-secondary/50 backdrop-blur-sm border border-primary/20">
+        <CardHeader className="p-2">
+          <CardTitle className="text-sm">NFT Marketplace</CardTitle>
+        </CardHeader>
+        <CardContent className="p-2">
+          <NFTMarketplace />
         </CardContent>
       </Card>
       

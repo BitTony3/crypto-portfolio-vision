@@ -13,22 +13,22 @@ const fetchAssetPrices = async (ids) => {
 
 const Portfolio = () => {
   const [portfolio, setPortfolio] = useState([
-    { id: 'bitcoin', amount: 1.2, location: 'Binance', type: 'Exchange' },
-    { id: 'bitcoin', amount: 0.8, location: 'OKX', type: 'Exchange' },
-    { id: 'bitcoin', amount: 1.5, location: 'Trezor', type: 'Hardware Wallet' },
-    { id: 'bitcoin', amount: 0.7, location: 'KuCoin', type: 'Exchange' },
-    { id: 'bitcoin', amount: 1.22, location: 'Bitcoin Network', type: 'Blockchain' },
-    { id: 'bitcoin', amount: 3.5, location: 'Binance', type: 'Exchange' },
-    { id: 'ethereum', amount: 8.0, location: 'MetaMask', type: 'Software Wallet' },
-    { id: 'ethereum', amount: 6.5, location: 'KuCoin', type: 'Exchange' },
-    { id: 'ethereum', amount: 9.2, location: 'Ethereum Mainnet', type: 'Blockchain' },
-    { id: 'ethereum', amount: 5.8, location: 'Binance', type: 'Exchange' },
-    { id: 'ethereum', amount: 5.0, location: 'OKX', type: 'Exchange' },
-    { id: 'ethereum', amount: 30.0, location: 'Binance', type: 'Exchange' },
-    { id: 'tether', amount: 20000, location: 'Tron Network', type: 'Blockchain' },
-    { id: 'tether', amount: 40000, location: 'Gate.io', type: 'Exchange' },
-    { id: 'tether', amount: 57000, location: 'Binance', type: 'Exchange' },
-    { id: 'tether', amount: 40000, location: 'Trezor', type: 'Hardware Wallet' },
+    { id: 'bitcoin', amount: 1.2, location: 'Binance', type: 'Exchange', purchasePrice: 30000, currentPrice: 0 },
+    { id: 'bitcoin', amount: 0.8, location: 'OKX', type: 'Exchange', purchasePrice: 35000, currentPrice: 0 },
+    { id: 'bitcoin', amount: 1.5, location: 'Trezor', type: 'Hardware Wallet', purchasePrice: 40000, currentPrice: 0 },
+    { id: 'bitcoin', amount: 0.7, location: 'KuCoin', type: 'Exchange', purchasePrice: 45000, currentPrice: 0 },
+    { id: 'bitcoin', amount: 1.22, location: 'Bitcoin Network', type: 'Blockchain', purchasePrice: 50000, currentPrice: 0 },
+    { id: 'bitcoin', amount: 3.5, location: 'Binance', type: 'Exchange', purchasePrice: 55000, currentPrice: 0 },
+    { id: 'ethereum', amount: 8.0, location: 'MetaMask', type: 'Software Wallet', purchasePrice: 2000, currentPrice: 0 },
+    { id: 'ethereum', amount: 6.5, location: 'KuCoin', type: 'Exchange', purchasePrice: 2500, currentPrice: 0 },
+    { id: 'ethereum', amount: 9.2, location: 'Ethereum Mainnet', type: 'Blockchain', purchasePrice: 3000, currentPrice: 0 },
+    { id: 'ethereum', amount: 5.8, location: 'Binance', type: 'Exchange', purchasePrice: 3500, currentPrice: 0 },
+    { id: 'ethereum', amount: 5.0, location: 'OKX', type: 'Exchange', purchasePrice: 4000, currentPrice: 0 },
+    { id: 'ethereum', amount: 30.0, location: 'Binance', type: 'Exchange', purchasePrice: 4500, currentPrice: 0 },
+    { id: 'tether', amount: 20000, location: 'Tron Network', type: 'Blockchain', purchasePrice: 1, currentPrice: 0 },
+    { id: 'tether', amount: 40000, location: 'Gate.io', type: 'Exchange', purchasePrice: 1, currentPrice: 0 },
+    { id: 'tether', amount: 57000, location: 'Binance', type: 'Exchange', purchasePrice: 1, currentPrice: 0 },
+    { id: 'tether', amount: 40000, location: 'Trezor', type: 'Hardware Wallet', purchasePrice: 1, currentPrice: 0 },
   ]);
 
   const assetIds = [...new Set(portfolio.map(item => item.id))];
@@ -92,7 +92,11 @@ const Portfolio = () => {
             <tbody>
               {data && data.data && portfolio.map((item, index) => {
                 const asset = data.data.find(a => a.id === item.id);
-                const value = asset ? item.amount * parseFloat(asset.priceUsd) : 0;
+                const currentPrice = asset ? parseFloat(asset.priceUsd) : 0;
+                const value = item.amount * currentPrice;
+                const costBasis = item.amount * item.purchasePrice;
+                const profitLoss = value - costBasis;
+                const profitLossPercentage = ((value / costBasis) - 1) * 100;
                 return (
                   <tr key={index} className="hover:bg-background text-text">
                     <td className="p-2 border-2 border-primary">{asset ? asset.name : item.id}</td>
@@ -100,6 +104,11 @@ const Portfolio = () => {
                     <td className="p-2 border-2 border-primary">{item.location}</td>
                     <td className="p-2 border-2 border-primary">{item.type}</td>
                     <td className="p-2 border-2 border-primary">${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
+                    <td className="p-2 border-2 border-primary">${costBasis.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
+                    <td className={`p-2 border-2 border-primary ${profitLoss >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      ${profitLoss.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                      ({profitLossPercentage.toFixed(2)}%)
+                    </td>
                   </tr>
                 );
               })}
