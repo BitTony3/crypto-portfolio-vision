@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import MarketOverview from './MarketOverview';
-import GainerOfTheDay from './GainerOfTheDay';
 import GreedFearIndex from './GreedFearIndex';
 import TopPerformers from './TopPerformers';
 import TrendingCoins from './TrendingCoins';
-import BlockchainExplorer from './BlockchainExplorer';
+import TokenPairExplorer from './TokenPairExplorer';
+import LiquidityPoolsOverview from './LiquidityPoolsOverview';
+import TradingViewChart from './TradingViewChart';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, ArrowUpDown, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -91,49 +92,67 @@ const Dashboard = () => {
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800 h-[400px] overflow-hidden">
-          <CardContent className="h-full overflow-y-auto">
+        <Card className="col-span-2 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800">
+          <CardHeader>
+            <CardTitle>Market Overview</CardTitle>
+          </CardHeader>
+          <CardContent>
             <MarketOverview />
           </CardContent>
         </Card>
-        <Card className="bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800 h-[400px] overflow-hidden">
-          <CardContent className="h-full overflow-y-auto">
+        <Card className="bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800">
+          <CardHeader>
+            <CardTitle>Fear & Greed Index</CardTitle>
+          </CardHeader>
+          <CardContent>
             <GreedFearIndex />
-          </CardContent>
-        </Card>
-        <Card className="bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900 dark:to-green-800 h-[400px] overflow-hidden">
-          <CardContent className="h-full overflow-y-auto">
-            <GainerOfTheDay />
           </CardContent>
         </Card>
       </div>
       
-      <Tabs defaultValue="on-chain-activity" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="on-chain-activity">On-Chain Activity</TabsTrigger>
-          <TabsTrigger value="blockchain-explorer">Blockchain Explorer</TabsTrigger>
-        </TabsList>
-        <TabsContent value="on-chain-activity">
-          <Card className="bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900 dark:to-yellow-800">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-primary text-lg">On-Chain Activity</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <TopPerformers />
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="blockchain-explorer">
-          <BlockchainExplorer />
-        </TabsContent>
-      </Tabs>
-      
-      <Card className="bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-900 dark:to-pink-800">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-primary text-lg">Trending Coins</CardTitle>
+      <Card className="bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900 dark:to-green-800">
+        <CardHeader>
+          <CardTitle>Token Pair Explorer</CardTitle>
         </CardHeader>
         <CardContent>
-          <TrendingCoins />
+          <TokenPairExplorer />
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Card className="bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900 dark:to-yellow-800">
+          <CardHeader>
+            <CardTitle>Top Performers</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TopPerformers />
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-900 dark:to-pink-800">
+          <CardHeader>
+            <CardTitle>Trending Coins</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TrendingCoins />
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="bg-gradient-to-br from-indigo-100 to-indigo-200 dark:from-indigo-900 dark:to-indigo-800">
+        <CardHeader>
+          <CardTitle>Liquidity Pools Overview</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <LiquidityPoolsOverview />
+        </CardContent>
+      </Card>
+
+      <Card className="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
+        <CardHeader>
+          <CardTitle>Advanced Chart</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <TradingViewChart />
         </CardContent>
       </Card>
       
