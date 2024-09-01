@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import MarketOverview from './MarketOverview';
 import GainerOfTheDay from './GainerOfTheDay';
 import GreedFearIndex from './GreedFearIndex';
-import TopPerformers from './TopPerformers';
+import OnChainActivity from './OnChainActivity';
 import TrendingCoins from './TrendingCoins';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -109,10 +109,10 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900 dark:to-yellow-800">
           <CardHeader className="pb-2">
-            <CardTitle className="text-primary text-lg">Top Performers (24h)</CardTitle>
+            <CardTitle className="text-primary text-lg">On-Chain Activity</CardTitle>
           </CardHeader>
           <CardContent>
-            <TopPerformers />
+            <OnChainActivity />
           </CardContent>
         </Card>
         <Card className="bg-gradient-to-br from-pink-100 to-pink-200 dark:from-pink-900 dark:to-pink-800">
