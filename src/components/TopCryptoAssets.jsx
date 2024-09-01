@@ -1,23 +1,46 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 
-const fetchTopAssets = async () => {
-  const response = await fetch('https://api.coincap.io/v2/assets?limit=50');
-  if (!response.ok) {
-    throw new Error('Network response was not ok');
-  }
-  return response.json();
+const mockWebSocket = {
+  onmessage: null,
+  send: () => {},
+  close: () => {},
 };
 
 const TopCryptoAssets = () => {
   const [expanded, setExpanded] = useState(false);
   const scrollRef = useRef(null);
+  const [assets, setAssets] = useState([]);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['topAssets'],
-    queryFn: fetchTopAssets,
-  });
+  useEffect(() => {
+    // Mock WebSocket connection
+    const ws = mockWebSocket;
+
+    ws.onmessage = (event) => {
+      // In a real implementation, we would parse the event.data
+      // For now, we'll just update with mock data every 5 seconds
+      const mockData = Array.from({ length: 50 }, (_, i) => ({
+        id: `asset-${i}`,
+        rank: i + 1,
+        name: `Crypto ${i + 1}`,
+        priceUsd: (Math.random() * 10000).toFixed(2),
+        marketCapUsd: (Math.random() * 1000000000).toFixed(2),
+      }));
+      setAssets(mockData);
+    };
+
+    // Simulate receiving data every 5 seconds
+    const interval = setInterval(() => {
+      if (ws.onmessage) {
+        ws.onmessage({ data: 'mock data' });
+      }
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+      ws.close();
+    };
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current && !expanded) {
@@ -34,21 +57,20 @@ const TopCryptoAssets = () => {
       }, 50);
       return () => clearInterval(interval);
     }
-  }, [expanded, data]);
+  }, [expanded, assets]);
 
-  if (isLoading) return <div className="text-2xl font-bold">Loading...</div>;
-  if (error) return <div className="text-2xl font-bold text-red-600">Error: {error.message}</div>;
+  if (assets.length === 0) return <div className="text-2xl font-bold">Loading...</div>;
 
   return (
     <div className="bg-secondary border-4 border-primary p-4 shadow-lg rounded-lg h-full">
-      <h2 className="text-4xl font-bold mb-4 text-primary">Top 50 Crypto Assets</h2>
+      <h2 className="text-4xl font-bold mb-4 text-primary">Top 50 Crypto Assets (Real-time)</h2>
       {!expanded ? (
         <div 
           ref={scrollRef} 
           className="whitespace-nowrap overflow-hidden cursor-pointer"
           onClick={() => setExpanded(true)}
         >
-          {data.data.map((asset) => (
+          {assets.map((asset) => (
             <span key={asset.id} className="inline-block mr-4 text-primary">
               {asset.name}: ${parseFloat(asset.priceUsd).toFixed(2)}
             </span>
@@ -66,7 +88,7 @@ const TopCryptoAssets = () => {
               </tr>
             </thead>
             <tbody>
-              {data.data.map((asset) => (
+              {assets.map((asset) => (
                 <tr key={asset.id} className="hover:bg-background text-text">
                   <td className="p-2 border-2 border-primary">{asset.rank}</td>
                   <td className="p-2 border-2 border-primary">{asset.name}</td>
