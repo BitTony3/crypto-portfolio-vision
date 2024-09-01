@@ -5,6 +5,8 @@ import Portfolio from '../components/Portfolio';
 import Login from '../components/Login';
 import MiniGames from '../components/MiniGames';
 import { Button } from "@/components/ui/button";
+import { Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
 const queryClient = new QueryClient();
 
@@ -12,6 +14,7 @@ const Index = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [username, setUsername] = useState('');
+  const { theme, setTheme } = useTheme();
 
   const handleLogin = (username, password) => {
     if (username === 'admin' && password === 'admin') {
@@ -52,6 +55,14 @@ const Index = () => {
           ) : (
             <Button onClick={() => setShowLogin(true)} className="bg-primary text-secondary hover:bg-accent">Login</Button>
           )}
+          <Button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            variant="ghost"
+            size="icon"
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+          </Button>
         </div>
         {showLogin && !isLoggedIn && (
           <div className="fixed inset-0 bg-background bg-opacity-50 flex justify-center items-center z-50">
