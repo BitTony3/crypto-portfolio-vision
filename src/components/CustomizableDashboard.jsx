@@ -52,28 +52,35 @@ const widgetComponents = {
 };
 
 const initialWidgetSizes = {
-  ChartWidget: { width: 4, height: 4 },
+  ChartWidget: { width: 6, height: 4 },
   MarketOverview: { width: 2, height: 2 },
-  GreedFearIndex: { width: 1, height: 1 },
-  TopPerformers: { width: 1, height: 2 },
-  TrendingCoins: { width: 1, height: 1 },
+  GreedFearIndex: { width: 2, height: 2 },
+  TopPerformers: { width: 2, height: 2 },
+  TrendingCoins: { width: 2, height: 2 },
   CryptoNews: { width: 2, height: 2 },
   TokenPairExplorer: { width: 2, height: 2 },
   LiquidityPoolsOverview: { width: 2, height: 2 },
-  GasTracker: { width: 1, height: 1 },
-  DeFiOverview: { width: 2, height: 1 },
+  GasTracker: { width: 2, height: 2 },
+  DeFiOverview: { width: 2, height: 2 },
   NFTMarketplace: { width: 2, height: 2 },
   BlockchainExplorer: { width: 2, height: 2 },
   TopCryptoAssets: { width: 2, height: 2 },
   Portfolio: { width: 2, height: 2 },
-  PortfolioPerformance: { width: 2, height: 1 },
+  PortfolioPerformance: { width: 2, height: 2 },
   TradeTerminal: { width: 2, height: 2 },
 };
 
 const CustomizableDashboard = () => {
   const [widgets, setWidgets] = useState(() => {
     const savedWidgets = localStorage.getItem('dashboardWidgets');
-    return savedWidgets ? JSON.parse(savedWidgets) : Object.keys(widgetComponents).slice(0, 6);
+    return savedWidgets ? JSON.parse(savedWidgets) : [
+      'ChartWidget',
+      'MarketOverview',
+      'GreedFearIndex',
+      'TopPerformers',
+      'TrendingCoins',
+      'CryptoNews',
+    ];
   });
   const [widgetSizes, setWidgetSizes] = useState(() => {
     const savedSizes = localStorage.getItem('widgetSizes');
@@ -81,6 +88,22 @@ const CustomizableDashboard = () => {
   });
   const [expandedWidgets, setExpandedWidgets] = useState({});
   const [isAddWidgetOpen, setIsAddWidgetOpen] = useState(false);
+  const [columns, setColumns] = useState(12);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 640) setColumns(1);
+      else if (width < 768) setColumns(2);
+      else if (width < 1024) setColumns(3);
+      else if (width < 1280) setColumns(4);
+      else setColumns(6);
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('dashboardWidgets', JSON.stringify(widgets));
@@ -111,19 +134,23 @@ const CustomizableDashboard = () => {
     setWidgetSizes(prev => ({
       ...prev,
       [widgetName]: {
-        width: Math.round(size.width / 100),
+        width: Math.round(size.width / (window.innerWidth / columns)),
         height: Math.round(size.height / 50),
       },
     }));
   };
 
-  const getWidgetClassName = (widgetName) => {
+  const getWidgetClassName = (widgetName, index) => {
     const isExpanded = expandedWidgets[widgetName];
     if (isExpanded) {
       return 'col-span-full row-span-full';
     }
     const size = widgetSizes[widgetName] || initialWidgetSizes[widgetName] || { width: 1, height: 1 };
-    return `col-span-${size.width} row-span-${size.height}`;
+    let className = `col-span-${size.width} row-span-${size.height}`;
+    if (index === 0) {
+      className += ' col-start-1 row-start-1';
+    }
+    return className;
   };
 
   const addWidget = (widgetName) => {
@@ -169,7 +196,7 @@ const CustomizableDashboard = () => {
             <div
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className="grid grid-cols-6 auto-rows-min gap-4"
+              className={`grid grid-cols-${columns} auto-rows-min gap-4`}
             >
               {widgets.map((widgetName, index) => {
                 const WidgetComponent = widgetComponents[widgetName];
@@ -184,14 +211,14 @@ const CustomizableDashboard = () => {
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        className={`group ${getWidgetClassName(widgetName)}`}
+                        className={`group ${getWidgetClassName(widgetName, index)}`}
                       >
                         <ResizableBox
-                          width={size.width * 100}
+                          width={size.width * (window.innerWidth / columns)}
                           height={size.height * 50}
                           onResizeStop={(e, data) => onResizeStop(widgetName, data.size)}
                           minConstraints={[100, 50]}
-                          maxConstraints={[600, 400]}
+                          maxConstraints={[window.innerWidth, window.innerHeight]}
                           resizeHandles={['se']}
                           handle={
                             <div className="absolute bottom-0 right-0 w-4 h-4 bg-primary/20 cursor-se-resize rounded-bl" />
