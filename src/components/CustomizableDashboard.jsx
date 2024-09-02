@@ -117,7 +117,7 @@ const CustomizableDashboard = () => {
     let col = 0;
 
     widgets.forEach((widgetName) => {
-      const size = widgetSizes[widgetName] || initialWidgetSizes[widgetName];
+      const size = widgetSizes[widgetName] || initialWidgetSizes[widgetName] || { width: 1, height: 1 };
       if (col + size.width > columns) {
         col = 0;
         row += 1;
