@@ -98,8 +98,9 @@ const CustomizableDashboard = () => {
     return `${widgetSizes[widgetName].width} ${widgetSizes[widgetName].height}`;
   };
 
-  // Ensure ChartWidget is in the center
-  const sortedWidgets = ['ChartWidget', ...widgets.filter(w => w !== 'ChartWidget')];
+  // Ensure ChartWidget is in the center and only one TopPerformers is present
+  const sortedWidgets = ['ChartWidget', ...widgets.filter(w => w !== 'ChartWidget' && w !== 'TopPerformers'), 'TopPerformers'];
+  const uniqueWidgets = Array.from(new Set(sortedWidgets));
 
   return (
     <div className="p-4">
@@ -112,7 +113,7 @@ const CustomizableDashboard = () => {
               ref={provided.innerRef}
               className="grid grid-cols-6 gap-4 auto-rows-min"
             >
-              {sortedWidgets.map((widgetName, index) => {
+              {uniqueWidgets.map((widgetName, index) => {
                 const WidgetComponent = widgetComponents[widgetName];
                 return (
                   <Draggable key={widgetName} draggableId={widgetName} index={index}>
