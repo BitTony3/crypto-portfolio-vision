@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X, GripVertical, Maximize2, Minimize2, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { X, GripVertical, Maximize2, Minimize2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Dialog,
@@ -139,9 +139,7 @@ const CustomizableDashboard = () => {
         <h2 className="text-2xl font-bold">Customizable Dashboard</h2>
         <Dialog open={isAddWidgetOpen} onOpenChange={setIsAddWidgetOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline" className="flex items-center">
-              <Plus className="mr-2 h-4 w-4" /> Add Widget
-            </Button>
+            <Button variant="outline">Add Widget</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -194,6 +192,10 @@ const CustomizableDashboard = () => {
                           onResizeStop={(e, data) => onResizeStop(widgetName, data.size)}
                           minConstraints={[100, 50]}
                           maxConstraints={[600, 400]}
+                          resizeHandles={['se']}
+                          handle={
+                            <div className="absolute bottom-0 right-0 w-4 h-4 bg-primary/20 cursor-se-resize rounded-bl" />
+                          }
                         >
                           <Card className="h-full overflow-hidden transition-shadow duration-300 hover:shadow-lg">
                             <CardHeader className="p-2 flex flex-row items-center justify-between bg-secondary/10">
