@@ -41,7 +41,7 @@ const widgetComponents = {
 };
 
 const widgetSizes = {
-  ChartWidget: { width: 'col-span-4', height: 'row-span-3' },
+  ChartWidget: { width: 'col-span-4', height: 'row-span-12' }, // Increased height to row-span-12
   MarketOverview: { width: 'col-span-2', height: 'row-span-2' },
   GreedFearIndex: { width: 'col-span-1', height: 'row-span-1' },
   TopPerformers: { width: 'col-span-1', height: 'row-span-2' },
@@ -166,7 +166,7 @@ const CustomizableDashboard = () => {
                               </div>
                             </div>
                           </CardHeader>
-                          <CardContent className="p-2 overflow-auto">
+                          <CardContent className="p-2 overflow-auto" style={{ height: widgetName === 'ChartWidget' ? 'calc(100% - 2rem)' : 'auto' }}>
                             <WidgetComponent />
                           </CardContent>
                         </Card>
