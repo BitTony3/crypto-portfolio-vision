@@ -5,14 +5,14 @@ import { Progress } from "@/components/ui/progress";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { apiRouter } from '../lib/apiRouter';
 
-const fetchMarketData = async () => {
-  return apiRouter('/global');
+const fetchMarketData = async (location) => {
+  return apiRouter(`/global?location=${location}`);
 };
 
-const MarketOverview = () => {
+const MarketOverview = ({ location }) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ['marketData'],
-    queryFn: fetchMarketData,
+    queryKey: ['marketData', location],
+    queryFn: () => fetchMarketData(location),
   });
 
   if (isLoading) return (

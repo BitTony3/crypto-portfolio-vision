@@ -69,6 +69,13 @@ const initialWidgetSizes = {
   TradeTerminal: { width: 1, height: 1 },
 };
 
+const locations = [
+  { id: 'global', name: 'Global' },
+  { id: 'us', name: 'United States' },
+  { id: 'eu', name: 'European Union' },
+  { id: 'asia', name: 'Asia' },
+];
+
 const CustomizableDashboard = () => {
   const [widgets, setWidgets] = useState(() => {
     const savedWidgets = localStorage.getItem('dashboardWidgets');
@@ -84,6 +91,7 @@ const CustomizableDashboard = () => {
   const [expandedWidgets, setExpandedWidgets] = useState({});
   const [isAddWidgetOpen, setIsAddWidgetOpen] = useState(false);
   const [columns, setColumns] = useState(3);
+  const [selectedLocation, setSelectedLocation] = useState('global');
 
   useEffect(() => {
     const handleResize = () => {
@@ -133,33 +141,47 @@ const CustomizableDashboard = () => {
     <div className="p-4">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-primary">Customizable Dashboard</h2>
-        <Dialog open={isAddWidgetOpen} onOpenChange={setIsAddWidgetOpen}>
-          <DialogTrigger asChild>
-            <Button variant="outline" className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-300">
-              <Plus className="mr-2 h-4 w-4" /> Add Widget
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add a new widget</DialogTitle>
-              <DialogDescription>
-                Choose a widget to add to your dashboard.
-              </DialogDescription>
-            </DialogHeader>
-            <Select onValueChange={addWidget}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a widget" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.keys(widgetComponents).map((widgetName) => (
-                  <SelectItem key={widgetName} value={widgetName}>
-                    {widgetName}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </DialogContent>
-        </Dialog>
+        <div className="flex items-center space-x-4">
+          <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select location" />
+            </SelectTrigger>
+            <SelectContent>
+              {locations.map((location) => (
+                <SelectItem key={location.id} value={location.id}>
+                  {location.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Dialog open={isAddWidgetOpen} onOpenChange={setIsAddWidgetOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-300">
+                <Plus className="mr-2 h-4 w-4" /> Add Widget
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add a new widget</DialogTitle>
+                <DialogDescription>
+                  Choose a widget to add to your dashboard.
+                </DialogDescription>
+              </DialogHeader>
+              <Select onValueChange={addWidget}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a widget" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.keys(widgetComponents).map((widgetName) => (
+                    <SelectItem key={widgetName} value={widgetName}>
+                      {widgetName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="widgets">
@@ -235,7 +257,7 @@ const CustomizableDashboard = () => {
                               </div>
                             </CardHeader>
                             <CardContent className="p-2 overflow-auto relative" style={{ height: isExpanded ? '500px' : '300px' }}>
-                              <WidgetComponent />
+                              <WidgetComponent location={selectedLocation} />
                             </CardContent>
                           </Card>
                         </motion.div>
