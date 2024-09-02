@@ -108,6 +108,9 @@ const CustomizableDashboard = () => {
   const resizeWidget = (widgetName, direction) => {
     setWidgetSizes(prev => {
       const newSizes = { ...prev };
+      if (!newSizes[widgetName]) {
+        newSizes[widgetName] = { ...initialWidgetSizes[widgetName] };
+      }
       if (direction === 'width+') newSizes[widgetName].width = Math.min(newSizes[widgetName].width + 1, 6);
       if (direction === 'width-') newSizes[widgetName].width = Math.max(newSizes[widgetName].width - 1, 1);
       if (direction === 'height+') newSizes[widgetName].height = newSizes[widgetName].height + 1;
@@ -121,7 +124,7 @@ const CustomizableDashboard = () => {
     if (isExpanded) {
       return 'col-span-full row-span-full';
     }
-    const size = widgetSizes[widgetName];
+    const size = widgetSizes[widgetName] || initialWidgetSizes[widgetName] || { width: 1, height: 1 };
     return `col-span-${size.width} row-span-${size.height}`;
   };
 
