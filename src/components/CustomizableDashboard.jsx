@@ -2,16 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, X, GripVertical, Maximize2, Minimize2 } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { X, GripVertical, Maximize2, Minimize2 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import MarketOverview from './MarketOverview';
 import GreedFearIndex from './GreedFearIndex';
@@ -31,6 +22,7 @@ import ChartWidget from './ChartWidget';
 import TradeTerminal from './TradeTerminal';
 
 const widgetComponents = {
+  ChartWidget,
   MarketOverview,
   GreedFearIndex,
   TopPerformers,
@@ -45,7 +37,6 @@ const widgetComponents = {
   TopCryptoAssets,
   Portfolio,
   PortfolioPerformance,
-  ChartWidget,
   TradeTerminal,
 };
 
@@ -107,6 +98,9 @@ const CustomizableDashboard = () => {
     return `${widgetSizes[widgetName].width} ${widgetSizes[widgetName].height}`;
   };
 
+  // Ensure ChartWidget is in the center
+  const sortedWidgets = ['ChartWidget', ...widgets.filter(w => w !== 'ChartWidget')];
+
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Customizable Dashboard</h2>
@@ -118,7 +112,7 @@ const CustomizableDashboard = () => {
               ref={provided.innerRef}
               className="grid grid-cols-6 gap-4 auto-rows-min"
             >
-              {widgets.map((widgetName, index) => {
+              {sortedWidgets.map((widgetName, index) => {
                 const WidgetComponent = widgetComponents[widgetName];
                 return (
                   <Draggable key={widgetName} draggableId={widgetName} index={index}>
