@@ -1,57 +1,88 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Loader2 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { apiRouter } from '../lib/apiRouter';
 
-const fetchPortfolioData = async () => {
-  // In a real application, this would fetch data from your backend
-  // For now, we'll use the CoinGecko API to get some real crypto data
-  const response = await apiRouter('/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false');
-  return response.map(coin => ({
-    id: coin.id,
-    symbol: coin.symbol.toUpperCase(),
-    name: coin.name,
-    amount: Math.random() * 10, // Simulating random holdings
-    currentPrice: coin.current_price,
-    value: 0, // Will be calculated
-    priceChangePercentage24h: coin.price_change_percentage_24h,
-  }));
+const fetchAssetPrices = async (ids) => {
+  // Mock data for asset prices
+  const mockPrices = {
+    bitcoin: 50000,
+    ethereum: 3000,
+    tether: 1,
+  };
+
+  return new Promise((resolve) => {
+    setTimeout(() => resolve({ data: ids.map(id => ({ id, priceUsd: mockPrices[id] })) }), 1000);
+  });
 };
 
 const Portfolio = () => {
+  const [portfolio, setPortfolio] = useState([
+    { id: 'bitcoin', amount: 1.2, location: 'Binance', type: 'Exchange', purchasePrice: 30000, currentPrice: 0 },
+    { id: 'bitcoin', amount: 0.8, location: 'OKX', type: 'Exchange', purchasePrice: 35000, currentPrice: 0 },
+    { id: 'bitcoin', amount: 1.5, location: 'Trezor', type: 'Hardware Wallet', purchasePrice: 40000, currentPrice: 0 },
+    { id: 'bitcoin', amount: 0.7, location: 'KuCoin', type: 'Exchange', purchasePrice: 45000, currentPrice: 0 },
+    { id: 'bitcoin', amount: 1.22, location: 'Bitcoin Network', type: 'Blockchain', purchasePrice: 50000, currentPrice: 0 },
+    { id: 'bitcoin', amount: 3.5, location: 'Binance', type: 'Exchange', purchasePrice: 55000, currentPrice: 0 },
+    { id: 'ethereum', amount: 8.0, location: 'MetaMask', type: 'Software Wallet', purchasePrice: 2000, currentPrice: 0 },
+    { id: 'ethereum', amount: 6.5, location: 'KuCoin', type: 'Exchange', purchasePrice: 2500, currentPrice: 0 },
+    { id: 'ethereum', amount: 9.2, location: 'Ethereum Mainnet', type: 'Blockchain', purchasePrice: 3000, currentPrice: 0 },
+    { id: 'ethereum', amount: 5.8, location: 'Binance', type: 'Exchange', purchasePrice: 3500, currentPrice: 0 },
+    { id: 'ethereum', amount: 5.0, location: 'OKX', type: 'Exchange', purchasePrice: 4000, currentPrice: 0 },
+    { id: 'ethereum', amount: 30.0, location: 'Binance', type: 'Exchange', purchasePrice: 4500, currentPrice: 0 },
+    { id: 'tether', amount: 20000, location: 'Tron Network', type: 'Blockchain', purchasePrice: 1, currentPrice: 0 },
+    { id: 'tether', amount: 40000, location: 'Gate.io', type: 'Exchange', purchasePrice: 1, currentPrice: 0 },
+    { id: 'tether', amount: 57000, location: 'Binance', type: 'Exchange', purchasePrice: 1, currentPrice: 0 },
+    { id: 'tether', amount: 40000, location: 'Trezor', type: 'Hardware Wallet', purchasePrice: 1, currentPrice: 0 },
+  ]);
+
   const [showDetails, setShowDetails] = useState(false);
 
-  const { data: portfolio, isLoading, error } = useQuery({
-    queryKey: ['portfolio'],
-    queryFn: fetchPortfolioData,
+  const assetIds = [...new Set(portfolio.map(item => item.id))];
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['assetPrices', assetIds],
+    queryFn: () => fetchAssetPrices(assetIds),
   });
 
-  if (isLoading) return (
-    <Card className="h-full flex items-center justify-center">
-      <Loader2 className="h-8 w-8 animate-spin text-primary" />
-    </Card>
-  );
+  const pieChartData = useMemo(() => {
+    if (!data || !data.data) return [];
+    const assetTotals = portfolio.reduce((totals, item) => {
+      const asset = data.data.find(a => a.id === item.id);
+      if (asset) {
+        const value = item.amount * parseFloat(asset.priceUsd);
+        totals[item.id] = (totals[item.id] || 0) + value;
+      }
+      return totals;
+    }, {});
+    return Object.entries(assetTotals).map(([id, value]) => ({
+      name: id,
+      value,
+    }));
+  }, [data, portfolio]);
 
-  if (error) return (
-    <Card className="h-full flex items-center justify-center">
-      <div className="text-red-500">Error loading portfolio: {error.message}</div>
-    </Card>
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+
+  if (isLoading) return (
+    <div className="flex justify-center items-center h-full">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+    </div>
   );
+  if (error) return <div className="text-sm font-bold text-red-600">Error: {error.message}</div>;
 
   const calculateTotalValue = () => {
-    return portfolio.reduce((total, asset) => total + asset.amount * asset.currentPrice, 0);
+    if (!data || !data.data) return 0;
+    return portfolio.reduce((total, item) => {
+      const asset = data.data.find(a => a.id === item.id);
+      if (asset) {
+        return total + item.amount * parseFloat(asset.priceUsd);
+      }
+      return total;
+    }, 0);
   };
-
-  const pieChartData = portfolio.map(asset => ({
-    name: asset.symbol,
-    value: asset.amount * asset.currentPrice,
-  }));
-
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82ca9d', '#ffc658', '#8dd1e1', '#a4de6c', '#d0ed57'];
 
   return (
     <Card className="h-full flex flex-col">
@@ -99,22 +130,32 @@ const Portfolio = () => {
                 <TableRow>
                   <TableHead>Asset</TableHead>
                   <TableHead>Amount</TableHead>
-                  <TableHead>Price (USD)</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Type</TableHead>
                   <TableHead>Value (USD)</TableHead>
-                  <TableHead>24h Change</TableHead>
+                  <TableHead>Cost Basis</TableHead>
+                  <TableHead>Profit/Loss</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {portfolio.map((asset) => {
-                  const value = asset.amount * asset.currentPrice;
+                {data && data.data && portfolio.map((item, index) => {
+                  const asset = data.data.find(a => a.id === item.id);
+                  const currentPrice = asset ? parseFloat(asset.priceUsd) : 0;
+                  const value = item.amount * currentPrice;
+                  const costBasis = item.amount * item.purchasePrice;
+                  const profitLoss = value - costBasis;
+                  const profitLossPercentage = ((value / costBasis) - 1) * 100;
                   return (
-                    <TableRow key={asset.id}>
-                      <TableCell>{asset.name} ({asset.symbol})</TableCell>
-                      <TableCell>{asset.amount.toFixed(4)}</TableCell>
-                      <TableCell>${asset.currentPrice.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
+                    <TableRow key={index}>
+                      <TableCell>{asset ? asset.id : item.id}</TableCell>
+                      <TableCell>{item.amount.toFixed(4)}</TableCell>
+                      <TableCell>{item.location}</TableCell>
+                      <TableCell>{item.type}</TableCell>
                       <TableCell>${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
-                      <TableCell className={asset.priceChangePercentage24h >= 0 ? 'text-green-500' : 'text-red-500'}>
-                        {asset.priceChangePercentage24h.toFixed(2)}%
+                      <TableCell>${costBasis.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
+                      <TableCell className={profitLoss >= 0 ? 'text-green-500' : 'text-red-500'}>
+                        ${profitLoss.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        ({profitLossPercentage.toFixed(2)}%)
                       </TableCell>
                     </TableRow>
                   );
