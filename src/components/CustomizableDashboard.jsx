@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X, GripVertical, Maximize2, Minimize2 } from 'lucide-react';
+import { X, GripVertical, Maximize2, Minimize2, Plus } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Dialog,
@@ -13,8 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ResizableBox } from 'react-resizable';
-import 'react-resizable/css/styles.css';
+import { motion, AnimatePresence } from 'framer-motion';
 import MarketOverview from './MarketOverview';
 import GreedFearIndex from './GreedFearIndex';
 import TopPerformers from './TopPerformers';
@@ -52,22 +51,22 @@ const widgetComponents = {
 };
 
 const initialWidgetSizes = {
-  ChartWidget: { width: 8, height: 6 },
-  MarketOverview: { width: 4, height: 3 },
-  GreedFearIndex: { width: 4, height: 3 },
-  TopPerformers: { width: 4, height: 3 },
-  TrendingCoins: { width: 4, height: 3 },
-  CryptoNews: { width: 4, height: 3 },
-  TokenPairExplorer: { width: 4, height: 3 },
-  LiquidityPoolsOverview: { width: 4, height: 3 },
-  GasTracker: { width: 4, height: 3 },
-  DeFiOverview: { width: 4, height: 3 },
-  NFTMarketplace: { width: 4, height: 3 },
-  BlockchainExplorer: { width: 4, height: 3 },
-  TopCryptoAssets: { width: 4, height: 3 },
-  Portfolio: { width: 4, height: 3 },
-  PortfolioPerformance: { width: 4, height: 3 },
-  TradeTerminal: { width: 4, height: 3 },
+  ChartWidget: { width: 2, height: 2 },
+  MarketOverview: { width: 1, height: 1 },
+  GreedFearIndex: { width: 1, height: 1 },
+  TopPerformers: { width: 1, height: 1 },
+  TrendingCoins: { width: 1, height: 1 },
+  CryptoNews: { width: 1, height: 1 },
+  TokenPairExplorer: { width: 1, height: 1 },
+  LiquidityPoolsOverview: { width: 1, height: 1 },
+  GasTracker: { width: 1, height: 1 },
+  DeFiOverview: { width: 1, height: 1 },
+  NFTMarketplace: { width: 1, height: 1 },
+  BlockchainExplorer: { width: 1, height: 1 },
+  TopCryptoAssets: { width: 1, height: 1 },
+  Portfolio: { width: 1, height: 1 },
+  PortfolioPerformance: { width: 1, height: 1 },
+  TradeTerminal: { width: 1, height: 1 },
 };
 
 const CustomizableDashboard = () => {
@@ -82,23 +81,16 @@ const CustomizableDashboard = () => {
       'CryptoNews',
     ];
   });
-  const [widgetSizes, setWidgetSizes] = useState(() => {
-    const savedSizes = localStorage.getItem('widgetSizes');
-    return savedSizes ? JSON.parse(savedSizes) : initialWidgetSizes;
-  });
   const [expandedWidgets, setExpandedWidgets] = useState({});
   const [isAddWidgetOpen, setIsAddWidgetOpen] = useState(false);
-  const [columns, setColumns] = useState(12);
-  const [layout, setLayout] = useState([]);
+  const [columns, setColumns] = useState(3);
 
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
       if (width < 640) setColumns(1);
-      else if (width < 768) setColumns(2);
-      else if (width < 1024) setColumns(3);
-      else if (width < 1280) setColumns(4);
-      else setColumns(6);
+      else if (width < 1024) setColumns(2);
+      else setColumns(3);
     };
 
     handleResize();
@@ -108,36 +100,7 @@ const CustomizableDashboard = () => {
 
   useEffect(() => {
     localStorage.setItem('dashboardWidgets', JSON.stringify(widgets));
-    localStorage.setItem('widgetSizes', JSON.stringify(widgetSizes));
-  }, [widgets, widgetSizes]);
-
-  useEffect(() => {
-    const newLayout = [];
-    let row = 0;
-    let col = 0;
-
-    widgets.forEach((widgetName) => {
-      const size = widgetSizes[widgetName] || initialWidgetSizes[widgetName] || { width: 1, height: 1 };
-      if (col + size.width > columns) {
-        col = 0;
-        row += 1;
-      }
-      newLayout.push({
-        i: widgetName,
-        x: col,
-        y: row,
-        w: size.width,
-        h: size.height,
-      });
-      col += size.width;
-      if (col >= columns) {
-        col = 0;
-        row += size.height;
-      }
-    });
-
-    setLayout(newLayout);
-  }, [widgets, widgetSizes, columns]);
+  }, [widgets]);
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
@@ -159,29 +122,6 @@ const CustomizableDashboard = () => {
     }));
   };
 
-  const onResizeStop = (widgetName, size) => {
-    setWidgetSizes(prev => ({
-      ...prev,
-      [widgetName]: {
-        width: Math.round(size.width / (window.innerWidth / columns)),
-        height: Math.round(size.height / 50),
-      },
-    }));
-  };
-
-  const getWidgetClassName = (widgetName, index) => {
-    const isExpanded = expandedWidgets[widgetName];
-    if (isExpanded) {
-      return 'col-span-full row-span-full';
-    }
-    const size = widgetSizes[widgetName] || initialWidgetSizes[widgetName] || { width: 1, height: 1 };
-    let className = `col-span-${size.width} row-span-${size.height}`;
-    if (index === 0) {
-      className += ' col-start-1 row-start-1';
-    }
-    return className;
-  };
-
   const addWidget = (widgetName) => {
     if (!widgets.includes(widgetName)) {
       setWidgets([...widgets, widgetName]);
@@ -191,11 +131,13 @@ const CustomizableDashboard = () => {
 
   return (
     <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Customizable Dashboard</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-3xl font-bold text-primary">Customizable Dashboard</h2>
         <Dialog open={isAddWidgetOpen} onOpenChange={setIsAddWidgetOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline">Add Widget</Button>
+            <Button variant="outline" className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-300">
+              <Plus className="mr-2 h-4 w-4" /> Add Widget
+            </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -225,47 +167,33 @@ const CustomizableDashboard = () => {
             <div
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className={`grid grid-cols-${columns} auto-rows-min gap-4`}
-              style={{
-                display: 'grid',
-                gridTemplateColumns: `repeat(${columns}, 1fr)`,
-                gridAutoRows: 'minmax(50px, auto)',
-                gap: '1rem',
-              }}
+              className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4`}
             >
-              {layout.map((item, index) => {
-                const WidgetComponent = widgetComponents[item.i];
+              {widgets.map((widgetName, index) => {
+                const WidgetComponent = widgetComponents[widgetName];
                 if (!WidgetComponent) {
-                  console.error(`Widget component not found: ${item.i}`);
+                  console.error(`Widget component not found: ${widgetName}`);
                   return null;
                 }
+                const isExpanded = expandedWidgets[widgetName];
                 return (
-                  <Draggable key={item.i} draggableId={item.i} index={index}>
+                  <Draggable key={widgetName} draggableId={widgetName} index={index}>
                     {(provided) => (
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        className={`group`}
-                        style={{
-                          ...provided.draggableProps.style,
-                          gridColumn: `span ${item.w}`,
-                          gridRow: `span ${item.h}`,
-                        }}
+                        className={`group ${isExpanded ? 'col-span-full' : ''}`}
                       >
-                        <ResizableBox
-                          width={item.w * (window.innerWidth / columns)}
-                          height={item.h * 50}
-                          onResizeStop={(e, data) => onResizeStop(item.i, data.size)}
-                          minConstraints={[100, 50]}
-                          maxConstraints={[window.innerWidth, window.innerHeight]}
-                          resizeHandles={['se']}
-                          handle={
-                            <div className="absolute bottom-0 right-0 w-4 h-4 bg-primary/20 cursor-se-resize rounded-bl" />
-                          }
+                        <motion.div
+                          layout
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          transition={{ duration: 0.3 }}
                         >
                           <Card className="h-full overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-                            <CardHeader className="p-2 flex flex-row items-center justify-between bg-secondary/10">
-                              <CardTitle className="text-sm font-medium">{item.i}</CardTitle>
+                            <CardHeader className="p-2 flex flex-row items-center justify-between bg-card/50 backdrop-blur-sm">
+                              <CardTitle className="text-sm font-medium">{widgetName}</CardTitle>
                               <div className="flex items-center space-x-1">
                                 <TooltipProvider>
                                   <Tooltip>
@@ -273,14 +201,14 @@ const CustomizableDashboard = () => {
                                       <Button
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() => toggleWidgetExpansion(item.i)}
+                                        onClick={() => toggleWidgetExpansion(widgetName)}
                                         className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                                       >
-                                        {expandedWidgets[item.i] ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
+                                        {isExpanded ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
                                       </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                      {expandedWidgets[item.i] ? 'Minimize' : 'Maximize'}
+                                      {isExpanded ? 'Minimize' : 'Maximize'}
                                     </TooltipContent>
                                   </Tooltip>
                                 </TooltipProvider>
@@ -306,11 +234,11 @@ const CustomizableDashboard = () => {
                                 </div>
                               </div>
                             </CardHeader>
-                            <CardContent className="p-2 overflow-auto relative" style={{ height: 'calc(100% - 2rem)' }}>
+                            <CardContent className="p-2 overflow-auto relative" style={{ height: isExpanded ? '500px' : '300px' }}>
                               <WidgetComponent />
                             </CardContent>
                           </Card>
-                        </ResizableBox>
+                        </motion.div>
                       </div>
                     )}
                   </Draggable>

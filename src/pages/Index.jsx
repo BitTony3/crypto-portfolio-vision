@@ -3,12 +3,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import CustomizableDashboard from '../components/CustomizableDashboard';
 import Login from '../components/Login';
 import { Button } from "@/components/ui/button";
-import { Moon, Sun, UserIcon, Menu, LayoutDashboard, User } from 'lucide-react';
+import { Moon, Sun, UserIcon, Menu, LayoutDashboard, User, LogOut } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSupabaseAuth } from '../integrations/supabase';
 import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const queryClient = new QueryClient();
 
@@ -83,49 +84,73 @@ const Index = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className={`min-h-screen bg-gradient-light dark:bg-gradient-dark text-foreground-light dark:text-foreground-dark font-sans ${!showMatrixRain ? 'animate-fadeIn' : ''} lightning-effect`}>
+      <div className={`min-h-screen bg-gradient-to-br from-background to-secondary text-foreground font-sans ${!showMatrixRain ? 'animate-fadeIn' : ''}`}>
         <AnimatePresence>
           {showMatrixRain && <MatrixRain key="matrix-rain" />}
         </AnimatePresence>
-        <header className="bg-card shadow-md sticky top-0 z-50">
-          <div className="container mx-auto px-4 py-2 flex justify-between items-center">
+        <header className="bg-card/80 backdrop-blur-sm shadow-lg sticky top-0 z-50">
+          <div className="container mx-auto px-4 py-3 flex justify-between items-center">
             <motion.img 
               src="/crypto-logo.svg" 
               alt="Crypto Logo" 
-              className="h-8 w-8 cursor-pointer"
+              className="h-10 w-10 cursor-pointer"
               onClick={toggleLeftMenu}
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.1, rotate: 360 }}
               whileTap={{ scale: 0.9 }}
+              transition={{ duration: 0.3 }}
             />
             <div className="hidden md:flex items-center space-x-4">
               {session ? (
                 <>
-                  <Link to="/profile">
-                    <Button variant="outline" size="sm" className="bg-blue-100 text-blue-600 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800">
-                      <UserIcon className="mr-1 h-3 w-3" /> Profile
-                    </Button>
-                  </Link>
-                  <Button onClick={handleLogout} variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-200">Logout</Button>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link to="/profile">
+                          <Button variant="outline" size="sm" className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-300">
+                            <UserIcon className="mr-1 h-4 w-4" /> Profile
+                          </Button>
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>View your profile</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button onClick={handleLogout} variant="ghost" size="sm" className="text-primary hover:text-primary/80 transition-colors duration-300">
+                          <LogOut className="mr-1 h-4 w-4" /> Logout
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Sign out of your account</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </>
               ) : (
-                <Button onClick={() => setShowLogin(true)} variant="default" size="sm" className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600">Login</Button>
+                <Button onClick={() => setShowLogin(true)} variant="default" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300">Login</Button>
               )}
-              <div className="flex items-center space-x-2">
-                <Sun className="h-4 w-4 text-yellow-500 dark:text-yellow-300" />
-                <Switch
-                  checked={theme === 'dark'}
-                  onCheckedChange={toggleTheme}
-                  className="bg-blue-200 dark:bg-blue-700"
-                />
-                <Moon className="h-4 w-4 text-blue-800 dark:text-blue-200" />
-              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center space-x-2 bg-card/50 p-1 rounded-full">
+                      <Sun className="h-4 w-4 text-yellow-500 dark:text-yellow-300" />
+                      <Switch
+                        checked={theme === 'dark'}
+                        onCheckedChange={toggleTheme}
+                        className="bg-primary/20 dark:bg-primary/40"
+                      />
+                      <Moon className="h-4 w-4 text-primary dark:text-primary-foreground" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>Toggle theme</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             <div className="md:hidden">
               <Button
                 onClick={toggleMobileMenu}
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-blue-600 dark:text-blue-300"
+                className="h-8 w-8 text-primary"
                 aria-label="Toggle menu"
               >
                 <Menu className="h-5 w-5" />
@@ -137,17 +162,17 @@ const Index = () => {
           {isLeftMenuOpen && (
             <motion.div 
               key="left-menu"
-              className="fixed inset-y-0 left-0 w-64 bg-blue-50 dark:bg-blue-900 shadow-lg z-50"
+              className="fixed inset-y-0 left-0 w-64 bg-card/95 backdrop-blur-sm shadow-lg z-50"
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
-              transition={{ type: 'tween' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             >
               <div className="p-4 space-y-4">
-                <Button variant="ghost" className="w-full justify-start text-blue-600 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800" onClick={toggleLeftMenu}>
+                <Button variant="ghost" className="w-full justify-start text-primary hover:bg-primary/10 transition-colors duration-300" onClick={toggleLeftMenu}>
                   <LayoutDashboard className="mr-2 h-4 w-4" /> Main Dashboard
                 </Button>
-                <Button variant="ghost" className="w-full justify-start text-blue-600 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-800" onClick={toggleLeftMenu}>
+                <Button variant="ghost" className="w-full justify-start text-primary hover:bg-primary/10 transition-colors duration-300" onClick={toggleLeftMenu}>
                   <User className="mr-2 h-4 w-4" /> Personal Dashboard
                 </Button>
               </div>
@@ -158,7 +183,7 @@ const Index = () => {
           {isMobileMenuOpen && (
             <motion.div 
               key="mobile-menu"
-              className="fixed inset-0 bg-blue-50/95 dark:bg-blue-900/95 backdrop-blur-sm z-40 md:hidden"
+              className="fixed inset-0 bg-background/95 backdrop-blur-md z-40 md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -167,30 +192,32 @@ const Index = () => {
                 {session ? (
                   <>
                     <Link to="/profile">
-                      <Button variant="outline" size="sm" onClick={toggleMobileMenu} className="bg-blue-100 text-blue-600 hover:bg-blue-200 dark:bg-blue-800 dark:text-blue-300 dark:hover:bg-blue-700">
-                        <UserIcon className="mr-1 h-3 w-3" /> Profile
+                      <Button variant="outline" size="sm" onClick={toggleMobileMenu} className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-300">
+                        <UserIcon className="mr-1 h-4 w-4" /> Profile
                       </Button>
                     </Link>
-                    <Button onClick={() => { handleLogout(); toggleMobileMenu(); }} variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-200">Logout</Button>
+                    <Button onClick={() => { handleLogout(); toggleMobileMenu(); }} variant="ghost" size="sm" className="text-primary hover:text-primary/80 transition-colors duration-300">
+                      <LogOut className="mr-1 h-4 w-4" /> Logout
+                    </Button>
                   </>
                 ) : (
-                  <Button onClick={() => { setShowLogin(true); toggleMobileMenu(); }} variant="default" size="sm" className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-700 dark:hover:bg-blue-600">Login</Button>
+                  <Button onClick={() => { setShowLogin(true); toggleMobileMenu(); }} variant="default" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300">Login</Button>
                 )}
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 bg-card/50 p-1 rounded-full">
                   <Sun className="h-4 w-4 text-yellow-500 dark:text-yellow-300" />
                   <Switch
                     checked={theme === 'dark'}
                     onCheckedChange={toggleTheme}
-                    className="bg-blue-200 dark:bg-blue-700"
+                    className="bg-primary/20 dark:bg-primary/40"
                   />
-                  <Moon className="h-4 w-4 text-blue-800 dark:text-blue-200" />
+                  <Moon className="h-4 w-4 text-primary dark:text-primary-foreground" />
                 </div>
-                <Button onClick={toggleMobileMenu} variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-200">Close Menu</Button>
+                <Button onClick={toggleMobileMenu} variant="ghost" size="sm" className="text-primary hover:text-primary/80 transition-colors duration-300">Close Menu</Button>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-        <main className="container mx-auto px-2 py-4">
+        <main className="container mx-auto px-4 py-8">
           <AnimatePresence mode="wait">
             {showLogin && !session ? (
               <motion.div
@@ -198,16 +225,17 @@ const Index = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-blue-50/80 dark:bg-blue-900/80 backdrop-blur-sm flex justify-center items-center z-50"
+                className="fixed inset-0 bg-background/80 backdrop-blur-sm flex justify-center items-center z-50"
               >
                 <Login onClose={() => setShowLogin(false)} />
               </motion.div>
             ) : (
               <motion.div
                 key="dashboard"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
               >
                 <CustomizableDashboard />
               </motion.div>
