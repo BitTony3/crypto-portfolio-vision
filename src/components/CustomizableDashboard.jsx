@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X, GripVertical, Maximize2, Minimize2 } from 'lucide-react';
+import { X, GripVertical, Maximize2, Minimize2, ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import MarketOverview from './MarketOverview';
 import GreedFearIndex from './GreedFearIndex';
@@ -40,23 +40,23 @@ const widgetComponents = {
   TradeTerminal,
 };
 
-const widgetSizes = {
-  ChartWidget: { width: 'col-span-4', height: 'row-span-4' }, // Changed from row-span-5 to row-span-4
-  MarketOverview: { width: 'col-span-2', height: 'row-span-2' },
-  GreedFearIndex: { width: 'col-span-1', height: 'row-span-1' },
-  TopPerformers: { width: 'col-span-1', height: 'row-span-2' },
-  TrendingCoins: { width: 'col-span-1', height: 'row-span-1' },
-  CryptoNews: { width: 'col-span-2', height: 'row-span-2' },
-  TokenPairExplorer: { width: 'col-span-2', height: 'row-span-2' },
-  LiquidityPoolsOverview: { width: 'col-span-2', height: 'row-span-2' },
-  GasTracker: { width: 'col-span-1', height: 'row-span-1' },
-  DeFiOverview: { width: 'col-span-2', height: 'row-span-1' },
-  NFTMarketplace: { width: 'col-span-2', height: 'row-span-2' },
-  BlockchainExplorer: { width: 'col-span-2', height: 'row-span-2' },
-  TopCryptoAssets: { width: 'col-span-2', height: 'row-span-2' },
-  Portfolio: { width: 'col-span-2', height: 'row-span-2' },
-  PortfolioPerformance: { width: 'col-span-2', height: 'row-span-1' },
-  TradeTerminal: { width: 'col-span-2', height: 'row-span-2' },
+const initialWidgetSizes = {
+  ChartWidget: { width: 4, height: 4 },
+  MarketOverview: { width: 2, height: 2 },
+  GreedFearIndex: { width: 1, height: 1 },
+  TopPerformers: { width: 1, height: 2 },
+  TrendingCoins: { width: 1, height: 1 },
+  CryptoNews: { width: 2, height: 2 },
+  TokenPairExplorer: { width: 2, height: 2 },
+  LiquidityPoolsOverview: { width: 2, height: 2 },
+  GasTracker: { width: 1, height: 1 },
+  DeFiOverview: { width: 2, height: 1 },
+  NFTMarketplace: { width: 2, height: 2 },
+  BlockchainExplorer: { width: 2, height: 2 },
+  TopCryptoAssets: { width: 2, height: 2 },
+  Portfolio: { width: 2, height: 2 },
+  PortfolioPerformance: { width: 2, height: 1 },
+  TradeTerminal: { width: 2, height: 2 },
 };
 
 const CustomizableDashboard = () => {
@@ -64,11 +64,16 @@ const CustomizableDashboard = () => {
     const savedWidgets = localStorage.getItem('dashboardWidgets');
     return savedWidgets ? JSON.parse(savedWidgets) : Object.keys(widgetComponents);
   });
+  const [widgetSizes, setWidgetSizes] = useState(() => {
+    const savedSizes = localStorage.getItem('widgetSizes');
+    return savedSizes ? JSON.parse(savedSizes) : initialWidgetSizes;
+  });
   const [expandedWidgets, setExpandedWidgets] = useState({});
 
   useEffect(() => {
     localStorage.setItem('dashboardWidgets', JSON.stringify(widgets));
-  }, [widgets]);
+    localStorage.setItem('widgetSizes', JSON.stringify(widgetSizes));
+  }, [widgets, widgetSizes]);
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
@@ -90,17 +95,25 @@ const CustomizableDashboard = () => {
     }));
   };
 
+  const resizeWidget = (widgetName, direction) => {
+    setWidgetSizes(prev => {
+      const newSizes = { ...prev };
+      if (direction === 'width+') newSizes[widgetName].width = Math.min(newSizes[widgetName].width + 1, 6);
+      if (direction === 'width-') newSizes[widgetName].width = Math.max(newSizes[widgetName].width - 1, 1);
+      if (direction === 'height+') newSizes[widgetName].height = newSizes[widgetName].height + 1;
+      if (direction === 'height-') newSizes[widgetName].height = Math.max(newSizes[widgetName].height - 1, 1);
+      return newSizes;
+    });
+  };
+
   const getWidgetClassName = (widgetName) => {
     const isExpanded = expandedWidgets[widgetName];
     if (isExpanded) {
       return 'col-span-full row-span-full';
     }
-    return `${widgetSizes[widgetName].width} ${widgetSizes[widgetName].height}`;
+    const size = widgetSizes[widgetName];
+    return `col-span-${size.width} row-span-${size.height}`;
   };
-
-  // Ensure ChartWidget is in the center and only one TopPerformers is present
-  const sortedWidgets = ['ChartWidget', ...widgets.filter(w => w !== 'ChartWidget' && w !== 'TopPerformers'), 'TopPerformers'];
-  const uniqueWidgets = Array.from(new Set(sortedWidgets));
 
   return (
     <div className="p-4">
@@ -111,9 +124,9 @@ const CustomizableDashboard = () => {
             <div
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className="grid grid-cols-6 gap-4 auto-rows-min"
+              className="grid grid-cols-6 auto-rows-min gap-4"
             >
-              {uniqueWidgets.map((widgetName, index) => {
+              {widgets.map((widgetName, index) => {
                 const WidgetComponent = widgetComponents[widgetName];
                 return (
                   <Draggable key={widgetName} draggableId={widgetName} index={index}>
@@ -166,8 +179,42 @@ const CustomizableDashboard = () => {
                               </div>
                             </div>
                           </CardHeader>
-                          <CardContent className="p-2 overflow-auto" style={{ height: widgetName === 'ChartWidget' ? 'calc(100% - 2rem)' : 'auto' }}>
+                          <CardContent className="p-2 overflow-auto relative" style={{ height: widgetName === 'ChartWidget' ? 'calc(100% - 2rem)' : 'auto' }}>
                             <WidgetComponent />
+                            <div className="absolute bottom-1 right-1 flex space-x-1">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => resizeWidget(widgetName, 'width-')}
+                                className="h-6 w-6 p-0 bg-secondary/50"
+                              >
+                                <ChevronLeft className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => resizeWidget(widgetName, 'width+')}
+                                className="h-6 w-6 p-0 bg-secondary/50"
+                              >
+                                <ChevronRight className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => resizeWidget(widgetName, 'height-')}
+                                className="h-6 w-6 p-0 bg-secondary/50"
+                              >
+                                <ChevronUp className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => resizeWidget(widgetName, 'height+')}
+                                className="h-6 w-6 p-0 bg-secondary/50"
+                              >
+                                <ChevronDown className="h-3 w-3" />
+                              </Button>
+                            </div>
                           </CardContent>
                         </Card>
                       </div>
