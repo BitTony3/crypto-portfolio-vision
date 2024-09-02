@@ -41,7 +41,7 @@ const widgetComponents = {
 };
 
 const widgetSizes = {
-  ChartWidget: { width: 'col-span-4', height: 'row-span-5' }, // Changed from row-span-12 to row-span-5
+  ChartWidget: { width: 'col-span-4', height: 'row-span-4' }, // Changed from row-span-5 to row-span-4
   MarketOverview: { width: 'col-span-2', height: 'row-span-2' },
   GreedFearIndex: { width: 'col-span-1', height: 'row-span-1' },
   TopPerformers: { width: 'col-span-1', height: 'row-span-2' },
