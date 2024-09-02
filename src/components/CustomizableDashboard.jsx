@@ -13,6 +13,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ResizableBox } from 'react-resizable';
+import 'react-resizable/css/styles.css';
 import MarketOverview from './MarketOverview';
 import GreedFearIndex from './GreedFearIndex';
 import TopPerformers from './TopPerformers';
@@ -105,18 +107,14 @@ const CustomizableDashboard = () => {
     }));
   };
 
-  const resizeWidget = (widgetName, direction) => {
-    setWidgetSizes(prev => {
-      const newSizes = { ...prev };
-      if (!newSizes[widgetName]) {
-        newSizes[widgetName] = { ...initialWidgetSizes[widgetName] };
-      }
-      if (direction === 'width+') newSizes[widgetName].width = Math.min(newSizes[widgetName].width + 1, 6);
-      if (direction === 'width-') newSizes[widgetName].width = Math.max(newSizes[widgetName].width - 1, 1);
-      if (direction === 'height+') newSizes[widgetName].height = newSizes[widgetName].height + 1;
-      if (direction === 'height-') newSizes[widgetName].height = Math.max(newSizes[widgetName].height - 1, 1);
-      return newSizes;
-    });
+  const onResizeStop = (widgetName, size) => {
+    setWidgetSizes(prev => ({
+      ...prev,
+      [widgetName]: {
+        width: Math.round(size.width / 100),
+        height: Math.round(size.height / 50),
+      },
+    }));
   };
 
   const getWidgetClassName = (widgetName) => {
@@ -181,6 +179,7 @@ const CustomizableDashboard = () => {
                   console.error(`Widget component not found: ${widgetName}`);
                   return null;
                 }
+                const size = widgetSizes[widgetName] || initialWidgetSizes[widgetName] || { width: 1, height: 1 };
                 return (
                   <Draggable key={widgetName} draggableId={widgetName} index={index}>
                     {(provided) => (
@@ -189,87 +188,61 @@ const CustomizableDashboard = () => {
                         {...provided.draggableProps}
                         className={`group ${getWidgetClassName(widgetName)}`}
                       >
-                        <Card className="h-full overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-                          <CardHeader className="p-2 flex flex-row items-center justify-between bg-secondary/10">
-                            <CardTitle className="text-sm font-medium">{widgetName}</CardTitle>
-                            <div className="flex items-center space-x-1">
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      onClick={() => toggleWidgetExpansion(widgetName)}
-                                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                                    >
-                                      {expandedWidgets[widgetName] ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    {expandedWidgets[widgetName] ? 'Minimize' : 'Maximize'}
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      onClick={() => removeWidget(index)}
-                                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                                    >
-                                      <X className="h-3 w-3" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    Remove Widget
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                              <div {...provided.dragHandleProps} className="cursor-move opacity-0 group-hover:opacity-100 transition-opacity">
-                                <GripVertical className="h-3 w-3" />
+                        <ResizableBox
+                          width={size.width * 100}
+                          height={size.height * 50}
+                          onResizeStop={(e, data) => onResizeStop(widgetName, data.size)}
+                          minConstraints={[100, 50]}
+                          maxConstraints={[600, 400]}
+                        >
+                          <Card className="h-full overflow-hidden transition-shadow duration-300 hover:shadow-lg">
+                            <CardHeader className="p-2 flex flex-row items-center justify-between bg-secondary/10">
+                              <CardTitle className="text-sm font-medium">{widgetName}</CardTitle>
+                              <div className="flex items-center space-x-1">
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => toggleWidgetExpansion(widgetName)}
+                                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                      >
+                                        {expandedWidgets[widgetName] ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      {expandedWidgets[widgetName] ? 'Minimize' : 'Maximize'}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => removeWidget(index)}
+                                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                      >
+                                        <X className="h-3 w-3" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      Remove Widget
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                                <div {...provided.dragHandleProps} className="cursor-move opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <GripVertical className="h-3 w-3" />
+                                </div>
                               </div>
-                            </div>
-                          </CardHeader>
-                          <CardContent className="p-2 overflow-auto relative" style={{ height: widgetName === 'ChartWidget' ? 'calc(100% - 2rem)' : 'auto' }}>
-                            <WidgetComponent />
-                            <div className="absolute bottom-1 right-1 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => resizeWidget(widgetName, 'width-')}
-                                className="h-6 w-6 p-0 bg-secondary/50"
-                              >
-                                <ChevronLeft className="h-3 w-3" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => resizeWidget(widgetName, 'width+')}
-                                className="h-6 w-6 p-0 bg-secondary/50"
-                              >
-                                <ChevronRight className="h-3 w-3" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => resizeWidget(widgetName, 'height-')}
-                                className="h-6 w-6 p-0 bg-secondary/50"
-                              >
-                                <ChevronUp className="h-3 w-3" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => resizeWidget(widgetName, 'height+')}
-                                className="h-6 w-6 p-0 bg-secondary/50"
-                              >
-                                <ChevronDown className="h-3 w-3" />
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
+                            </CardHeader>
+                            <CardContent className="p-2 overflow-auto relative" style={{ height: 'calc(100% - 2rem)' }}>
+                              <WidgetComponent />
+                            </CardContent>
+                          </Card>
+                        </ResizableBox>
                       </div>
                     )}
                   </Draggable>
