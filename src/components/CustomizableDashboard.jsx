@@ -20,7 +20,6 @@ import TrendingCoins from './TrendingCoins';
 import CryptoNews from './CryptoNews';
 import TokenPairExplorer from './TokenPairExplorer';
 import LiquidityPoolsOverview from './LiquidityPoolsOverview';
-import TradingViewChart from './TradingViewChart';
 import GasTracker from './GasTracker';
 import DeFiOverview from './DeFiOverview';
 import NFTMarketplace from './NFTMarketplace';
@@ -39,7 +38,6 @@ const widgetComponents = {
   CryptoNews,
   TokenPairExplorer,
   LiquidityPoolsOverview,
-  TradingViewChart,
   GasTracker,
   DeFiOverview,
   NFTMarketplace,
@@ -59,7 +57,6 @@ const widgetDescriptions = {
   CryptoNews: "Latest news in the crypto world",
   TokenPairExplorer: "Analyze token pair metrics",
   LiquidityPoolsOverview: "Overview of DeFi liquidity pools",
-  TradingViewChart: "Interactive price charts",
   GasTracker: "Ethereum gas price tracker",
   DeFiOverview: "Decentralized Finance market overview",
   NFTMarketplace: "Non-Fungible Token market trends",
@@ -67,7 +64,7 @@ const widgetDescriptions = {
   TopCryptoAssets: "Top cryptocurrencies by market cap",
   Portfolio: "Your cryptocurrency portfolio",
   PortfolioPerformance: "Track your portfolio performance",
-  ChartWidget: "Price chart for selected asset",
+  ChartWidget: "Interactive TradingView chart",
   TradeTerminal: "Execute trades quickly",
 };
 
@@ -79,7 +76,6 @@ const widgetSizes = {
   CryptoNews: { minWidth: 300, minHeight: 300 },
   TokenPairExplorer: { minWidth: 400, minHeight: 400 },
   LiquidityPoolsOverview: { minWidth: 300, minHeight: 300 },
-  TradingViewChart: { minWidth: 600, minHeight: 400 },
   GasTracker: { minWidth: 200, minHeight: 200 },
   DeFiOverview: { minWidth: 300, minHeight: 300 },
   NFTMarketplace: { minWidth: 300, minHeight: 300 },
@@ -87,7 +83,7 @@ const widgetSizes = {
   TopCryptoAssets: { minWidth: 400, minHeight: 400 },
   Portfolio: { minWidth: 400, minHeight: 400 },
   PortfolioPerformance: { minWidth: 300, minHeight: 300 },
-  ChartWidget: { minWidth: 400, minHeight: 300 },
+  ChartWidget: { minWidth: 600, minHeight: 400 },
   TradeTerminal: { minWidth: 300, minHeight: 300 },
 };
 

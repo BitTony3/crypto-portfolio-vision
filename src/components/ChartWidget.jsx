@@ -1,28 +1,50 @@
-import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import React, { useEffect, useRef } from 'react';
 
-const data = [
-  { name: 'Jan', price: 4000 },
-  { name: 'Feb', price: 3000 },
-  { name: 'Mar', price: 5000 },
-  { name: 'Apr', price: 2780 },
-  { name: 'May', price: 1890 },
-  { name: 'Jun', price: 2390 },
-];
+let tvScriptLoadingPromise;
 
 const ChartWidget = () => {
+  const onLoadScriptRef = useRef();
+
+  useEffect(() => {
+    onLoadScriptRef.current = createWidget;
+
+    if (!tvScriptLoadingPromise) {
+      tvScriptLoadingPromise = new Promise((resolve) => {
+        const script = document.createElement('script');
+        script.id = 'tradingview-widget-loading-script';
+        script.src = 'https://s3.tradingview.com/tv.js';
+        script.type = 'text/javascript';
+        script.onload = resolve;
+        document.head.appendChild(script);
+      });
+    }
+
+    tvScriptLoadingPromise.then(() => onLoadScriptRef.current && onLoadScriptRef.current());
+
+    return () => (onLoadScriptRef.current = null);
+  }, []);
+
+  function createWidget() {
+    if (document.getElementById('tradingview-widget') && 'TradingView' in window) {
+      new window.TradingView.widget({
+        autosize: true,
+        symbol: "NASDAQ:AAPL",
+        interval: "D",
+        timezone: "Etc/UTC",
+        theme: "dark",
+        style: "1",
+        locale: "en",
+        toolbar_bg: "#f1f3f6",
+        enable_publishing: false,
+        allow_symbol_change: true,
+        container_id: "tradingview-widget"
+      });
+    }
+  }
+
   return (
-    <div className="h-full w-full p-2">
-      <h3 className="text-sm font-semibold mb-2">Price Chart</h3>
-      <ResponsiveContainer width="100%" height={200}>
-        <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Line type="monotone" dataKey="price" stroke="#8884d8" />
-        </LineChart>
-      </ResponsiveContainer>
+    <div className='tradingview-widget-container h-full w-full'>
+      <div id='tradingview-widget' className='h-full w-full' />
     </div>
   );
 };
