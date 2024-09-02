@@ -177,6 +177,10 @@ const CustomizableDashboard = () => {
             >
               {widgets.map((widgetName, index) => {
                 const WidgetComponent = widgetComponents[widgetName];
+                if (!WidgetComponent) {
+                  console.error(`Widget component not found: ${widgetName}`);
+                  return null;
+                }
                 return (
                   <Draggable key={widgetName} draggableId={widgetName} index={index}>
                     {(provided) => (
