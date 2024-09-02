@@ -49,50 +49,30 @@ const widgetComponents = {
   TradeTerminal,
 };
 
-const widgetDescriptions = {
-  MarketOverview: "Overview of the cryptocurrency market",
-  GreedFearIndex: "Crypto market sentiment indicator",
-  TopPerformers: "Best performing cryptocurrencies",
-  TrendingCoins: "Most popular coins right now",
-  CryptoNews: "Latest news in the crypto world",
-  TokenPairExplorer: "Analyze token pair metrics",
-  LiquidityPoolsOverview: "Overview of DeFi liquidity pools",
-  GasTracker: "Ethereum gas price tracker",
-  DeFiOverview: "Decentralized Finance market overview",
-  NFTMarketplace: "Non-Fungible Token market trends",
-  BlockchainExplorer: "Explore blockchain data",
-  TopCryptoAssets: "Top cryptocurrencies by market cap",
-  Portfolio: "Your cryptocurrency portfolio",
-  PortfolioPerformance: "Track your portfolio performance",
-  ChartWidget: "Interactive TradingView chart",
-  TradeTerminal: "Execute trades quickly",
-};
-
 const widgetSizes = {
-  MarketOverview: { minWidth: 300, minHeight: 300 },
-  GreedFearIndex: { minWidth: 200, minHeight: 200 },
-  TopPerformers: { minWidth: 300, minHeight: 300 },
-  TrendingCoins: { minWidth: 200, minHeight: 200 },
-  CryptoNews: { minWidth: 300, minHeight: 300 },
-  TokenPairExplorer: { minWidth: 400, minHeight: 400 },
-  LiquidityPoolsOverview: { minWidth: 300, minHeight: 300 },
-  GasTracker: { minWidth: 200, minHeight: 200 },
-  DeFiOverview: { minWidth: 300, minHeight: 300 },
-  NFTMarketplace: { minWidth: 300, minHeight: 300 },
-  BlockchainExplorer: { minWidth: 400, minHeight: 400 },
-  TopCryptoAssets: { minWidth: 400, minHeight: 400 },
-  Portfolio: { minWidth: 400, minHeight: 400 },
-  PortfolioPerformance: { minWidth: 300, minHeight: 300 },
-  ChartWidget: { minWidth: 600, minHeight: 400 },
-  TradeTerminal: { minWidth: 300, minHeight: 300 },
+  ChartWidget: { width: 'col-span-4', height: 'row-span-3' },
+  MarketOverview: { width: 'col-span-2', height: 'row-span-2' },
+  GreedFearIndex: { width: 'col-span-1', height: 'row-span-1' },
+  TopPerformers: { width: 'col-span-1', height: 'row-span-2' },
+  TrendingCoins: { width: 'col-span-1', height: 'row-span-1' },
+  CryptoNews: { width: 'col-span-2', height: 'row-span-2' },
+  TokenPairExplorer: { width: 'col-span-2', height: 'row-span-2' },
+  LiquidityPoolsOverview: { width: 'col-span-2', height: 'row-span-2' },
+  GasTracker: { width: 'col-span-1', height: 'row-span-1' },
+  DeFiOverview: { width: 'col-span-2', height: 'row-span-1' },
+  NFTMarketplace: { width: 'col-span-2', height: 'row-span-2' },
+  BlockchainExplorer: { width: 'col-span-2', height: 'row-span-2' },
+  TopCryptoAssets: { width: 'col-span-2', height: 'row-span-2' },
+  Portfolio: { width: 'col-span-2', height: 'row-span-2' },
+  PortfolioPerformance: { width: 'col-span-2', height: 'row-span-1' },
+  TradeTerminal: { width: 'col-span-2', height: 'row-span-2' },
 };
 
 const CustomizableDashboard = () => {
   const [widgets, setWidgets] = useState(() => {
     const savedWidgets = localStorage.getItem('dashboardWidgets');
-    return savedWidgets ? JSON.parse(savedWidgets) : ['MarketOverview', 'GreedFearIndex', 'ChartWidget', 'TradeTerminal'];
+    return savedWidgets ? JSON.parse(savedWidgets) : Object.keys(widgetComponents);
   });
-  const [isAddWidgetOpen, setIsAddWidgetOpen] = useState(false);
   const [expandedWidgets, setExpandedWidgets] = useState({});
 
   useEffect(() => {
@@ -105,11 +85,6 @@ const CustomizableDashboard = () => {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
     setWidgets(items);
-  };
-
-  const addWidget = (widgetName) => {
-    setWidgets([...widgets, widgetName]);
-    setIsAddWidgetOpen(false);
   };
 
   const removeWidget = (index) => {
@@ -129,33 +104,33 @@ const CustomizableDashboard = () => {
     if (isExpanded) {
       return 'col-span-full row-span-full';
     }
-    return `col-span-1 row-span-1`;
+    return `${widgetSizes[widgetName].width} ${widgetSizes[widgetName].height}`;
   };
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-background p-2">
-      <h2 className="text-xl font-bold mb-2">Your Personalized Dashboard</h2>
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4">Customizable Dashboard</h2>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="widgets">
           {(provided) => (
             <div
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 h-[calc(100vh-80px)] overflow-auto auto-rows-fr"
+              className="grid grid-cols-6 gap-4 auto-rows-min"
             >
               {widgets.map((widgetName, index) => {
                 const WidgetComponent = widgetComponents[widgetName];
                 return (
-                  <Draggable key={widgetName + index} draggableId={widgetName + index} index={index}>
+                  <Draggable key={widgetName} draggableId={widgetName} index={index}>
                     {(provided) => (
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         className={`group ${getWidgetClassName(widgetName)}`}
                       >
-                        <Card className="relative h-full overflow-hidden flex flex-col">
-                          <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between p-1 sticky top-0 bg-card z-10">
-                            <CardTitle className="text-xs font-medium">{widgetName}</CardTitle>
+                        <Card className="h-full overflow-hidden">
+                          <CardHeader className="p-2 flex flex-row items-center justify-between">
+                            <CardTitle className="text-sm font-medium">{widgetName}</CardTitle>
                             <div className="flex items-center space-x-1">
                               <TooltipProvider>
                                 <Tooltip>
@@ -164,7 +139,7 @@ const CustomizableDashboard = () => {
                                       variant="ghost"
                                       size="icon"
                                       onClick={() => toggleWidgetExpansion(widgetName)}
-                                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                      className="h-6 w-6 p-0"
                                     >
                                       {expandedWidgets[widgetName] ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
                                     </Button>
@@ -181,7 +156,7 @@ const CustomizableDashboard = () => {
                                       variant="ghost"
                                       size="icon"
                                       onClick={() => removeWidget(index)}
-                                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                      className="h-6 w-6 p-0"
                                     >
                                       <X className="h-3 w-3" />
                                     </Button>
@@ -196,7 +171,7 @@ const CustomizableDashboard = () => {
                               </div>
                             </div>
                           </CardHeader>
-                          <CardContent className="flex-grow overflow-auto p-1">
+                          <CardContent className="p-2 overflow-auto">
                             <WidgetComponent />
                           </CardContent>
                         </Card>
@@ -210,42 +185,6 @@ const CustomizableDashboard = () => {
           )}
         </Droppable>
       </DragDropContext>
-      <div className="fixed bottom-2 right-2">
-        <Dialog open={isAddWidgetOpen} onOpenChange={setIsAddWidgetOpen}>
-          <DialogTrigger asChild>
-            <Button size="sm" className="text-xs">
-              <PlusCircle className="mr-1 h-3 w-3" /> Add Widget
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Add Widget</DialogTitle>
-              <DialogDescription>
-                Choose a widget to add to your dashboard.
-              </DialogDescription>
-            </DialogHeader>
-            <ScrollArea className="h-[300px] mt-4">
-              <div className="space-y-2">
-                {Object.keys(widgetComponents).map((widgetName) => (
-                  <Button
-                    key={widgetName}
-                    onClick={() => addWidget(widgetName)}
-                    className="w-full justify-start"
-                    variant="ghost"
-                    size="sm"
-                  >
-                    <PlusCircle className="mr-2 h-3 w-3" />
-                    {widgetName}
-                    <span className="ml-2 text-xs text-muted-foreground">
-                      {widgetDescriptions[widgetName]}
-                    </span>
-                  </Button>
-                ))}
-              </div>
-            </ScrollArea>
-          </DialogContent>
-        </Dialog>
-      </div>
     </div>
   );
 };
