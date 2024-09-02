@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X, GripVertical, Maximize2, Minimize2, Plus } from 'lucide-react';
+import { X, GripVertical, Maximize2, Minimize2, Plus, Settings } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Dialog,
@@ -30,6 +30,7 @@ import Portfolio from './Portfolio';
 import PortfolioPerformance from './PortfolioPerformance';
 import ChartWidget from './ChartWidget';
 import TradeTerminal from './TradeTerminal';
+import { useToast } from "@/components/ui/use-toast";
 
 const widgetComponents = {
   ChartWidget,
@@ -93,6 +94,8 @@ const CustomizableDashboard = () => {
   const [columns, setColumns] = useState(3);
   const [selectedLocation, setSelectedLocation] = useState('global');
   const [isDragging, setIsDragging] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const handleResize = () => {
@@ -122,11 +125,20 @@ const CustomizableDashboard = () => {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
     setWidgets(items);
+    toast({
+      title: "Widget moved",
+      description: `${reorderedItem} has been repositioned.`,
+    });
   };
 
   const removeWidget = (index) => {
     const newWidgets = widgets.filter((_, i) => i !== index);
     setWidgets(newWidgets);
+    toast({
+      title: "Widget removed",
+      description: `${widgets[index]} has been removed from your dashboard.`,
+      variant: "destructive",
+    });
   };
 
   const toggleWidgetExpansion = (widgetName) => {
@@ -134,11 +146,19 @@ const CustomizableDashboard = () => {
       ...prev,
       [widgetName]: !prev[widgetName]
     }));
+    toast({
+      title: expandedWidgets[widgetName] ? "Widget collapsed" : "Widget expanded",
+      description: `${widgetName} has been ${expandedWidgets[widgetName] ? "collapsed" : "expanded"}.`,
+    });
   };
 
   const addWidget = (widgetName) => {
     if (!widgets.includes(widgetName)) {
       setWidgets([...widgets, widgetName]);
+      toast({
+        title: "Widget added",
+        description: `${widgetName} has been added to your dashboard.`,
+      });
     }
     setIsAddWidgetOpen(false);
   };
@@ -192,6 +212,18 @@ const CustomizableDashboard = () => {
               </Select>
             </DialogContent>
           </Dialog>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" onClick={() => setIsSettingsOpen(true)}>
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                Dashboard Settings
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
       <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
@@ -294,6 +326,33 @@ const CustomizableDashboard = () => {
           )}
         </Droppable>
       </DragDropContext>
+      <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Dashboard Settings</DialogTitle>
+            <DialogDescription>
+              Customize your dashboard layout and preferences.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Number of Columns</label>
+              <Select value={columns.toString()} onValueChange={(value) => setColumns(parseInt(value))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select number of columns" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">1 Column</SelectItem>
+                  <SelectItem value="2">2 Columns</SelectItem>
+                  <SelectItem value="3">3 Columns</SelectItem>
+                  <SelectItem value="4">4 Columns</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {/* Add more settings options here */}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
