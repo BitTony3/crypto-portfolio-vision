@@ -2,6 +2,9 @@ import React, { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Loader2 } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const fetchAssetPrices = async (ids) => {
   // Mock data for asset prices
@@ -36,6 +39,8 @@ const Portfolio = () => {
     { id: 'tether', amount: 40000, location: 'Trezor', type: 'Hardware Wallet', purchasePrice: 1, currentPrice: 0 },
   ]);
 
+  const [showDetails, setShowDetails] = useState(false);
+
   const assetIds = [...new Set(portfolio.map(item => item.id))];
 
   const { data, isLoading, error } = useQuery({
@@ -62,11 +67,11 @@ const Portfolio = () => {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
 
   if (isLoading) return (
-    <div className="flex justify-center items-center h-64">
+    <div className="flex justify-center items-center h-full">
       <Loader2 className="h-8 w-8 animate-spin text-primary" />
     </div>
   );
-  if (error) return <div className="text-2xl font-bold text-red-600">Error: {error.message}</div>;
+  if (error) return <div className="text-sm font-bold text-red-600">Error: {error.message}</div>;
 
   const calculateTotalValue = () => {
     if (!data || !data.data) return 0;
@@ -80,73 +85,87 @@ const Portfolio = () => {
   };
 
   return (
-    <div className="bg-secondary border-4 border-primary p-4 shadow-lg rounded-lg h-full">
-      <h2 className="text-4xl font-bold mb-4 text-primary">Your Portfolio</h2>
-      <div className="flex flex-col lg:flex-row gap-4">
-        <div className="lg:w-2/3 overflow-x-auto">
-          <table className="w-full border-collapse border-4 border-primary mb-4">
-            <thead>
-              <tr className="bg-primary text-secondary">
-                <th className="p-2 border-2 border-secondary">Asset</th>
-                <th className="p-2 border-2 border-secondary">Amount</th>
-                <th className="p-2 border-2 border-secondary">Location</th>
-                <th className="p-2 border-2 border-secondary">Type</th>
-                <th className="p-2 border-2 border-secondary">Value (USD)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data && data.data && portfolio.map((item, index) => {
-                const asset = data.data.find(a => a.id === item.id);
-                const currentPrice = asset ? parseFloat(asset.priceUsd) : 0;
-                const value = item.amount * currentPrice;
-                const costBasis = item.amount * item.purchasePrice;
-                const profitLoss = value - costBasis;
-                const profitLossPercentage = ((value / costBasis) - 1) * 100;
-                return (
-                  <tr key={index} className="hover:bg-background text-text">
-                    <td className="p-2 border-2 border-primary">{asset ? asset.name : item.id}</td>
-                    <td className="p-2 border-2 border-primary">{item.amount.toFixed(4)}</td>
-                    <td className="p-2 border-2 border-primary">{item.location}</td>
-                    <td className="p-2 border-2 border-primary">{item.type}</td>
-                    <td className="p-2 border-2 border-primary">${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
-                    <td className="p-2 border-2 border-primary">${costBasis.toLocaleString(undefined, { maximumFractionDigits: 2 })}</td>
-                    <td className={`p-2 border-2 border-primary ${profitLoss >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      ${profitLoss.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                      ({profitLossPercentage.toFixed(2)}%)
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+    <Card className="h-full flex flex-col">
+      <CardHeader>
+        <CardTitle className="text-xl font-bold text-primary">Your Portfolio</CardTitle>
+      </CardHeader>
+      <CardContent className="flex-grow overflow-hidden flex flex-col">
+        <div className="flex-grow flex flex-col md:flex-row">
+          <div className="md:w-1/2 h-64 md:h-auto">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={pieChartData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius="60%"
+                  outerRadius="80%"
+                  fill="#8884d8"
+                  paddingAngle={5}
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                >
+                  {pieChartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="md:w-1/2 flex flex-col justify-center items-center p-4">
+            <div className="text-2xl font-bold text-primary mb-4">
+              Total Value: ${calculateTotalValue().toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            </div>
+            <Button onClick={() => setShowDetails(!showDetails)}>
+              {showDetails ? 'Hide Details' : 'Show Details'}
+            </Button>
+          </div>
         </div>
-        <div className="lg:w-1/3 flex flex-col items-center justify-center">
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                data={pieChartData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-              >
-                {pieChartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-      <div className="text-2xl font-bold break-words text-primary mt-4">
-        Total Portfolio Value: ${calculateTotalValue().toLocaleString(undefined, { maximumFractionDigits: 2 })}
-      </div>
-    </div>
+        {showDetails && (
+          <div className="mt-4 overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Asset</TableHead>
+                  <TableHead>Amount</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Value (USD)</TableHead>
+                  <TableHead>Cost Basis</TableHead>
+                  <TableHead>Profit/Loss</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data && data.data && portfolio.map((item, index) => {
+                  const asset = data.data.find(a => a.id === item.id);
+                  const currentPrice = asset ? parseFloat(asset.priceUsd) : 0;
+                  const value = item.amount * currentPrice;
+                  const costBasis = item.amount * item.purchasePrice;
+                  const profitLoss = value - costBasis;
+                  const profitLossPercentage = ((value / costBasis) - 1) * 100;
+                  return (
+                    <TableRow key={index}>
+                      <TableCell>{asset ? asset.id : item.id}</TableCell>
+                      <TableCell>{item.amount.toFixed(4)}</TableCell>
+                      <TableCell>{item.location}</TableCell>
+                      <TableCell>{item.type}</TableCell>
+                      <TableCell>${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
+                      <TableCell>${costBasis.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
+                      <TableCell className={profitLoss >= 0 ? 'text-green-500' : 'text-red-500'}>
+                        ${profitLoss.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        ({profitLossPercentage.toFixed(2)}%)
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

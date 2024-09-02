@@ -51,21 +51,21 @@ const widgetComponents = {
 };
 
 const initialWidgetSizes = {
-  ChartWidget: { width: 2, height: 2 },
+  ChartWidget: { width: 3, height: 2 },
   MarketOverview: { width: 1, height: 1 },
   GreedFearIndex: { width: 1, height: 1 },
   TopPerformers: { width: 1, height: 1 },
   TrendingCoins: { width: 1, height: 1 },
   CryptoNews: { width: 1, height: 1 },
-  TokenPairExplorer: { width: 1, height: 1 },
-  LiquidityPoolsOverview: { width: 1, height: 1 },
+  TokenPairExplorer: { width: 2, height: 1 },
+  LiquidityPoolsOverview: { width: 2, height: 1 },
   GasTracker: { width: 1, height: 1 },
   DeFiOverview: { width: 1, height: 1 },
   NFTMarketplace: { width: 1, height: 1 },
-  BlockchainExplorer: { width: 1, height: 1 },
-  TopCryptoAssets: { width: 1, height: 1 },
-  Portfolio: { width: 1, height: 1 },
-  PortfolioPerformance: { width: 1, height: 1 },
+  BlockchainExplorer: { width: 2, height: 1 },
+  TopCryptoAssets: { width: 3, height: 1 },
+  Portfolio: { width: 2, height: 2 },
+  PortfolioPerformance: { width: 2, height: 1 },
   TradeTerminal: { width: 1, height: 1 },
 };
 
@@ -88,7 +88,7 @@ const CustomizableDashboard = () => {
       'CryptoNews',
     ];
   });
-  const [expandedWidgets, setExpandedWidgets] = useState({});
+  const [expandedWidgets, setExpandedWidgets] = useState({ ChartWidget: true });
   const [isAddWidgetOpen, setIsAddWidgetOpen] = useState(false);
   const [columns, setColumns] = useState(3);
   const [selectedLocation, setSelectedLocation] = useState('global');
@@ -135,6 +135,11 @@ const CustomizableDashboard = () => {
       setWidgets([...widgets, widgetName]);
     }
     setIsAddWidgetOpen(false);
+  };
+
+  const getWidgetSize = (widgetName, isExpanded) => {
+    const size = initialWidgetSizes[widgetName] || { width: 1, height: 1 };
+    return isExpanded ? { width: columns, height: size.height * 2 } : size;
   };
 
   return (
@@ -189,7 +194,12 @@ const CustomizableDashboard = () => {
             <div
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4`}
+              className={`grid grid-cols-${columns} gap-4`}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+                gap: '1rem',
+              }}
             >
               {widgets.map((widgetName, index) => {
                 const WidgetComponent = widgetComponents[widgetName];
@@ -198,13 +208,19 @@ const CustomizableDashboard = () => {
                   return null;
                 }
                 const isExpanded = expandedWidgets[widgetName];
+                const { width, height } = getWidgetSize(widgetName, isExpanded);
                 return (
                   <Draggable key={widgetName} draggableId={widgetName} index={index}>
                     {(provided) => (
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        className={`group ${isExpanded ? 'col-span-full' : ''}`}
+                        className={`group col-span-${width} row-span-${height}`}
+                        style={{
+                          ...provided.draggableProps.style,
+                          gridColumn: `span ${width}`,
+                          gridRow: `span ${height}`,
+                        }}
                       >
                         <motion.div
                           layout
