@@ -32,6 +32,7 @@ import Portfolio from './Portfolio';
 import PortfolioPerformance from './PortfolioPerformance';
 import ChartWidget from './ChartWidget';
 import TradeTerminal from './TradeTerminal';
+import QuickAccessMenu from './QuickAccessMenu';
 
 const widgetComponents = {
   ChartWidget,
@@ -98,6 +99,7 @@ const CustomizableDashboard = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { toast } = useToast();
   const [runTour, setRunTour] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const dashboardRef = useRef(null);
 
@@ -203,6 +205,17 @@ const CustomizableDashboard = () => {
     }
   };
 
+  const refreshDashboard = async () => {
+    setIsLoading(true);
+    // Simulate a refresh delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setIsLoading(false);
+    toast({
+      title: "Dashboard refreshed",
+      description: "All widgets have been updated with the latest data.",
+    });
+  };
+
   return (
     <div ref={dashboardRef} className="p-4">
       <Joyride
@@ -222,6 +235,7 @@ const CustomizableDashboard = () => {
       <div className="flex justify-between items-center mb-6 dashboard-header">
         <h2 className="text-3xl font-bold text-primary">Customizable Dashboard</h2>
         <div className="flex items-center space-x-4">
+          <QuickAccessMenu onRefresh={refreshDashboard} />
           <Select value={selectedLocation} onValueChange={setSelectedLocation} className="location-selector">
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select location" />
@@ -373,7 +387,13 @@ const CustomizableDashboard = () => {
                               </div>
                             </CardHeader>
                             <CardContent className="p-2 overflow-auto relative" style={{ height: isExpanded ? '500px' : '300px' }}>
-                              <WidgetComponent location={selectedLocation} />
+                              {isLoading ? (
+                                <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm">
+                                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                                </div>
+                              ) : (
+                                <WidgetComponent location={selectedLocation} />
+                              )}
                             </CardContent>
                           </Card>
                         </motion.div>
