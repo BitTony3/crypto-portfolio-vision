@@ -2,8 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X, GripVertical, Maximize2, Minimize2, ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, GripVertical, Maximize2, Minimize2, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import MarketOverview from './MarketOverview';
 import GreedFearIndex from './GreedFearIndex';
 import TopPerformers from './TopPerformers';
@@ -62,13 +71,14 @@ const initialWidgetSizes = {
 const CustomizableDashboard = () => {
   const [widgets, setWidgets] = useState(() => {
     const savedWidgets = localStorage.getItem('dashboardWidgets');
-    return savedWidgets ? JSON.parse(savedWidgets) : Object.keys(widgetComponents);
+    return savedWidgets ? JSON.parse(savedWidgets) : Object.keys(widgetComponents).slice(0, 6);
   });
   const [widgetSizes, setWidgetSizes] = useState(() => {
     const savedSizes = localStorage.getItem('widgetSizes');
     return savedSizes ? JSON.parse(savedSizes) : initialWidgetSizes;
   });
   const [expandedWidgets, setExpandedWidgets] = useState({});
+  const [isAddWidgetOpen, setIsAddWidgetOpen] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('dashboardWidgets', JSON.stringify(widgets));
@@ -115,9 +125,45 @@ const CustomizableDashboard = () => {
     return `col-span-${size.width} row-span-${size.height}`;
   };
 
+  const addWidget = (widgetName) => {
+    if (!widgets.includes(widgetName)) {
+      setWidgets([...widgets, widgetName]);
+    }
+    setIsAddWidgetOpen(false);
+  };
+
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Customizable Dashboard</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Customizable Dashboard</h2>
+        <Dialog open={isAddWidgetOpen} onOpenChange={setIsAddWidgetOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="flex items-center">
+              <Plus className="mr-2 h-4 w-4" /> Add Widget
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add a new widget</DialogTitle>
+              <DialogDescription>
+                Choose a widget to add to your dashboard.
+              </DialogDescription>
+            </DialogHeader>
+            <Select onValueChange={addWidget}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a widget" />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.keys(widgetComponents).map((widgetName) => (
+                  <SelectItem key={widgetName} value={widgetName}>
+                    {widgetName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </DialogContent>
+        </Dialog>
+      </div>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="widgets">
           {(provided) => (
@@ -136,8 +182,8 @@ const CustomizableDashboard = () => {
                         {...provided.draggableProps}
                         className={`group ${getWidgetClassName(widgetName)}`}
                       >
-                        <Card className="h-full overflow-hidden">
-                          <CardHeader className="p-2 flex flex-row items-center justify-between">
+                        <Card className="h-full overflow-hidden transition-shadow duration-300 hover:shadow-lg">
+                          <CardHeader className="p-2 flex flex-row items-center justify-between bg-secondary/10">
                             <CardTitle className="text-sm font-medium">{widgetName}</CardTitle>
                             <div className="flex items-center space-x-1">
                               <TooltipProvider>
@@ -147,7 +193,7 @@ const CustomizableDashboard = () => {
                                       variant="ghost"
                                       size="icon"
                                       onClick={() => toggleWidgetExpansion(widgetName)}
-                                      className="h-6 w-6 p-0"
+                                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                                     >
                                       {expandedWidgets[widgetName] ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
                                     </Button>
@@ -164,7 +210,7 @@ const CustomizableDashboard = () => {
                                       variant="ghost"
                                       size="icon"
                                       onClick={() => removeWidget(index)}
-                                      className="h-6 w-6 p-0"
+                                      className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                                     >
                                       <X className="h-3 w-3" />
                                     </Button>
@@ -174,14 +220,14 @@ const CustomizableDashboard = () => {
                                   </TooltipContent>
                                 </Tooltip>
                               </TooltipProvider>
-                              <div {...provided.dragHandleProps} className="cursor-move">
+                              <div {...provided.dragHandleProps} className="cursor-move opacity-0 group-hover:opacity-100 transition-opacity">
                                 <GripVertical className="h-3 w-3" />
                               </div>
                             </div>
                           </CardHeader>
                           <CardContent className="p-2 overflow-auto relative" style={{ height: widgetName === 'ChartWidget' ? 'calc(100% - 2rem)' : 'auto' }}>
                             <WidgetComponent />
-                            <div className="absolute bottom-1 right-1 flex space-x-1">
+                            <div className="absolute bottom-1 right-1 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                               <Button
                                 variant="ghost"
                                 size="icon"
