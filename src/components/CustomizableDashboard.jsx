@@ -52,22 +52,22 @@ const widgetComponents = {
 };
 
 const initialWidgetSizes = {
-  ChartWidget: { width: 6, height: 4 },
-  MarketOverview: { width: 2, height: 2 },
-  GreedFearIndex: { width: 2, height: 2 },
-  TopPerformers: { width: 2, height: 2 },
-  TrendingCoins: { width: 2, height: 2 },
-  CryptoNews: { width: 2, height: 2 },
-  TokenPairExplorer: { width: 2, height: 2 },
-  LiquidityPoolsOverview: { width: 2, height: 2 },
-  GasTracker: { width: 2, height: 2 },
-  DeFiOverview: { width: 2, height: 2 },
-  NFTMarketplace: { width: 2, height: 2 },
-  BlockchainExplorer: { width: 2, height: 2 },
-  TopCryptoAssets: { width: 2, height: 2 },
-  Portfolio: { width: 2, height: 2 },
-  PortfolioPerformance: { width: 2, height: 2 },
-  TradeTerminal: { width: 2, height: 2 },
+  ChartWidget: { width: 8, height: 6 },
+  MarketOverview: { width: 4, height: 3 },
+  GreedFearIndex: { width: 4, height: 3 },
+  TopPerformers: { width: 4, height: 3 },
+  TrendingCoins: { width: 4, height: 3 },
+  CryptoNews: { width: 4, height: 3 },
+  TokenPairExplorer: { width: 4, height: 3 },
+  LiquidityPoolsOverview: { width: 4, height: 3 },
+  GasTracker: { width: 4, height: 3 },
+  DeFiOverview: { width: 4, height: 3 },
+  NFTMarketplace: { width: 4, height: 3 },
+  BlockchainExplorer: { width: 4, height: 3 },
+  TopCryptoAssets: { width: 4, height: 3 },
+  Portfolio: { width: 4, height: 3 },
+  PortfolioPerformance: { width: 4, height: 3 },
+  TradeTerminal: { width: 4, height: 3 },
 };
 
 const CustomizableDashboard = () => {
@@ -89,6 +89,7 @@ const CustomizableDashboard = () => {
   const [expandedWidgets, setExpandedWidgets] = useState({});
   const [isAddWidgetOpen, setIsAddWidgetOpen] = useState(false);
   const [columns, setColumns] = useState(12);
+  const [layout, setLayout] = useState([]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -109,6 +110,34 @@ const CustomizableDashboard = () => {
     localStorage.setItem('dashboardWidgets', JSON.stringify(widgets));
     localStorage.setItem('widgetSizes', JSON.stringify(widgetSizes));
   }, [widgets, widgetSizes]);
+
+  useEffect(() => {
+    const newLayout = [];
+    let row = 0;
+    let col = 0;
+
+    widgets.forEach((widgetName) => {
+      const size = widgetSizes[widgetName] || initialWidgetSizes[widgetName];
+      if (col + size.width > columns) {
+        col = 0;
+        row += 1;
+      }
+      newLayout.push({
+        i: widgetName,
+        x: col,
+        y: row,
+        w: size.width,
+        h: size.height,
+      });
+      col += size.width;
+      if (col >= columns) {
+        col = 0;
+        row += size.height;
+      }
+    });
+
+    setLayout(newLayout);
+  }, [widgets, widgetSizes, columns]);
 
   const onDragEnd = (result) => {
     if (!result.destination) return;
@@ -197,26 +226,36 @@ const CustomizableDashboard = () => {
               {...provided.droppableProps}
               ref={provided.innerRef}
               className={`grid grid-cols-${columns} auto-rows-min gap-4`}
+              style={{
+                display: 'grid',
+                gridTemplateColumns: `repeat(${columns}, 1fr)`,
+                gridAutoRows: 'minmax(50px, auto)',
+                gap: '1rem',
+              }}
             >
-              {widgets.map((widgetName, index) => {
-                const WidgetComponent = widgetComponents[widgetName];
+              {layout.map((item, index) => {
+                const WidgetComponent = widgetComponents[item.i];
                 if (!WidgetComponent) {
-                  console.error(`Widget component not found: ${widgetName}`);
+                  console.error(`Widget component not found: ${item.i}`);
                   return null;
                 }
-                const size = widgetSizes[widgetName] || initialWidgetSizes[widgetName] || { width: 1, height: 1 };
                 return (
-                  <Draggable key={widgetName} draggableId={widgetName} index={index}>
+                  <Draggable key={item.i} draggableId={item.i} index={index}>
                     {(provided) => (
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        className={`group ${getWidgetClassName(widgetName, index)}`}
+                        className={`group`}
+                        style={{
+                          ...provided.draggableProps.style,
+                          gridColumn: `span ${item.w}`,
+                          gridRow: `span ${item.h}`,
+                        }}
                       >
                         <ResizableBox
-                          width={size.width * (window.innerWidth / columns)}
-                          height={size.height * 50}
-                          onResizeStop={(e, data) => onResizeStop(widgetName, data.size)}
+                          width={item.w * (window.innerWidth / columns)}
+                          height={item.h * 50}
+                          onResizeStop={(e, data) => onResizeStop(item.i, data.size)}
                           minConstraints={[100, 50]}
                           maxConstraints={[window.innerWidth, window.innerHeight]}
                           resizeHandles={['se']}
@@ -226,7 +265,7 @@ const CustomizableDashboard = () => {
                         >
                           <Card className="h-full overflow-hidden transition-shadow duration-300 hover:shadow-lg">
                             <CardHeader className="p-2 flex flex-row items-center justify-between bg-secondary/10">
-                              <CardTitle className="text-sm font-medium">{widgetName}</CardTitle>
+                              <CardTitle className="text-sm font-medium">{item.i}</CardTitle>
                               <div className="flex items-center space-x-1">
                                 <TooltipProvider>
                                   <Tooltip>
@@ -234,14 +273,14 @@ const CustomizableDashboard = () => {
                                       <Button
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() => toggleWidgetExpansion(widgetName)}
+                                        onClick={() => toggleWidgetExpansion(item.i)}
                                         className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                                       >
-                                        {expandedWidgets[widgetName] ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
+                                        {expandedWidgets[item.i] ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
                                       </Button>
                                     </TooltipTrigger>
                                     <TooltipContent>
-                                      {expandedWidgets[widgetName] ? 'Minimize' : 'Maximize'}
+                                      {expandedWidgets[item.i] ? 'Minimize' : 'Maximize'}
                                     </TooltipContent>
                                   </Tooltip>
                                 </TooltipProvider>
