@@ -28,6 +28,8 @@ import BlockchainExplorer from './BlockchainExplorer';
 import TopCryptoAssets from './TopCryptoAssets';
 import Portfolio from './Portfolio';
 import PortfolioPerformance from './PortfolioPerformance';
+import ChartWidget from './ChartWidget';
+import TradeTerminal from './TradeTerminal';
 
 const widgetComponents = {
   MarketOverview,
@@ -45,6 +47,8 @@ const widgetComponents = {
   TopCryptoAssets,
   Portfolio,
   PortfolioPerformance,
+  ChartWidget,
+  TradeTerminal,
 };
 
 const widgetDescriptions = {
@@ -63,6 +67,8 @@ const widgetDescriptions = {
   TopCryptoAssets: "Top cryptocurrencies by market cap",
   Portfolio: "Your cryptocurrency portfolio",
   PortfolioPerformance: "Track your portfolio performance",
+  ChartWidget: "Price chart for selected asset",
+  TradeTerminal: "Execute trades quickly",
 };
 
 const widgetSizes = {
@@ -81,12 +87,14 @@ const widgetSizes = {
   TopCryptoAssets: { minWidth: 400, minHeight: 400 },
   Portfolio: { minWidth: 400, minHeight: 400 },
   PortfolioPerformance: { minWidth: 300, minHeight: 300 },
+  ChartWidget: { minWidth: 400, minHeight: 300 },
+  TradeTerminal: { minWidth: 300, minHeight: 300 },
 };
 
 const CustomizableDashboard = () => {
   const [widgets, setWidgets] = useState(() => {
     const savedWidgets = localStorage.getItem('dashboardWidgets');
-    return savedWidgets ? JSON.parse(savedWidgets) : ['MarketOverview', 'GreedFearIndex'];
+    return savedWidgets ? JSON.parse(savedWidgets) : ['MarketOverview', 'GreedFearIndex', 'ChartWidget', 'TradeTerminal'];
   });
   const [isAddWidgetOpen, setIsAddWidgetOpen] = useState(false);
   const [expandedWidgets, setExpandedWidgets] = useState({});
@@ -129,15 +137,15 @@ const CustomizableDashboard = () => {
   };
 
   return (
-    <div className="fixed inset-0 overflow-hidden bg-background p-4">
-      <h2 className="text-2xl font-bold mb-4">Your Personalized Dashboard</h2>
+    <div className="fixed inset-0 overflow-hidden bg-background p-2">
+      <h2 className="text-xl font-bold mb-2">Your Personalized Dashboard</h2>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="widgets">
           {(provided) => (
             <div
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 h-[calc(100vh-120px)] overflow-auto auto-rows-fr"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 h-[calc(100vh-80px)] overflow-auto auto-rows-fr"
             >
               {widgets.map((widgetName, index) => {
                 const WidgetComponent = widgetComponents[widgetName];
@@ -150,7 +158,7 @@ const CustomizableDashboard = () => {
                         className={`group ${getWidgetClassName(widgetName)}`}
                       >
                         <Card className="relative h-full overflow-hidden flex flex-col">
-                          <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between p-2 sticky top-0 bg-card z-10">
+                          <CardHeader className="flex-shrink-0 flex flex-row items-center justify-between p-1 sticky top-0 bg-card z-10">
                             <CardTitle className="text-xs font-medium">{widgetName}</CardTitle>
                             <div className="flex items-center space-x-1">
                               <TooltipProvider>
@@ -192,7 +200,7 @@ const CustomizableDashboard = () => {
                               </div>
                             </div>
                           </CardHeader>
-                          <CardContent className="flex-grow overflow-auto p-2">
+                          <CardContent className="flex-grow overflow-auto p-1">
                             <WidgetComponent />
                           </CardContent>
                         </Card>
@@ -206,11 +214,11 @@ const CustomizableDashboard = () => {
           )}
         </Droppable>
       </DragDropContext>
-      <div className="fixed bottom-4 right-4">
+      <div className="fixed bottom-2 right-2">
         <Dialog open={isAddWidgetOpen} onOpenChange={setIsAddWidgetOpen}>
           <DialogTrigger asChild>
-            <Button size="sm">
-              <PlusCircle className="mr-2 h-3 w-3" /> Add Widget
+            <Button size="sm" className="text-xs">
+              <PlusCircle className="mr-1 h-3 w-3" /> Add Widget
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
