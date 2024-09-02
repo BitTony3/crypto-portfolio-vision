@@ -92,6 +92,7 @@ const CustomizableDashboard = () => {
   const [isAddWidgetOpen, setIsAddWidgetOpen] = useState(false);
   const [columns, setColumns] = useState(3);
   const [selectedLocation, setSelectedLocation] = useState('global');
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -110,7 +111,12 @@ const CustomizableDashboard = () => {
     localStorage.setItem('dashboardWidgets', JSON.stringify(widgets));
   }, [widgets]);
 
+  const onDragStart = () => {
+    setIsDragging(true);
+  };
+
   const onDragEnd = (result) => {
+    setIsDragging(false);
     if (!result.destination) return;
     const items = Array.from(widgets);
     const [reorderedItem] = items.splice(result.source.index, 1);
@@ -188,7 +194,7 @@ const CustomizableDashboard = () => {
           </Dialog>
         </div>
       </div>
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
         <Droppable droppableId="widgets">
           {(provided) => (
             <div
@@ -228,6 +234,7 @@ const CustomizableDashboard = () => {
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.8 }}
                           transition={{ duration: 0.3 }}
+                          className={`h-full ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                         >
                           <Card className="h-full overflow-hidden transition-shadow duration-300 hover:shadow-lg">
                             <CardHeader className="p-2 flex flex-row items-center justify-between bg-card/50 backdrop-blur-sm">
