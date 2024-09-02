@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X, GripVertical, Maximize2, Minimize2, Plus, Settings, HelpCircle } from 'lucide-react';
+import { X, GripVertical, Maximize2, Minimize2, Plus, Settings, HelpCircle, RefreshCw } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Dialog,
@@ -32,7 +32,6 @@ import Portfolio from './Portfolio';
 import PortfolioPerformance from './PortfolioPerformance';
 import ChartWidget from './ChartWidget';
 import TradeTerminal from './TradeTerminal';
-import QuickAccessMenu from './QuickAccessMenu';
 
 const widgetComponents = {
   ChartWidget,
@@ -72,13 +71,6 @@ const initialWidgetSizes = {
   TradeTerminal: { width: 1, height: 1 },
 };
 
-const locations = [
-  { id: 'global', name: 'Global' },
-  { id: 'us', name: 'United States' },
-  { id: 'eu', name: 'European Union' },
-  { id: 'asia', name: 'Asia' },
-];
-
 const CustomizableDashboard = () => {
   const [widgets, setWidgets] = useState(() => {
     const savedWidgets = localStorage.getItem('dashboardWidgets');
@@ -94,7 +86,6 @@ const CustomizableDashboard = () => {
   const [expandedWidgets, setExpandedWidgets] = useState({ ChartWidget: true });
   const [isAddWidgetOpen, setIsAddWidgetOpen] = useState(false);
   const [columns, setColumns] = useState(3);
-  const [selectedLocation, setSelectedLocation] = useState('global');
   const [isDragging, setIsDragging] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { toast } = useToast();
@@ -192,10 +183,6 @@ const CustomizableDashboard = () => {
       target: '.widget-controls',
       content: 'Use these controls to expand, collapse, or remove widgets.',
     },
-    {
-      target: '.location-selector',
-      content: 'Select a location to filter data for specific regions.',
-    },
   ];
 
   const handleJoyrideCallback = (data) => {
@@ -235,19 +222,18 @@ const CustomizableDashboard = () => {
       <div className="flex justify-between items-center mb-6 dashboard-header">
         <h2 className="text-3xl font-bold text-primary">Customizable Dashboard</h2>
         <div className="flex items-center space-x-4">
-          <QuickAccessMenu onRefresh={refreshDashboard} />
-          <Select value={selectedLocation} onValueChange={setSelectedLocation} className="location-selector">
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select location" />
-            </SelectTrigger>
-            <SelectContent>
-              {locations.map((location) => (
-                <SelectItem key={location.id} value={location.id}>
-                  {location.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" onClick={refreshDashboard}>
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                Refresh Dashboard
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <Dialog open={isAddWidgetOpen} onOpenChange={setIsAddWidgetOpen}>
             <DialogTrigger asChild>
               <Button variant="outline" className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-300 add-widget-button">
@@ -392,7 +378,7 @@ const CustomizableDashboard = () => {
                                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                                 </div>
                               ) : (
-                                <WidgetComponent location={selectedLocation} />
+                                <WidgetComponent />
                               )}
                             </CardContent>
                           </Card>
@@ -430,7 +416,6 @@ const CustomizableDashboard = () => {
                 </SelectContent>
               </Select>
             </div>
-            {/* Add more settings options here */}
           </div>
         </DialogContent>
       </Dialog>

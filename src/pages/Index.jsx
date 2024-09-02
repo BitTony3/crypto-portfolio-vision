@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import CustomizableDashboard from '../components/CustomizableDashboard';
 import Login from '../components/Login';
 import { Button } from "@/components/ui/button";
-import { Moon, Sun, UserIcon, Menu, LayoutDashboard, User, LogOut } from 'lucide-react';
+import { Moon, Sun, UserIcon, Menu, LogOut } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,7 +19,6 @@ const Index = () => {
   const signOut = auth?.signOut;
   const [showLogin, setShowLogin] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isLeftMenuOpen, setIsLeftMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
@@ -32,7 +31,7 @@ const Index = () => {
 
   useEffect(() => {
     const handleBodyOverflow = () => {
-      document.body.style.overflow = isMobileMenuOpen || isLeftMenuOpen ? 'hidden' : 'unset';
+      document.body.style.overflow = isMobileMenuOpen ? 'hidden' : 'unset';
     };
     handleBodyOverflow();
     
@@ -44,7 +43,7 @@ const Index = () => {
       document.body.style.overflow = 'unset';
       clearTimeout(timer);
     };
-  }, [isMobileMenuOpen, isLeftMenuOpen]);
+  }, [isMobileMenuOpen]);
 
   const MatrixRain = useCallback(() => {
     return (
@@ -68,10 +67,6 @@ const Index = () => {
     await signOut();
   }, [signOut]);
 
-  const toggleLeftMenu = useCallback(() => {
-    setIsLeftMenuOpen(prev => !prev);
-  }, []);
-
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(prev => !prev);
   }, []);
@@ -94,7 +89,6 @@ const Index = () => {
               src="/crypto-logo.svg" 
               alt="Crypto Logo" 
               className="h-10 w-10 cursor-pointer"
-              onClick={toggleLeftMenu}
               whileHover={{ scale: 1.1, rotate: 360 }}
               whileTap={{ scale: 0.9 }}
               transition={{ duration: 0.3 }}
@@ -158,27 +152,6 @@ const Index = () => {
             </div>
           </div>
         </header>
-        <AnimatePresence>
-          {isLeftMenuOpen && (
-            <motion.div 
-              key="left-menu"
-              className="fixed inset-y-0 left-0 w-64 bg-card/95 backdrop-blur-sm shadow-lg z-50"
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            >
-              <div className="p-4 space-y-4">
-                <Button variant="ghost" className="w-full justify-start text-primary hover:bg-primary/10 transition-colors duration-300" onClick={toggleLeftMenu}>
-                  <LayoutDashboard className="mr-2 h-4 w-4" /> Main Dashboard
-                </Button>
-                <Button variant="ghost" className="w-full justify-start text-primary hover:bg-primary/10 transition-colors duration-300" onClick={toggleLeftMenu}>
-                  <User className="mr-2 h-4 w-4" /> Personal Dashboard
-                </Button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div 
