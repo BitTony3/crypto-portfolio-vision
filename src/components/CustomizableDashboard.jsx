@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X, GripVertical, Maximize2, Minimize2, Plus, Settings } from 'lucide-react';
+import { X, GripVertical, Maximize2, Minimize2, Plus, Settings, HelpCircle } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Dialog,
@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion, AnimatePresence } from 'framer-motion';
+import { useToast } from "@/components/ui/use-toast";
+import Joyride, { STATUS } from 'react-joyride';
 import MarketOverview from './MarketOverview';
 import GreedFearIndex from './GreedFearIndex';
 import TopPerformers from './TopPerformers';
@@ -30,7 +32,6 @@ import Portfolio from './Portfolio';
 import PortfolioPerformance from './PortfolioPerformance';
 import ChartWidget from './ChartWidget';
 import TradeTerminal from './TradeTerminal';
-import { useToast } from "@/components/ui/use-toast";
 
 const widgetComponents = {
   ChartWidget,
@@ -96,6 +97,9 @@ const CustomizableDashboard = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { toast } = useToast();
+  const [runTour, setRunTour] = useState(false);
+
+  const dashboardRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -168,12 +172,57 @@ const CustomizableDashboard = () => {
     return isExpanded ? { width: columns, height: size.height * 2 } : size;
   };
 
+  const steps = [
+    {
+      target: '.dashboard-header',
+      content: 'Welcome to your customizable dashboard! Here you can manage your widgets and settings.',
+      disableBeacon: true,
+    },
+    {
+      target: '.add-widget-button',
+      content: 'Click here to add new widgets to your dashboard.',
+    },
+    {
+      target: '.widget-card',
+      content: 'These are your widgets. You can drag them to reorder, expand, or remove them.',
+    },
+    {
+      target: '.widget-controls',
+      content: 'Use these controls to expand, collapse, or remove widgets.',
+    },
+    {
+      target: '.location-selector',
+      content: 'Select a location to filter data for specific regions.',
+    },
+  ];
+
+  const handleJoyrideCallback = (data) => {
+    const { status } = data;
+    if ([STATUS.FINISHED, STATUS.SKIPPED].includes(status)) {
+      setRunTour(false);
+    }
+  };
+
   return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-6">
+    <div ref={dashboardRef} className="p-4">
+      <Joyride
+        steps={steps}
+        run={runTour}
+        continuous={true}
+        showSkipButton={true}
+        showProgress={true}
+        styles={{
+          options: {
+            primaryColor: '#3b82f6',
+            zIndex: 1000,
+          },
+        }}
+        callback={handleJoyrideCallback}
+      />
+      <div className="flex justify-between items-center mb-6 dashboard-header">
         <h2 className="text-3xl font-bold text-primary">Customizable Dashboard</h2>
         <div className="flex items-center space-x-4">
-          <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+          <Select value={selectedLocation} onValueChange={setSelectedLocation} className="location-selector">
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select location" />
             </SelectTrigger>
@@ -187,7 +236,7 @@ const CustomizableDashboard = () => {
           </Select>
           <Dialog open={isAddWidgetOpen} onOpenChange={setIsAddWidgetOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-300">
+              <Button variant="outline" className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-300 add-widget-button">
                 <Plus className="mr-2 h-4 w-4" /> Add Widget
               </Button>
             </DialogTrigger>
@@ -224,6 +273,18 @@ const CustomizableDashboard = () => {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="outline" size="icon" onClick={() => setRunTour(true)}>
+                  <HelpCircle className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                Start Guided Tour
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
       <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
@@ -253,7 +314,7 @@ const CustomizableDashboard = () => {
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        className={`group col-span-${width} row-span-${height}`}
+                        className={`group col-span-${width} row-span-${height} widget-card`}
                         style={{
                           ...provided.draggableProps.style,
                           gridColumn: `span ${width}`,
@@ -271,7 +332,7 @@ const CustomizableDashboard = () => {
                           <Card className="h-full overflow-hidden transition-shadow duration-300 hover:shadow-lg">
                             <CardHeader className="p-2 flex flex-row items-center justify-between bg-card/50 backdrop-blur-sm">
                               <CardTitle className="text-sm font-medium">{widgetName}</CardTitle>
-                              <div className="flex items-center space-x-1">
+                              <div className="flex items-center space-x-1 widget-controls">
                                 <TooltipProvider>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
