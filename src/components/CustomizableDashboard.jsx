@@ -372,7 +372,7 @@ const CustomizableDashboard = () => {
                                 </div>
                               </div>
                             </CardHeader>
-                            <CardContent className="p-2 overflow-auto relative" style={{ height: isExpanded ? '500px' : '300px' }}>
+                            <CardContent className="p-2 overflow-auto relative" style={{ height: isExpanded ? '550px' : '330px' }}>
                               {isLoading ? (
                                 <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm">
                                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
