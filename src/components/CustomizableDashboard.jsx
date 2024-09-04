@@ -81,6 +81,7 @@ const CustomizableDashboard = () => {
       'TopPerformers',
       'TrendingCoins',
       'CryptoNews',
+      'Portfolio',
     ];
   });
   const [expandedWidgets, setExpandedWidgets] = useState({ ChartWidget: true });

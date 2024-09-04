@@ -28,7 +28,7 @@ const TradingViewChart = () => {
     if (document.getElementById('tradingview-widget') && 'TradingView' in window) {
       new window.TradingView.widget({
         autosize: true,
-        symbol: "NASDAQ:AAPL",
+        symbol: "BINANCE:BTCUSDT",
         interval: "D",
         timezone: "Etc/UTC",
         theme: "dark",
