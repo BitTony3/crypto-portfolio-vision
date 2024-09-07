@@ -3,6 +3,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recha
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
 const portfolios = [
@@ -48,7 +49,7 @@ const Portfolio = () => {
   const [prices, setPrices] = useState({
     bitcoin: null,
     ethereum: null,
-    tether: 1, // Assuming USDT is always $1
+    tether: 1,
   });
 
   useEffect(() => {
@@ -153,7 +154,7 @@ const Portfolio = () => {
 };
 
 const PortfolioTable = ({ portfolio, prices }) => (
-  <div className="max-h-80 overflow-y-auto">
+  <ScrollArea className="h-[300px] w-full rounded-md border">
     <Table>
       <TableHeader>
         <TableRow>
@@ -171,8 +172,13 @@ const PortfolioTable = ({ portfolio, prices }) => (
             <TableRow key={assetIndex}>
               <TableCell>{item.location}</TableCell>
               <TableCell>{item.type}</TableCell>
-              <TableCell className="font-mono text-sm text-accent-foreground">
-                {item.amount.toFixed(4)} {item.id.toUpperCase().slice(0, 3)}
+              <TableCell className={cn(
+                "font-mono text-sm",
+                item.id === 'bitcoin' && "text-orange-500 font-bold",
+                item.id === 'ethereum' && "text-blue-500 font-bold",
+                item.id === 'tether' && "text-green-500 font-bold"
+              )}>
+                {item.amount.toFixed(4)} {item.id === 'bitcoin' ? 'BTC' : item.id === 'ethereum' ? 'ETH' : 'USDT'}
               </TableCell>
               <TableCell>${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
             </TableRow>
@@ -180,7 +186,7 @@ const PortfolioTable = ({ portfolio, prices }) => (
         })}
       </TableBody>
     </Table>
-  </div>
+  </ScrollArea>
 );
 
 export default Portfolio;
