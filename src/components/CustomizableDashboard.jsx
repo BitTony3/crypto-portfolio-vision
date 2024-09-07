@@ -1,28 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { X, GripVertical, Maximize2, Minimize2, Plus, Settings, HelpCircle, RefreshCw } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
 import Joyride, { STATUS } from 'react-joyride';
-import { widgetComponents, initialWidgetSizes } from './WidgetComponents';
 import { useWidgetLayout } from '../hooks/useWidgetLayout';
 import { useWidgetExpansion } from '../hooks/useWidgetExpansion';
 import { useWidgetRefresh } from '../hooks/useWidgetRefresh';
 import WidgetCard from './WidgetCard';
 import DashboardHeader from './DashboardHeader';
 import SettingsDialog from './SettingsDialog';
+import AddWidgetDialog from './AddWidgetDialog';
+import { widgetComponents } from './WidgetComponents';
 
 const CustomizableDashboard = () => {
   const { widgets, setWidgets, addWidget, removeWidget } = useWidgetLayout();
@@ -31,6 +18,7 @@ const CustomizableDashboard = () => {
   const [columns, setColumns] = useState(3);
   const [isDragging, setIsDragging] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isAddWidgetOpen, setIsAddWidgetOpen] = useState(false);
   const { toast } = useToast();
   const [runTour, setRunTour] = useState(false);
 
@@ -60,6 +48,15 @@ const CustomizableDashboard = () => {
     toast({
       title: "Widget moved",
       description: `${reorderedItem} has been repositioned.`,
+    });
+  };
+
+  const handleAddWidget = (widgetName) => {
+    addWidget(widgetName);
+    setIsAddWidgetOpen(false);
+    toast({
+      title: "Widget added",
+      description: `${widgetName} has been added to your dashboard.`,
     });
   };
 
@@ -107,7 +104,7 @@ const CustomizableDashboard = () => {
         callback={handleJoyrideCallback}
       />
       <DashboardHeader
-        onAddWidget={() => {}}
+        onAddWidget={() => setIsAddWidgetOpen(true)}
         onRefresh={refreshDashboard}
         onStartTour={() => setRunTour(true)}
         onOpenSettings={() => setIsSettingsOpen(true)}
@@ -152,6 +149,12 @@ const CustomizableDashboard = () => {
         onClose={() => setIsSettingsOpen(false)}
         columns={columns}
         setColumns={setColumns}
+      />
+      <AddWidgetDialog
+        isOpen={isAddWidgetOpen}
+        onClose={() => setIsAddWidgetOpen(false)}
+        onAddWidget={handleAddWidget}
+        availableWidgets={Object.keys(widgetComponents)}
       />
     </div>
   );
