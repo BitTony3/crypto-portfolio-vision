@@ -19,24 +19,24 @@ const portfolios = [
   {
     name: 'Ethereum Portfolio',
     assets: [
-      { id: 'ethereum', amount: 8.0, location: 'MetaMask', type: 'Software Wallet' },
-      { id: 'ethereum', amount: 6.5, location: 'KuCoin', type: 'Exchange' },
-      { id: 'ethereum', amount: 9.2, location: 'Ethereum Mainnet', type: 'Blockchain' },
-      { id: 'ethereum', amount: 5.8, location: 'Binance', type: 'Exchange' },
-      { id: 'ethereum', amount: 4.6, location: 'OKX', type: 'Exchange' },
+      { id: 'ethereum', amount: 7.2, location: 'MetaMask', type: 'Software Wallet' },
+      { id: 'ethereum', amount: 5.8, location: 'KuCoin', type: 'Exchange' },
+      { id: 'ethereum', amount: 8.3, location: 'Ethereum Mainnet', type: 'Blockchain' },
+      { id: 'ethereum', amount: 5.2, location: 'Binance', type: 'Exchange' },
+      { id: 'ethereum', amount: 7.6, location: 'OKX', type: 'Exchange' },
     ]
   },
   {
     name: 'USDT Portfolio',
     assets: [
-      { id: 'tether', amount: 125670, location: 'Tron Network', type: 'Blockchain' },
-      { id: 'tether', amount: 100000, location: 'Ethereum Network', type: 'Blockchain' },
-      { id: 'tether', amount: 50000, location: 'Binance Smart Chain', type: 'Blockchain' },
-      { id: 'tether', amount: 50000, location: 'Binance', type: 'Exchange' },
-      { id: 'bitcoin', amount: 2.5, location: 'Binance', type: 'Exchange' },
-      { id: 'bitcoin', amount: 1.8, location: 'KuCoin', type: 'Exchange' },
-      { id: 'ethereum', amount: 25, location: 'Binance', type: 'Exchange' },
-      { id: 'ethereum', amount: 18, location: 'KuCoin', type: 'Exchange' },
+      { id: 'tether', amount: 100000, location: 'Tron Network', type: 'Blockchain' },
+      { id: 'tether', amount: 80000, location: 'Ethereum Network', type: 'Blockchain' },
+      { id: 'tether', amount: 60000, location: 'Binance Smart Chain', type: 'Blockchain' },
+      { id: 'tether', amount: 75680, location: 'Binance', type: 'Exchange' },
+      { id: 'bitcoin', amount: 1.5, location: 'Binance', type: 'Exchange' },
+      { id: 'bitcoin', amount: 1.34, location: 'KuCoin', type: 'Exchange' },
+      { id: 'ethereum', amount: 4, location: 'Binance', type: 'Exchange' },
+      { id: 'ethereum', amount: 3, location: 'KuCoin', type: 'Exchange' },
     ]
   }
 ];
@@ -153,30 +153,34 @@ const Portfolio = () => {
 };
 
 const PortfolioTable = ({ portfolio, prices }) => (
-  <Table>
-    <TableHeader>
-      <TableRow>
-        <TableHead>Location</TableHead>
-        <TableHead>Type</TableHead>
-        <TableHead>Amount</TableHead>
-        <TableHead>Value (USD)</TableHead>
-      </TableRow>
-    </TableHeader>
-    <TableBody>
-      {portfolio.assets.map((item, assetIndex) => {
-        const price = prices[item.id] || 0;
-        const value = item.amount * price;
-        return (
-          <TableRow key={assetIndex}>
-            <TableCell>{item.location}</TableCell>
-            <TableCell>{item.type}</TableCell>
-            <TableCell>{item.amount.toFixed(4)} {item.id.toUpperCase()}</TableCell>
-            <TableCell>${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
-          </TableRow>
-        );
-      })}
-    </TableBody>
-  </Table>
+  <div className="max-h-80 overflow-y-auto">
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Location</TableHead>
+          <TableHead>Type</TableHead>
+          <TableHead className="font-bold text-primary">Amount</TableHead>
+          <TableHead>Value (USD)</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {portfolio.assets.map((item, assetIndex) => {
+          const price = prices[item.id] || 0;
+          const value = item.amount * price;
+          return (
+            <TableRow key={assetIndex}>
+              <TableCell>{item.location}</TableCell>
+              <TableCell>{item.type}</TableCell>
+              <TableCell className="font-mono text-sm text-accent-foreground">
+                {item.amount.toFixed(4)} {item.id.toUpperCase().slice(0, 3)}
+              </TableCell>
+              <TableCell>${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </Table>
+  </div>
 );
 
 export default Portfolio;
