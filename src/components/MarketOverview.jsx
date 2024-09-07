@@ -3,16 +3,20 @@ import { useQuery } from '@tanstack/react-query';
 import { Loader2, TrendingUp, TrendingDown, DollarSign, BarChart3, PieChart as PieChartIcon } from 'lucide-react';
 import { Progress } from "@/components/ui/progress";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { apiRouter } from '../lib/apiRouter';
 
-const fetchMarketData = async (location) => {
-  return apiRouter(`/global?location=${location}`);
+const fetchMarketData = async () => {
+  const response = await fetch('https://api.coingecko.com/api/v3/global');
+  if (!response.ok) {
+    throw new Error('Failed to fetch market data');
+  }
+  return response.json();
 };
 
-const MarketOverview = ({ location }) => {
+const MarketOverview = () => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ['marketData', location],
-    queryFn: () => fetchMarketData(location),
+    queryKey: ['marketData'],
+    queryFn: fetchMarketData,
+    refetchInterval: 60000, // Refetch every minute
   });
 
   if (isLoading) return (

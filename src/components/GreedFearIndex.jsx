@@ -16,6 +16,7 @@ const GreedFearIndex = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['greedFearIndex'],
     queryFn: fetchGreedFearIndex,
+    refetchInterval: 300000, // Refetch every 5 minutes
   });
 
   if (isLoading) return (
