@@ -49,6 +49,8 @@ const Portfolio = () => {
         { id: 'tether', amount: 40000, location: 'Gate.io', type: 'Exchange', purchasePrice: 1 },
         { id: 'tether', amount: 57000, location: 'Binance', type: 'Exchange', purchasePrice: 1 },
         { id: 'tether', amount: 40000, location: 'Trezor', type: 'Hardware Wallet', purchasePrice: 1 },
+        { id: 'tether', amount: 25000, location: 'OKX', type: 'Exchange', purchasePrice: 1 },
+        { id: 'tether', amount: 18000, location: 'KuCoin', type: 'Exchange', purchasePrice: 1 },
       ]
     }
   ]);
@@ -73,7 +75,7 @@ const Portfolio = () => {
     }));
   }, [data, portfolios]);
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+  const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8'];
 
   if (isLoading) return (
     <div className="flex justify-center items-center h-full">
@@ -102,7 +104,7 @@ const Portfolio = () => {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
-        <CardTitle className="text-xl font-bold text-primary">Portfolio</CardTitle>
+        <CardTitle className="text-xl font-bold text-primary">Portfolio Overview</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow overflow-hidden flex flex-col">
         <div className="flex-grow flex flex-col md:flex-row">
@@ -119,13 +121,14 @@ const Portfolio = () => {
                   paddingAngle={5}
                   dataKey="value"
                   label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  labelLine={false}
                 >
                   {pieChartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip />
-                <Legend />
+                <Tooltip formatter={(value) => `$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`} />
+                <Legend verticalAlign="bottom" height={36} />
               </PieChart>
             </ResponsiveContainer>
           </div>
