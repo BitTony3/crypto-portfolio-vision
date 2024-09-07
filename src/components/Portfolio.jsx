@@ -36,7 +36,7 @@ const Portfolio = () => {
     { id: 'tether', amount: 40000, location: 'Gate.io', type: 'Exchange', purchasePrice: 1, currentPrice: 0 },
     { id: 'tether', amount: 57000, location: 'Binance', type: 'Exchange', purchasePrice: 1, currentPrice: 0 },
     { id: 'tether', amount: 40000, location: 'Trezor', type: 'Hardware Wallet', purchasePrice: 1, currentPrice: 0 },
-    { id: 'tether', amount: 200000, location: 'Binance', type: 'Exchange', purchasePrice: 1, currentPrice: 0 },
+    { id: 'tether', amount: 400000, location: 'Binance', type: 'Exchange', purchasePrice: 1, currentPrice: 0 },
   ]);
 
   const [showDetails, setShowDetails] = useState(false);
@@ -83,6 +83,14 @@ const Portfolio = () => {
       return total;
     }, 0);
   };
+
+  const groupedPortfolio = portfolio.reduce((acc, item) => {
+    if (!acc[item.id]) {
+      acc[item.id] = [];
+    }
+    acc[item.id].push(item);
+    return acc;
+  }, {});
 
   return (
     <Card className="h-full flex flex-col">
@@ -138,28 +146,35 @@ const Portfolio = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data && data.data && portfolio.map((item, index) => {
-                  const asset = data.data.find(a => a.id === item.id);
-                  const currentPrice = asset ? parseFloat(asset.priceUsd) : 0;
-                  const value = item.amount * currentPrice;
-                  const costBasis = item.amount * item.purchasePrice;
-                  const profitLoss = value - costBasis;
-                  const profitLossPercentage = ((value / costBasis) - 1) * 100;
-                  return (
-                    <TableRow key={index}>
-                      <TableCell>{asset ? asset.id : item.id}</TableCell>
-                      <TableCell>{item.amount.toFixed(4)}</TableCell>
-                      <TableCell>{item.location}</TableCell>
-                      <TableCell>{item.type}</TableCell>
-                      <TableCell>${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
-                      <TableCell>${costBasis.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
-                      <TableCell className={profitLoss >= 0 ? 'text-green-500' : 'text-red-500'}>
-                        ${profitLoss.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                        ({profitLossPercentage.toFixed(2)}%)
-                      </TableCell>
+                {Object.entries(groupedPortfolio).map(([assetId, assets]) => (
+                  <React.Fragment key={assetId}>
+                    <TableRow className="bg-muted/50">
+                      <TableCell colSpan={7} className="font-bold">{assetId.toUpperCase()}</TableCell>
                     </TableRow>
-                  );
-                })}
+                    {assets.map((item, index) => {
+                      const asset = data.data.find(a => a.id === item.id);
+                      const currentPrice = asset ? parseFloat(asset.priceUsd) : 0;
+                      const value = item.amount * currentPrice;
+                      const costBasis = item.amount * item.purchasePrice;
+                      const profitLoss = value - costBasis;
+                      const profitLossPercentage = ((value / costBasis) - 1) * 100;
+                      return (
+                        <TableRow key={`${assetId}-${index}`}>
+                          <TableCell></TableCell>
+                          <TableCell>{item.amount.toFixed(4)}</TableCell>
+                          <TableCell>{item.location}</TableCell>
+                          <TableCell>{item.type}</TableCell>
+                          <TableCell>${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
+                          <TableCell>${costBasis.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
+                          <TableCell className={profitLoss >= 0 ? 'text-green-500' : 'text-red-500'}>
+                            ${profitLoss.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                            ({profitLossPercentage.toFixed(2)}%)
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </React.Fragment>
+                ))}
               </TableBody>
             </Table>
           </div>

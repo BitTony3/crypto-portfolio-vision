@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { X, GripVertical, Maximize2, Minimize2, Plus, Settings, HelpCircle, RefreshCw } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -134,7 +134,7 @@ const CustomizableDashboard = () => {
     setWidgets(newWidgets);
     toast({
       title: "Widget removed",
-      description: `${widgets[index]} has been removed from your dashboard.`,
+      description: `Widget has been removed from your dashboard.`,
       variant: "destructive",
     });
   };
@@ -146,7 +146,7 @@ const CustomizableDashboard = () => {
     }));
     toast({
       title: expandedWidgets[widgetName] ? "Widget collapsed" : "Widget expanded",
-      description: `${widgetName} has been ${expandedWidgets[widgetName] ? "collapsed" : "expanded"}.`,
+      description: `Widget has been ${expandedWidgets[widgetName] ? "collapsed" : "expanded"}.`,
     });
   };
 
@@ -195,7 +195,6 @@ const CustomizableDashboard = () => {
 
   const refreshDashboard = async () => {
     setIsLoading(true);
-    // Simulate a refresh delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsLoading(false);
     toast({
@@ -332,7 +331,6 @@ const CustomizableDashboard = () => {
                         >
                           <Card className="h-full overflow-hidden transition-shadow duration-300 hover:shadow-lg">
                             <CardHeader className="p-2 flex flex-row items-center justify-between bg-card/50 backdrop-blur-sm">
-                              <CardTitle className="text-sm font-medium">{widgetName}</CardTitle>
                               <div className="flex items-center space-x-1 widget-controls">
                                 <TooltipProvider>
                                   <Tooltip>
