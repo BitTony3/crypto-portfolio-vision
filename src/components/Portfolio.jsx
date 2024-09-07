@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 const fetchAssetPrices = async (ids) => {
-  // Mock data for asset prices
   const mockPrices = {
     bitcoin: 50000,
     ethereum: 3000,
@@ -37,6 +36,7 @@ const Portfolio = () => {
     { id: 'tether', amount: 40000, location: 'Gate.io', type: 'Exchange', purchasePrice: 1, currentPrice: 0 },
     { id: 'tether', amount: 57000, location: 'Binance', type: 'Exchange', purchasePrice: 1, currentPrice: 0 },
     { id: 'tether', amount: 40000, location: 'Trezor', type: 'Hardware Wallet', purchasePrice: 1, currentPrice: 0 },
+    { id: 'tether', amount: 200000, location: 'Binance', type: 'Exchange', purchasePrice: 1, currentPrice: 0 },
   ]);
 
   const [showDetails, setShowDetails] = useState(false);
@@ -87,7 +87,7 @@ const Portfolio = () => {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader>
-        <CardTitle className="text-xl font-bold text-primary">Your Portfolio</CardTitle>
+        <CardTitle className="text-xl font-bold text-primary">Portfolio</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow overflow-hidden flex flex-col">
         <div className="flex-grow flex flex-col md:flex-row">
