@@ -30,10 +30,11 @@ const portfolios = [
   {
     name: 'USDT Portfolio',
     assets: [
-      { id: 'tether', amount: 100000, location: 'Tron Network', type: 'Blockchain' },
-      { id: 'tether', amount: 80000, location: 'Ethereum Network', type: 'Blockchain' },
-      { id: 'tether', amount: 60000, location: 'Binance Smart Chain', type: 'Blockchain' },
+      { id: 'tether', amount: 150000, location: 'Tron Network', type: 'Blockchain' },
+      { id: 'tether', amount: 100000, location: 'Ethereum Network', type: 'Blockchain' },
+      { id: 'tether', amount: 80000, location: 'Binance Smart Chain', type: 'Blockchain' },
       { id: 'tether', amount: 75680, location: 'Binance', type: 'Exchange' },
+      { id: 'tether', amount: 60000, location: 'KuCoin', type: 'Exchange' },
       { id: 'bitcoin', amount: 1.5, location: 'Binance', type: 'Exchange' },
       { id: 'bitcoin', amount: 1.34, location: 'KuCoin', type: 'Exchange' },
       { id: 'ethereum', amount: 4, location: 'Binance', type: 'Exchange' },
