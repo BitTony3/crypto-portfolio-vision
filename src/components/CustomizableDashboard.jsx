@@ -17,28 +17,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
 import Joyride, { STATUS } from 'react-joyride';
 import { widgetComponents, initialWidgetSizes } from './WidgetComponents';
+import { useWidgetLayout } from '../hooks/useWidgetLayout';
+import { useWidgetExpansion } from '../hooks/useWidgetExpansion';
+import { useWidgetRefresh } from '../hooks/useWidgetRefresh';
+import WidgetCard from './WidgetCard';
+import DashboardHeader from './DashboardHeader';
+import SettingsDialog from './SettingsDialog';
 
 const CustomizableDashboard = () => {
-  const [widgets, setWidgets] = useState(() => {
-    const savedWidgets = localStorage.getItem('dashboardWidgets');
-    return savedWidgets ? JSON.parse(savedWidgets) : [
-      'ChartWidget',
-      'MarketOverview',
-      'GreedFearIndex',
-      'TopPerformers',
-      'TrendingCoins',
-      'CryptoNews',
-      'Portfolio',
-    ];
-  });
-  const [expandedWidgets, setExpandedWidgets] = useState({ ChartWidget: true });
-  const [isAddWidgetOpen, setIsAddWidgetOpen] = useState(false);
+  const { widgets, setWidgets, addWidget, removeWidget } = useWidgetLayout();
+  const { expandedWidgets, toggleWidgetExpansion } = useWidgetExpansion();
+  const { isLoading, refreshDashboard } = useWidgetRefresh();
   const [columns, setColumns] = useState(3);
   const [isDragging, setIsDragging] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { toast } = useToast();
   const [runTour, setRunTour] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const dashboardRef = useRef(null);
 
@@ -55,14 +49,7 @@ const CustomizableDashboard = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('dashboardWidgets', JSON.stringify(widgets));
-  }, [widgets]);
-
-  const onDragStart = () => {
-    setIsDragging(true);
-  };
-
+  const onDragStart = () => setIsDragging(true);
   const onDragEnd = (result) => {
     setIsDragging(false);
     if (!result.destination) return;
@@ -74,43 +61,6 @@ const CustomizableDashboard = () => {
       title: "Widget moved",
       description: `${reorderedItem} has been repositioned.`,
     });
-  };
-
-  const removeWidget = (index) => {
-    const newWidgets = widgets.filter((_, i) => i !== index);
-    setWidgets(newWidgets);
-    toast({
-      title: "Widget removed",
-      description: `Widget has been removed from your dashboard.`,
-      variant: "destructive",
-    });
-  };
-
-  const toggleWidgetExpansion = (widgetName) => {
-    setExpandedWidgets(prev => ({
-      ...prev,
-      [widgetName]: !prev[widgetName]
-    }));
-    toast({
-      title: expandedWidgets[widgetName] ? "Widget collapsed" : "Widget expanded",
-      description: `Widget has been ${expandedWidgets[widgetName] ? "collapsed" : "expanded"}.`,
-    });
-  };
-
-  const addWidget = (widgetName) => {
-    if (!widgets.includes(widgetName)) {
-      setWidgets([...widgets, widgetName]);
-      toast({
-        title: "Widget added",
-        description: `${widgetName} has been added to your dashboard.`,
-      });
-    }
-    setIsAddWidgetOpen(false);
-  };
-
-  const getWidgetSize = (widgetName, isExpanded) => {
-    const size = initialWidgetSizes[widgetName] || { width: 1, height: 1 };
-    return isExpanded ? { width: columns, height: size.height * 2 } : size;
   };
 
   const steps = [
@@ -140,16 +90,6 @@ const CustomizableDashboard = () => {
     }
   };
 
-  const refreshDashboard = async () => {
-    setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsLoading(false);
-    toast({
-      title: "Dashboard refreshed",
-      description: "All widgets have been updated with the latest data.",
-    });
-  };
-
   return (
     <div ref={dashboardRef} className="p-4">
       <Joyride
@@ -166,74 +106,12 @@ const CustomizableDashboard = () => {
         }}
         callback={handleJoyrideCallback}
       />
-      <div className="flex justify-between items-center mb-6 dashboard-header">
-        <h2 className="text-3xl font-bold text-primary">Customizable Dashboard</h2>
-        <div className="flex items-center space-x-4">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" onClick={refreshDashboard}>
-                  <RefreshCw className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                Refresh Dashboard
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <Dialog open={isAddWidgetOpen} onOpenChange={setIsAddWidgetOpen}>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-300 add-widget-button">
-                <Plus className="mr-2 h-4 w-4" /> Add Widget
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add a new widget</DialogTitle>
-                <DialogDescription>
-                  Choose a widget to add to your dashboard.
-                </DialogDescription>
-              </DialogHeader>
-              <Select onValueChange={addWidget}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a widget" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.keys(widgetComponents).map((widgetName) => (
-                    <SelectItem key={widgetName} value={widgetName}>
-                      {widgetName}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </DialogContent>
-          </Dialog>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" onClick={() => setIsSettingsOpen(true)}>
-                  <Settings className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                Dashboard Settings
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" onClick={() => setRunTour(true)}>
-                  <HelpCircle className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                Start Guided Tour
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-      </div>
+      <DashboardHeader
+        onAddWidget={() => {}}
+        onRefresh={refreshDashboard}
+        onStartTour={() => setRunTour(true)}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+      />
       <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
         <Droppable droppableId="widgets">
           {(provided) => (
@@ -247,124 +125,34 @@ const CustomizableDashboard = () => {
                 gap: '1rem',
               }}
             >
-              {widgets.map((widgetName, index) => {
-                const WidgetComponent = widgetComponents[widgetName];
-                if (!WidgetComponent) {
-                  console.error(`Widget component not found: ${widgetName}`);
-                  return null;
-                }
-                const isExpanded = expandedWidgets[widgetName];
-                const { width, height } = getWidgetSize(widgetName, isExpanded);
-                return (
-                  <Draggable key={widgetName} draggableId={widgetName} index={index}>
-                    {(provided) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        className={`group col-span-${width} row-span-${height} widget-card`}
-                        style={{
-                          ...provided.draggableProps.style,
-                          gridColumn: `span ${width}`,
-                          gridRow: `span ${height}`,
-                        }}
-                      >
-                        <motion.div
-                          layout
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          transition={{ duration: 0.3 }}
-                          className={`h-full ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-                        >
-                          <Card className="h-full overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-                            <CardHeader className="p-2 flex flex-row items-center justify-between bg-card/50 backdrop-blur-sm">
-                              <div className="flex items-center space-x-1 widget-controls">
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => toggleWidgetExpansion(widgetName)}
-                                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                                      >
-                                        {isExpanded ? <Minimize2 className="h-3 w-3" /> : <Maximize2 className="h-3 w-3" />}
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      {isExpanded ? 'Minimize' : 'Maximize'}
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => removeWidget(index)}
-                                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                                      >
-                                        <X className="h-3 w-3" />
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      Remove Widget
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                                <div {...provided.dragHandleProps} className="cursor-move opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <GripVertical className="h-3 w-3" />
-                                </div>
-                              </div>
-                            </CardHeader>
-                            <CardContent className="p-2 overflow-auto relative" style={{ height: isExpanded ? '550px' : '330px' }}>
-                              {isLoading ? (
-                                <div className="absolute inset-0 flex items-center justify-center bg-background/50 backdrop-blur-sm">
-                                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                                </div>
-                              ) : (
-                                <WidgetComponent />
-                              )}
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      </div>
-                    )}
-                  </Draggable>
-                );
-              })}
+              {widgets.map((widgetName, index) => (
+                <Draggable key={widgetName} draggableId={widgetName} index={index}>
+                  {(provided) => (
+                    <WidgetCard
+                      widgetName={widgetName}
+                      index={index}
+                      isExpanded={expandedWidgets[widgetName]}
+                      onToggleExpansion={() => toggleWidgetExpansion(widgetName)}
+                      onRemove={() => removeWidget(index)}
+                      provided={provided}
+                      isDragging={isDragging}
+                      isLoading={isLoading}
+                      columns={columns}
+                    />
+                  )}
+                </Draggable>
+              ))}
               {provided.placeholder}
             </div>
           )}
         </Droppable>
       </DragDropContext>
-      <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Dashboard Settings</DialogTitle>
-            <DialogDescription>
-              Customize your dashboard layout and preferences.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Number of Columns</label>
-              <Select value={columns.toString()} onValueChange={(value) => setColumns(parseInt(value))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select number of columns" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1 Column</SelectItem>
-                  <SelectItem value="2">2 Columns</SelectItem>
-                  <SelectItem value="3">3 Columns</SelectItem>
-                  <SelectItem value="4">4 Columns</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <SettingsDialog
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        columns={columns}
+        setColumns={setColumns}
+      />
     </div>
   );
 };
