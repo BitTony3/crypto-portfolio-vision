@@ -1,23 +1,17 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import CustomizableDashboard from '../components/CustomizableDashboard';
-import Login from '../components/Login';
 import { Button } from "@/components/ui/button";
-import { Moon, Sun, UserIcon, Menu, LogOut } from 'lucide-react';
+import { Moon, Sun, UserIcon, Menu } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSupabaseAuth } from '../integrations/supabase';
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const queryClient = new QueryClient();
 
 const Index = () => {
-  const auth = useSupabaseAuth();
-  const session = auth?.session;
-  const signOut = auth?.signOut;
-  const [showLogin, setShowLogin] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
 
@@ -63,10 +57,6 @@ const Index = () => {
     );
   }, []);
 
-  const handleLogout = useCallback(async () => {
-    await signOut();
-  }, [signOut]);
-
   const toggleMobileMenu = useCallback(() => {
     setIsMobileMenuOpen(prev => !prev);
   }, []);
@@ -94,34 +84,18 @@ const Index = () => {
               transition={{ duration: 0.3 }}
             />
             <div className="hidden md:flex items-center space-x-4">
-              {session ? (
-                <>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Link to="/profile">
-                          <Button variant="outline" size="sm" className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-300">
-                            <UserIcon className="mr-1 h-4 w-4" /> Profile
-                          </Button>
-                        </Link>
-                      </TooltipTrigger>
-                      <TooltipContent>View your profile</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Button onClick={handleLogout} variant="ghost" size="sm" className="text-primary hover:text-primary/80 transition-colors duration-300">
-                          <LogOut className="mr-1 h-4 w-4" /> Logout
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>Sign out of your account</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </>
-              ) : (
-                <Button onClick={() => setShowLogin(true)} variant="default" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300">Login</Button>
-              )}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Link to="/profile">
+                      <Button variant="outline" size="sm" className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-300">
+                        <UserIcon className="mr-1 h-4 w-4" /> Profile
+                      </Button>
+                    </Link>
+                  </TooltipTrigger>
+                  <TooltipContent>View your profile</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -162,20 +136,11 @@ const Index = () => {
               exit={{ opacity: 0 }}
             >
               <div className="flex flex-col items-center justify-center h-full space-y-4">
-                {session ? (
-                  <>
-                    <Link to="/profile">
-                      <Button variant="outline" size="sm" onClick={toggleMobileMenu} className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-300">
-                        <UserIcon className="mr-1 h-4 w-4" /> Profile
-                      </Button>
-                    </Link>
-                    <Button onClick={() => { handleLogout(); toggleMobileMenu(); }} variant="ghost" size="sm" className="text-primary hover:text-primary/80 transition-colors duration-300">
-                      <LogOut className="mr-1 h-4 w-4" /> Logout
-                    </Button>
-                  </>
-                ) : (
-                  <Button onClick={() => { setShowLogin(true); toggleMobileMenu(); }} variant="default" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300">Login</Button>
-                )}
+                <Link to="/profile">
+                  <Button variant="outline" size="sm" onClick={toggleMobileMenu} className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-300">
+                    <UserIcon className="mr-1 h-4 w-4" /> Profile
+                  </Button>
+                </Link>
                 <div className="flex items-center space-x-2 bg-card/50 p-1 rounded-full">
                   <Sun className="h-4 w-4 text-yellow-500 dark:text-yellow-300" />
                   <Switch
@@ -192,27 +157,15 @@ const Index = () => {
         </AnimatePresence>
         <main className="container mx-auto px-4 py-8">
           <AnimatePresence mode="wait">
-            {showLogin && !session ? (
-              <motion.div
-                key="login-modal"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-background/80 backdrop-blur-sm flex justify-center items-center z-50"
-              >
-                <Login onClose={() => setShowLogin(false)} />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="dashboard"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <CustomizableDashboard />
-              </motion.div>
-            )}
+            <motion.div
+              key="dashboard"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              {memoizedDashboard}
+            </motion.div>
           </AnimatePresence>
         </main>
       </div>

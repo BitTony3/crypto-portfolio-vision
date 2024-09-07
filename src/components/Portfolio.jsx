@@ -67,13 +67,16 @@ const Portfolio = () => {
 
   const pieChartData = useMemo(() => {
     if (!data || !data.data) return [];
-    return portfolios.map(portfolio => ({
-      name: portfolio.name,
-      value: portfolio.assets.reduce((total, item) => {
+    return portfolios.map(portfolio => {
+      const value = portfolio.assets.reduce((total, item) => {
         const asset = data.data.find(a => a.id === item.id);
         return total + (asset ? item.amount * parseFloat(asset.priceUsd) : 0);
-      }, 0)
-    }));
+      }, 0);
+      return {
+        name: portfolio.name,
+        value: value
+      };
+    });
   }, [data, portfolios]);
 
   const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8'];
@@ -135,6 +138,11 @@ const Portfolio = () => {
             <div className="text-2xl font-bold text-primary mb-4">
               Total Value: ${calculateTotalValue().toLocaleString(undefined, { maximumFractionDigits: 2 })}
             </div>
+            {pieChartData.map((portfolio, index) => (
+              <div key={index} className="text-lg">
+                {portfolio.name}: ${portfolio.value.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+              </div>
+            ))}
           </div>
         </div>
         <div className="mt-4 overflow-x-auto">
