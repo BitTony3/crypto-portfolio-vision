@@ -9,12 +9,12 @@ import { cn } from "@/lib/utils";
 
 const fetchAssetPrices = async (ids) => {
   const mockPrices = {
-    bitcoin: 50000,
-    ethereum: 3000,
-    tether: 1,
+    bitcoin: { price: 50000, change24h: 2.5 },
+    ethereum: { price: 3000, change24h: -1.2 },
+    tether: { price: 1, change24h: 0.1 },
   };
   return new Promise((resolve) => {
-    setTimeout(() => resolve({ data: ids.map(id => ({ id, priceUsd: mockPrices[id] })) }), 1000);
+    setTimeout(() => resolve({ data: ids.map(id => ({ id, ...mockPrices[id] })) }), 1000);
   });
 };
 
@@ -22,34 +22,34 @@ const portfolios = [
   {
     name: 'Bitcoin Portfolio',
     assets: [
-      { id: 'bitcoin', amount: 1.2, location: 'Binance', type: 'Exchange', purchasePrice: 30000 },
-      { id: 'bitcoin', amount: 0.8, location: 'OKX', type: 'Exchange', purchasePrice: 35000 },
-      { id: 'bitcoin', amount: 1.5, location: 'Trezor', type: 'Hardware Wallet', purchasePrice: 40000 },
-      { id: 'bitcoin', amount: 0.7, location: 'KuCoin', type: 'Exchange', purchasePrice: 45000 },
-      { id: 'bitcoin', amount: 1.22, location: 'Bitcoin Network', type: 'Blockchain', purchasePrice: 50000 },
-      { id: 'bitcoin', amount: 3.5, location: 'Binance', type: 'Exchange', purchasePrice: 55000 },
+      { id: 'bitcoin', amount: 1.2, location: 'Binance', type: 'Exchange' },
+      { id: 'bitcoin', amount: 0.8, location: 'OKX', type: 'Exchange' },
+      { id: 'bitcoin', amount: 1.5, location: 'Trezor', type: 'Hardware Wallet' },
+      { id: 'bitcoin', amount: 0.7, location: 'KuCoin', type: 'Exchange' },
+      { id: 'bitcoin', amount: 1.22, location: 'Bitcoin Network', type: 'Blockchain' },
+      { id: 'bitcoin', amount: 3.5, location: 'Binance', type: 'Exchange' },
     ]
   },
   {
     name: 'Ethereum Portfolio',
     assets: [
-      { id: 'ethereum', amount: 8.0, location: 'MetaMask', type: 'Software Wallet', purchasePrice: 2000 },
-      { id: 'ethereum', amount: 6.5, location: 'KuCoin', type: 'Exchange', purchasePrice: 2500 },
-      { id: 'ethereum', amount: 9.2, location: 'Ethereum Mainnet', type: 'Blockchain', purchasePrice: 3000 },
-      { id: 'ethereum', amount: 5.8, location: 'Binance', type: 'Exchange', purchasePrice: 3500 },
-      { id: 'ethereum', amount: 5.0, location: 'OKX', type: 'Exchange', purchasePrice: 4000 },
-      { id: 'ethereum', amount: 30.0, location: 'Binance', type: 'Exchange', purchasePrice: 4500 },
+      { id: 'ethereum', amount: 8.0, location: 'MetaMask', type: 'Software Wallet' },
+      { id: 'ethereum', amount: 6.5, location: 'KuCoin', type: 'Exchange' },
+      { id: 'ethereum', amount: 9.2, location: 'Ethereum Mainnet', type: 'Blockchain' },
+      { id: 'ethereum', amount: 5.8, location: 'Binance', type: 'Exchange' },
+      { id: 'ethereum', amount: 5.0, location: 'OKX', type: 'Exchange' },
+      { id: 'ethereum', amount: 30.0, location: 'Binance', type: 'Exchange' },
     ]
   },
   {
     name: 'USDT Portfolio',
     assets: [
-      { id: 'tether', amount: 20000, location: 'Tron Network', type: 'Blockchain', purchasePrice: 1 },
-      { id: 'tether', amount: 65000, location: 'Gate.io', type: 'Exchange', purchasePrice: 1 },
-      { id: 'tether', amount: 82000, location: 'Binance', type: 'Exchange', purchasePrice: 1 },
-      { id: 'tether', amount: 40000, location: 'Trezor', type: 'Hardware Wallet', purchasePrice: 1 },
-      { id: 'tether', amount: 50000, location: 'OKX', type: 'Exchange', purchasePrice: 1 },
-      { id: 'tether', amount: 43000, location: 'KuCoin', type: 'Exchange', purchasePrice: 1 },
+      { id: 'tether', amount: 20000, location: 'Tron Network', type: 'Blockchain' },
+      { id: 'tether', amount: 65000, location: 'Gate.io', type: 'Exchange' },
+      { id: 'tether', amount: 82000, location: 'Binance', type: 'Exchange' },
+      { id: 'tether', amount: 40000, location: 'Trezor', type: 'Hardware Wallet' },
+      { id: 'tether', amount: 50000, location: 'OKX', type: 'Exchange' },
+      { id: 'tether', amount: 43000, location: 'KuCoin', type: 'Exchange' },
     ]
   }
 ];
@@ -70,7 +70,7 @@ const Portfolio = () => {
     return portfolios.reduce((acc, portfolio) => {
       acc[portfolio.name] = portfolio.assets.reduce((total, item) => {
         const asset = data.data.find(a => a.id === item.id);
-        return total + (asset ? item.amount * parseFloat(asset.priceUsd) : 0);
+        return total + (asset ? item.amount * asset.price : 0);
       }, 0);
       return acc;
     }, {});
@@ -152,33 +152,24 @@ const PortfolioTable = ({ portfolio, data }) => (
         <TableHead>Type</TableHead>
         <TableHead>Amount</TableHead>
         <TableHead>Value (USD)</TableHead>
-        <TableHead>Cost Basis</TableHead>
-        <TableHead>Profit/Loss</TableHead>
+        <TableHead>24h Change</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
       {portfolio.assets.map((item, assetIndex) => {
         const asset = data.data.find(a => a.id === item.id);
-        const currentPrice = asset ? parseFloat(asset.priceUsd) : 0;
-        const value = item.amount * currentPrice;
-        const costBasis = item.amount * item.purchasePrice;
-        const profitLoss = value - costBasis;
-        const profitLossPercentage = ((value / costBasis) - 1) * 100;
+        const value = item.amount * asset.price;
         return (
           <TableRow key={assetIndex}>
             <TableCell>{item.location}</TableCell>
             <TableCell>{item.type}</TableCell>
             <TableCell>{item.amount.toFixed(4)}</TableCell>
             <TableCell>${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
-            <TableCell>${costBasis.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
             <TableCell className={cn(
               "font-medium",
-              profitLoss >= 0 ? "text-green-600" : "text-red-600"
+              asset.change24h >= 0 ? "text-green-600" : "text-red-600"
             )}>
-              ${profitLoss.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-              <span className="ml-1 text-xs">
-                ({profitLossPercentage.toFixed(2)}%)
-              </span>
+              {asset.change24h.toFixed(2)}%
             </TableCell>
           </TableRow>
         );

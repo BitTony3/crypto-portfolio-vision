@@ -2,9 +2,8 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import CustomizableDashboard from '../components/CustomizableDashboard';
 import { Button } from "@/components/ui/button";
-import { Moon, Sun, UserIcon, Menu } from 'lucide-react';
+import { Moon, Sun, Menu } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -87,18 +86,6 @@ const Index = () => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Link to="/profile">
-                      <Button variant="outline" size="sm" className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-300">
-                        <UserIcon className="mr-1 h-4 w-4" /> Profile
-                      </Button>
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent>View your profile</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
                     <div className="flex items-center space-x-2 bg-card/50 p-1 rounded-full">
                       <Sun className="h-4 w-4 text-yellow-500 dark:text-yellow-300" />
                       <Switch
@@ -136,11 +123,6 @@ const Index = () => {
               exit={{ opacity: 0 }}
             >
               <div className="flex flex-col items-center justify-center h-full space-y-4">
-                <Link to="/profile">
-                  <Button variant="outline" size="sm" onClick={toggleMobileMenu} className="bg-primary/10 text-primary hover:bg-primary/20 transition-colors duration-300">
-                    <UserIcon className="mr-1 h-4 w-4" /> Profile
-                  </Button>
-                </Link>
                 <div className="flex items-center space-x-2 bg-card/50 p-1 rounded-full">
                   <Sun className="h-4 w-4 text-yellow-500 dark:text-yellow-300" />
                   <Switch
