@@ -5,6 +5,7 @@ import { Loader2, ChevronDown, ChevronUp } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const fetchAssetPrices = async (ids) => {
   const mockPrices = {
@@ -46,11 +47,11 @@ const Portfolio = () => {
       name: 'USDT Portfolio',
       assets: [
         { id: 'tether', amount: 20000, location: 'Tron Network', type: 'Blockchain', purchasePrice: 1 },
-        { id: 'tether', amount: 40000, location: 'Gate.io', type: 'Exchange', purchasePrice: 1 },
-        { id: 'tether', amount: 57000, location: 'Binance', type: 'Exchange', purchasePrice: 1 },
+        { id: 'tether', amount: 65000, location: 'Gate.io', type: 'Exchange', purchasePrice: 1 },
+        { id: 'tether', amount: 82000, location: 'Binance', type: 'Exchange', purchasePrice: 1 },
         { id: 'tether', amount: 40000, location: 'Trezor', type: 'Hardware Wallet', purchasePrice: 1 },
-        { id: 'tether', amount: 25000, location: 'OKX', type: 'Exchange', purchasePrice: 1 },
-        { id: 'tether', amount: 18000, location: 'KuCoin', type: 'Exchange', purchasePrice: 1 },
+        { id: 'tether', amount: 50000, location: 'OKX', type: 'Exchange', purchasePrice: 1 },
+        { id: 'tether', amount: 43000, location: 'KuCoin', type: 'Exchange', purchasePrice: 1 },
       ]
     }
   ]);
@@ -120,15 +121,13 @@ const Portfolio = () => {
                   fill="#8884d8"
                   paddingAngle={5}
                   dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  labelLine={false}
                 >
                   {pieChartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip formatter={(value) => `$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`} />
-                <Legend verticalAlign="bottom" height={36} />
+                <Legend verticalAlign="middle" align="right" layout="vertical" />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -144,7 +143,7 @@ const Portfolio = () => {
               <CardHeader className="cursor-pointer" onClick={() => togglePortfolioExpansion(portfolio.name)}>
                 <div className="flex justify-between items-center">
                   <CardTitle>{portfolio.name}</CardTitle>
-                  {expandedPortfolios[portfolio.name] ? <ChevronUp /> : <ChevronDown />}
+                  {expandedPortfolios[portfolio.name] ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
                 </div>
               </CardHeader>
               {expandedPortfolios[portfolio.name] && (
@@ -175,9 +174,14 @@ const Portfolio = () => {
                             <TableCell>{item.amount.toFixed(4)}</TableCell>
                             <TableCell>${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
                             <TableCell>${costBasis.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
-                            <TableCell className={profitLoss >= 0 ? 'text-green-500' : 'text-red-500'}>
+                            <TableCell className={cn(
+                              "font-medium",
+                              profitLoss >= 0 ? "text-green-600" : "text-red-600"
+                            )}>
                               ${profitLoss.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                              ({profitLossPercentage.toFixed(2)}%)
+                              <span className="ml-1 text-xs">
+                                ({profitLossPercentage.toFixed(2)}%)
+                              </span>
                             </TableCell>
                           </TableRow>
                         );
