@@ -13,8 +13,7 @@ const portfolios = [
       { id: 'bitcoin', amount: 0.8, location: 'OKX', type: 'Exchange' },
       { id: 'bitcoin', amount: 1.5, location: 'Trezor', type: 'Hardware Wallet' },
       { id: 'bitcoin', amount: 0.7, location: 'KuCoin', type: 'Exchange' },
-      { id: 'bitcoin', amount: 1.22, location: 'Bitcoin Network', type: 'Blockchain' },
-      { id: 'bitcoin', amount: 3.5, location: 'Binance', type: 'Exchange' },
+      { id: 'bitcoin', amount: 1.26, location: 'Bitcoin Network', type: 'Blockchain' },
     ]
   },
   {
@@ -24,19 +23,15 @@ const portfolios = [
       { id: 'ethereum', amount: 6.5, location: 'KuCoin', type: 'Exchange' },
       { id: 'ethereum', amount: 9.2, location: 'Ethereum Mainnet', type: 'Blockchain' },
       { id: 'ethereum', amount: 5.8, location: 'Binance', type: 'Exchange' },
-      { id: 'ethereum', amount: 5.0, location: 'OKX', type: 'Exchange' },
-      { id: 'ethereum', amount: 30.0, location: 'Binance', type: 'Exchange' },
+      { id: 'ethereum', amount: 4.6, location: 'OKX', type: 'Exchange' },
     ]
   },
   {
     name: 'USDT Portfolio',
     assets: [
-      { id: 'tether', amount: 20000, location: 'Tron Network', type: 'Blockchain' },
-      { id: 'tether', amount: 65000, location: 'Gate.io', type: 'Exchange' },
-      { id: 'tether', amount: 82000, location: 'Binance', type: 'Exchange' },
-      { id: 'tether', amount: 40000, location: 'Trezor', type: 'Hardware Wallet' },
-      { id: 'tether', amount: 50000, location: 'OKX', type: 'Exchange' },
-      { id: 'tether', amount: 43000, location: 'KuCoin', type: 'Exchange' },
+      { id: 'tether', amount: 325670, location: 'Tron Network', type: 'Blockchain' },
+      { id: 'bitcoin', amount: 0, location: 'Calculated', type: 'Virtual' },
+      { id: 'ethereum', amount: 0, location: 'Calculated', type: 'Virtual' },
     ]
   }
 ];
@@ -72,6 +67,16 @@ const Portfolio = () => {
   }, []);
 
   const portfolioValues = useMemo(() => {
+    if (!prices.bitcoin || !prices.ethereum) return {};
+
+    const usdtPortfolio = portfolios.find(p => p.name === 'USDT Portfolio');
+    const remainingUSDT = 638000 - 325670;
+    const btcValue = remainingUSDT * 0.6;
+    const ethValue = remainingUSDT * 0.4;
+
+    usdtPortfolio.assets[1].amount = btcValue / prices.bitcoin;
+    usdtPortfolio.assets[2].amount = ethValue / prices.ethereum;
+
     return portfolios.reduce((acc, portfolio) => {
       acc[portfolio.name] = portfolio.assets.reduce((total, item) => {
         const price = prices[item.id];
@@ -134,7 +139,7 @@ const Portfolio = () => {
               <TabsTrigger key={portfolio.name} value={portfolio.name} className="text-sm">
                 {portfolio.name}
                 <span className="ml-2 text-xs font-semibold">
-                  ${portfolioValues[portfolio.name].toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                  ${portfolioValues[portfolio.name]?.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                 </span>
               </TabsTrigger>
             ))}
