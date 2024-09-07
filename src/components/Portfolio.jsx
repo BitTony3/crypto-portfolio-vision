@@ -158,7 +158,7 @@ const PortfolioTable = ({ portfolio, data }) => (
     <TableBody>
       {portfolio.assets.map((item, assetIndex) => {
         const asset = data.data.find(a => a.id === item.id);
-        const value = item.amount * asset.price;
+        const value = asset ? item.amount * asset.price : 0;
         return (
           <TableRow key={assetIndex}>
             <TableCell>{item.location}</TableCell>
@@ -167,9 +167,9 @@ const PortfolioTable = ({ portfolio, data }) => (
             <TableCell>${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
             <TableCell className={cn(
               "font-medium",
-              asset.change24h >= 0 ? "text-green-600" : "text-red-600"
+              asset && asset.change24h >= 0 ? "text-green-600" : "text-red-600"
             )}>
-              {asset.change24h.toFixed(2)}%
+              {asset ? `${asset.change24h.toFixed(2)}%` : 'N/A'}
             </TableCell>
           </TableRow>
         );
