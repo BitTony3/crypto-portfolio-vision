@@ -29,14 +29,19 @@ const portfolios = [
   {
     name: 'USDT Portfolio',
     assets: [
-      { id: 'tether', amount: 325670, location: 'Tron Network', type: 'Blockchain' },
-      { id: 'bitcoin', amount: 0, location: 'Calculated', type: 'Virtual' },
-      { id: 'ethereum', amount: 0, location: 'Calculated', type: 'Virtual' },
+      { id: 'tether', amount: 125670, location: 'Tron Network', type: 'Blockchain' },
+      { id: 'tether', amount: 100000, location: 'Ethereum Network', type: 'Blockchain' },
+      { id: 'tether', amount: 50000, location: 'Binance Smart Chain', type: 'Blockchain' },
+      { id: 'tether', amount: 50000, location: 'Binance', type: 'Exchange' },
+      { id: 'bitcoin', amount: 2.5, location: 'Binance', type: 'Exchange' },
+      { id: 'bitcoin', amount: 1.8, location: 'KuCoin', type: 'Exchange' },
+      { id: 'ethereum', amount: 25, location: 'Binance', type: 'Exchange' },
+      { id: 'ethereum', amount: 18, location: 'KuCoin', type: 'Exchange' },
     ]
   }
 ];
 
-const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8'];
+const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#C7F464', '#FF8C94', '#91A6FF'];
 
 const Portfolio = () => {
   const [activeTab, setActiveTab] = useState(portfolios[0].name);
@@ -68,14 +73,6 @@ const Portfolio = () => {
 
   const portfolioValues = useMemo(() => {
     if (!prices.bitcoin || !prices.ethereum) return {};
-
-    const usdtPortfolio = portfolios.find(p => p.name === 'USDT Portfolio');
-    const remainingUSDT = 638000 - 325670;
-    const btcValue = remainingUSDT * 0.6;
-    const ethValue = remainingUSDT * 0.4;
-
-    usdtPortfolio.assets[1].amount = btcValue / prices.bitcoin;
-    usdtPortfolio.assets[2].amount = ethValue / prices.ethereum;
 
     return portfolios.reduce((acc, portfolio) => {
       acc[portfolio.name] = portfolio.assets.reduce((total, item) => {
@@ -173,7 +170,7 @@ const PortfolioTable = ({ portfolio, prices }) => (
           <TableRow key={assetIndex}>
             <TableCell>{item.location}</TableCell>
             <TableCell>{item.type}</TableCell>
-            <TableCell>{item.amount.toFixed(4)}</TableCell>
+            <TableCell>{item.amount.toFixed(4)} {item.id.toUpperCase()}</TableCell>
             <TableCell>${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
           </TableRow>
         );
