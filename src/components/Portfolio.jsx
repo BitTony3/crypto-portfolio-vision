@@ -1,22 +1,9 @@
-import React, { useState, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState, useMemo, useEffect } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import { Loader2 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-
-const fetchAssetPrices = async (ids) => {
-  const mockPrices = {
-    bitcoin: { price: 50000, change24h: 2.5 },
-    ethereum: { price: 3000, change24h: -1.2 },
-    tether: { price: 1, change24h: 0.1 },
-  };
-  return new Promise((resolve) => {
-    setTimeout(() => resolve({ data: ids.map(id => ({ id, ...mockPrices[id] })) }), 1000);
-  });
-};
 
 const portfolios = [
   {
@@ -58,23 +45,41 @@ const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8'];
 
 const Portfolio = () => {
   const [activeTab, setActiveTab] = useState(portfolios[0].name);
-  const assetIds = useMemo(() => [...new Set(portfolios.flatMap(p => p.assets.map(a => a.id)))], []);
-
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['assetPrices', assetIds],
-    queryFn: () => fetchAssetPrices(assetIds),
+  const [prices, setPrices] = useState({
+    bitcoin: null,
+    ethereum: null,
+    tether: 1, // Assuming USDT is always $1
   });
 
+  useEffect(() => {
+    const wsBTC = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker');
+    const wsETH = new WebSocket('wss://stream.binance.com:9443/ws/ethusdt@ticker');
+
+    wsBTC.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setPrices(prev => ({ ...prev, bitcoin: parseFloat(data.c) }));
+    };
+
+    wsETH.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setPrices(prev => ({ ...prev, ethereum: parseFloat(data.c) }));
+    };
+
+    return () => {
+      wsBTC.close();
+      wsETH.close();
+    };
+  }, []);
+
   const portfolioValues = useMemo(() => {
-    if (!data || !data.data) return {};
     return portfolios.reduce((acc, portfolio) => {
       acc[portfolio.name] = portfolio.assets.reduce((total, item) => {
-        const asset = data.data.find(a => a.id === item.id);
-        return total + (asset ? item.amount * asset.price : 0);
+        const price = prices[item.id];
+        return total + (price ? item.amount * price : 0);
       }, 0);
       return acc;
     }, {});
-  }, [data]);
+  }, [prices]);
 
   const totalValue = useMemo(() => 
     Object.values(portfolioValues).reduce((sum, value) => sum + value, 0),
@@ -84,8 +89,9 @@ const Portfolio = () => {
     Object.entries(portfolioValues).map(([name, value]) => ({ name, value })),
   [portfolioValues]);
 
-  if (isLoading) return <Loader2 className="h-8 w-8 animate-spin text-primary" />;
-  if (error) return <div className="text-sm font-bold text-red-600">Error: {error.message}</div>;
+  if (prices.bitcoin === null || prices.ethereum === null) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Card className="h-full flex flex-col">
@@ -135,7 +141,7 @@ const Portfolio = () => {
           </TabsList>
           {portfolios.map((portfolio) => (
             <TabsContent key={portfolio.name} value={portfolio.name}>
-              <PortfolioTable portfolio={portfolio} data={data} />
+              <PortfolioTable portfolio={portfolio} prices={prices} />
             </TabsContent>
           ))}
         </Tabs>
@@ -144,7 +150,7 @@ const Portfolio = () => {
   );
 };
 
-const PortfolioTable = ({ portfolio, data }) => (
+const PortfolioTable = ({ portfolio, prices }) => (
   <Table>
     <TableHeader>
       <TableRow>
@@ -152,25 +158,18 @@ const PortfolioTable = ({ portfolio, data }) => (
         <TableHead>Type</TableHead>
         <TableHead>Amount</TableHead>
         <TableHead>Value (USD)</TableHead>
-        <TableHead>24h Change</TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
       {portfolio.assets.map((item, assetIndex) => {
-        const asset = data.data.find(a => a.id === item.id);
-        const value = asset ? item.amount * asset.price : 0;
+        const price = prices[item.id] || 0;
+        const value = item.amount * price;
         return (
           <TableRow key={assetIndex}>
             <TableCell>{item.location}</TableCell>
             <TableCell>{item.type}</TableCell>
             <TableCell>{item.amount.toFixed(4)}</TableCell>
             <TableCell>${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
-            <TableCell className={cn(
-              "font-medium",
-              asset && asset.change24h >= 0 ? "text-green-600" : "text-red-600"
-            )}>
-              {asset ? `${asset.change24h.toFixed(2)}%` : 'N/A'}
-            </TableCell>
           </TableRow>
         );
       })}

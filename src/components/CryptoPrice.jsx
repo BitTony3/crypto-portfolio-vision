@@ -1,36 +1,28 @@
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { Loader2, TrendingUp, TrendingDown } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const fetchCryptoPrice = async (id) => {
-  const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd&include_24hr_change=true`);
-  if (!response.ok) {
-    throw new Error('Failed to fetch crypto price');
-  }
-  return response.json();
-};
-
 const CryptoPrice = ({ id, name, symbol }) => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['cryptoPrice', id],
-    queryFn: () => fetchCryptoPrice(id),
-    refetchInterval: 60000, // Refetch every minute
-  });
+  const [price, setPrice] = useState(null);
+  const [change24h, setChange24h] = useState(null);
 
-  if (isLoading) return (
+  useEffect(() => {
+    const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}usdt@ticker`);
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setPrice(parseFloat(data.c));
+      setChange24h(parseFloat(data.p));
+    };
+
+    return () => ws.close();
+  }, [symbol]);
+
+  if (price === null) return (
     <Card className="h-full flex items-center justify-center">
-      <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      <div className="text-xs">Loading...</div>
     </Card>
   );
-  if (error) return (
-    <Card className="h-full flex items-center justify-center">
-      <div className="text-xs text-red-600">Error: {error.message}</div>
-    </Card>
-  );
-
-  const price = data[id].usd;
-  const change24h = data[id].usd_24h_change;
 
   return (
     <Card className="h-full flex flex-col justify-between">
