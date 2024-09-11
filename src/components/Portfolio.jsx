@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
+const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#C7F464', '#FF8C94', '#91A6FF'];
+
 const initialPortfolios = [
   {
     name: 'Bitcoin Portfolio',
@@ -36,7 +38,7 @@ const initialPortfolios = [
     initialAmount: 600000,
     currentPrice: 1,
     assets: [
-      { id: 'tether', amount: 37466, location: 'Tron Network', type: 'Blockchain' },
+      { id: 'tether', amount: 57466, location: 'Tron Network', type: 'Blockchain' },
       { id: 'tether', amount: 67555, location: 'Ethereum Network', type: 'Blockchain' },
       { id: 'tether', amount: 80000, location: 'Binance Smart Chain', type: 'Blockchain' },
       { id: 'tether', amount: 75680, location: 'Binance', type: 'Exchange' },
@@ -53,8 +55,6 @@ const initialPortfolios = [
     ]
   }
 ];
-
-const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#C7F464', '#FF8C94', '#91A6FF'];
 
 const Portfolio = () => {
   const [activeTab, setActiveTab] = useState(initialPortfolios[0].name);
@@ -125,7 +125,7 @@ const PortfolioTabs = ({ activeTab, setActiveTab, portfolios, portfolioValues })
             {portfolio.name.split(' ')[0]}
           </span>
           <span className="hidden sm:inline ml-1 text-xs font-semibold truncate">
-            {portfolioValues[portfolio.name]?.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            {formatValue(portfolioValues[portfolio.name], portfolio.name)}
           </span>
         </TabsTrigger>
       ))}
@@ -141,17 +141,17 @@ const PortfolioTabs = ({ activeTab, setActiveTab, portfolios, portfolioValues })
 const PortfolioTable = ({ portfolio }) => {
   const assetTotals = calculateAssetTotals(portfolio.assets);
   const totalValue = calculateTotalValue(assetTotals);
-  const totalProfit = totalValue - portfolio.initialAmount * portfolio.currentPrice;
+  const totalProfit = calculateProfit(totalValue, portfolio);
 
   return (
     <ScrollArea className="h-[300px] w-full rounded-md border">
       <div className="p-4">
         <div className="mb-4">
           <p className="text-lg font-bold">
-            Overall Balance: ${totalValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            Overall Balance: {formatBalance(totalValue, portfolio.name)}
           </p>
           <p className="text-md">
-            Total Profit: ${totalProfit.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            Total Profit: {formatProfit(totalProfit, portfolio.name)}
           </p>
           {portfolio.name === 'USDT Portfolio' && (
             <>
@@ -167,8 +167,8 @@ const PortfolioTable = ({ portfolio }) => {
               <TableHead>Asset</TableHead>
               <TableHead>Location</TableHead>
               <TableHead className="hidden md:table-cell">Type</TableHead>
-              <TableHead className="font-bold text-primary">Amount</TableHead>
-              <TableHead>Value (USD)</TableHead>
+              <TableHead className="font-bold text-primary md:hidden">Amount</TableHead>
+              <TableHead>Value</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -178,14 +178,14 @@ const PortfolioTable = ({ portfolio }) => {
                 <TableCell>{item.location}</TableCell>
                 <TableCell className="hidden md:table-cell">{item.type}</TableCell>
                 <TableCell className={cn(
-                  "font-mono text-sm",
+                  "font-mono text-sm md:hidden",
                   item.id === 'bitcoin' && "text-orange-500 font-bold",
                   item.id === 'ethereum' && "text-blue-500 font-bold",
                   item.id === 'tether' && "text-green-500 font-bold"
                 )}>
                   {item.amount.toFixed(4)} {getCurrencySymbol(item.id)}
                 </TableCell>
-                <TableCell>${getAssetValue(item).toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
+                <TableCell>{formatAssetValue(item, portfolio.name)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -215,6 +215,19 @@ const calculateTotalValue = (assetTotals) => {
   }, 0);
 };
 
+const calculateProfit = (totalValue, portfolio) => {
+  switch (portfolio.name) {
+    case 'Bitcoin Portfolio':
+      return totalValue - 5;
+    case 'Ethereum Portfolio':
+      return totalValue - 30;
+    case 'USDT Portfolio':
+      return totalValue - 600000;
+    default:
+      return 0;
+  }
+};
+
 const getCurrencySymbol = (id) => {
   switch (id) {
     case 'bitcoin': return 'BTC';
@@ -230,6 +243,51 @@ const getAssetValue = (asset) => {
     case 'ethereum': return asset.amount * 3000;
     case 'tether': return asset.amount;
     default: return 0;
+  }
+};
+
+const formatValue = (value, portfolioName) => {
+  switch (portfolioName) {
+    case 'Bitcoin Portfolio':
+      return `${value.toFixed(4)} BTC`;
+    case 'Ethereum Portfolio':
+      return `${value.toFixed(4)} ETH`;
+    default:
+      return `$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+  }
+};
+
+const formatBalance = (value, portfolioName) => {
+  switch (portfolioName) {
+    case 'Bitcoin Portfolio':
+      return `${value.toFixed(4)} BTC`;
+    case 'Ethereum Portfolio':
+      return `${value.toFixed(4)} ETH`;
+    default:
+      return `$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+  }
+};
+
+const formatProfit = (profit, portfolioName) => {
+  switch (portfolioName) {
+    case 'Bitcoin Portfolio':
+      return `${profit.toFixed(4)} BTC`;
+    case 'Ethereum Portfolio':
+      return `${profit.toFixed(4)} ETH`;
+    default:
+      return `$${profit.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+  }
+};
+
+const formatAssetValue = (asset, portfolioName) => {
+  const value = getAssetValue(asset);
+  switch (portfolioName) {
+    case 'Bitcoin Portfolio':
+      return `${asset.amount.toFixed(4)} BTC`;
+    case 'Ethereum Portfolio':
+      return `${asset.amount.toFixed(4)} ETH`;
+    default:
+      return `$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
   }
 };
 
