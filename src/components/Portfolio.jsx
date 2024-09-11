@@ -41,7 +41,7 @@ const initialPortfolios = [
       { id: 'tether', amount: 80000, location: 'Binance Smart Chain', type: 'Blockchain' },
       { id: 'tether', amount: 75680, location: 'Binance', type: 'Exchange' },
       { id: 'tether', amount: 60000, location: 'KuCoin', type: 'Exchange' },
-      { id: 'tether', amount: 62000, location: 'OKX', type: 'Exchange' },
+      { id: 'tether', amount: 42000, location: 'OKX', type: 'Exchange' },
       { id: 'bitcoin', amount: 1.5, location: 'Binance', type: 'Exchange' },
       { id: 'bitcoin', amount: 1.34, location: 'KuCoin', type: 'Exchange' },
       { id: 'bitcoin', amount: 0.66, location: 'OKX', type: 'Exchange' },
@@ -139,9 +139,8 @@ const PortfolioTabs = ({ activeTab, setActiveTab, portfolios, portfolioValues })
 );
 
 const PortfolioTable = ({ portfolio }) => {
-  const totalAmount = portfolio.assets.reduce((sum, asset) => sum + (asset.id === portfolio.assets[0].id ? asset.amount : 0), 0);
-  const currencySymbol = getCurrencySymbol(portfolio.assets[0].id);
-  const totalValue = portfolio.assets.reduce((sum, asset) => sum + getAssetValue(asset), 0);
+  const assetTotals = calculateAssetTotals(portfolio.assets);
+  const totalValue = calculateTotalValue(assetTotals);
   const totalProfit = totalValue - portfolio.initialAmount * portfolio.currentPrice;
 
   return (
@@ -149,24 +148,32 @@ const PortfolioTable = ({ portfolio }) => {
       <div className="p-4">
         <div className="mb-4">
           <p className="text-lg font-bold">
-            Overall Balance: {totalAmount.toFixed(4)} {currencySymbol}
+            Overall Balance: ${totalValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}
           </p>
           <p className="text-md">
-            Total Profit: {totalProfit.toFixed(2)} {currencySymbol}
+            Total Profit: ${totalProfit.toLocaleString(undefined, { maximumFractionDigits: 2 })}
           </p>
+          {portfolio.name === 'USDT Portfolio' && (
+            <>
+              <p>BTC Balance: {assetTotals.bitcoin.toFixed(4)} BTC</p>
+              <p>ETH Balance: {assetTotals.ethereum.toFixed(4)} ETH</p>
+            </>
+          )}
         </div>
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>Asset</TableHead>
               <TableHead>Location</TableHead>
               <TableHead>Type</TableHead>
               <TableHead className="font-bold text-primary">Amount</TableHead>
-              <TableHead>Value ({currencySymbol})</TableHead>
+              <TableHead>Value (USD)</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {portfolio.assets.map((item, assetIndex) => (
               <TableRow key={assetIndex}>
+                <TableCell>{getCurrencySymbol(item.id)}</TableCell>
                 <TableCell>{item.location}</TableCell>
                 <TableCell>{item.type}</TableCell>
                 <TableCell className={cn(
@@ -177,7 +184,7 @@ const PortfolioTable = ({ portfolio }) => {
                 )}>
                   {item.amount.toFixed(4)} {getCurrencySymbol(item.id)}
                 </TableCell>
-                <TableCell>{getAssetValue(item).toFixed(4)} {currencySymbol}</TableCell>
+                <TableCell>${getAssetValue(item).toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -189,11 +196,22 @@ const PortfolioTable = ({ portfolio }) => {
 
 const calculatePortfolioValues = (portfolios) => {
   return portfolios.reduce((acc, portfolio) => {
-    acc[portfolio.name] = portfolio.assets.reduce((total, item) => {
-      return total + getAssetValue(item);
-    }, 0);
+    acc[portfolio.name] = portfolio.assets.reduce((total, item) => total + getAssetValue(item), 0);
     return acc;
   }, {});
+};
+
+const calculateAssetTotals = (assets) => {
+  return assets.reduce((totals, asset) => {
+    totals[asset.id] = (totals[asset.id] || 0) + asset.amount;
+    return totals;
+  }, {});
+};
+
+const calculateTotalValue = (assetTotals) => {
+  return Object.entries(assetTotals).reduce((total, [id, amount]) => {
+    return total + getAssetValue({ id, amount });
+  }, 0);
 };
 
 const getCurrencySymbol = (id) => {
