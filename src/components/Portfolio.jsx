@@ -48,7 +48,7 @@ const initialPortfolios = [
       { id: 'bitcoin', amount: 1.40121, location: 'KuCoin', type: 'Exchange' },
       { id: 'bitcoin', amount: 0.69015, location: 'OKX', type: 'Exchange' },
       { id: 'bitcoin', amount: 0.52284, location: 'Trezor', type: 'Hardware Wallet' },
-      { id: 'ethereum', amount: 4.18271, location: 'Binance', type: 'Exchange' },
+      { id: 'ethereum', amount: 11.18271, location: 'Binance', type: 'Exchange' }, // Updated: Added 7 ETH
       { id: 'ethereum', amount: 3.13704, location: 'KuCoin', type: 'Exchange' },
       { id: 'ethereum', amount: 7.31975, location: 'MetaMask', type: 'Software Wallet' },
       { id: 'ethereum', amount: 6.27407, location: 'Base Mainnet', type: 'Blockchain' },
@@ -214,14 +214,9 @@ const calculateTotalValue = (assetTotals, portfolio) => {
   }, 0);
 };
 
-const calculateProfit = (totalValue, portfolio) => {
-  return totalValue - portfolio.initialAmount * portfolio.currentPrice;
-};
+const calculateProfit = (totalValue, portfolio) => totalValue - portfolio.initialAmount * portfolio.currentPrice;
 
-const getCurrencySymbol = (id) => {
-  const symbols = { bitcoin: 'BTC', ethereum: 'ETH', tether: 'USDT' };
-  return symbols[id] || '';
-};
+const getCurrencySymbol = (id) => ({ bitcoin: 'BTC', ethereum: 'ETH', tether: 'USDT' }[id] || '');
 
 const getAssetValue = (asset, portfolio) => {
   const prices = { bitcoin: 50000, ethereum: 3000, tether: 1 };
