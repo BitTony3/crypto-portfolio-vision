@@ -33,7 +33,7 @@ const initialPortfolios = [
   },
   {
     name: 'USDT Portfolio',
-    initialAmount: 580000,
+    initialAmount: 600000,
     currentPrice: 1,
     assets: [
       { id: 'tether', amount: 37466, location: 'Tron Network', type: 'Blockchain' },
@@ -190,8 +190,7 @@ const PortfolioTable = ({ portfolio }) => {
 const calculatePortfolioValues = (portfolios) => {
   return portfolios.reduce((acc, portfolio) => {
     acc[portfolio.name] = portfolio.assets.reduce((total, item) => {
-      const price = portfolio.currentPrice;
-      return total + (item.amount * (item.id === portfolio.assets[0].id ? price : (item.id === 'bitcoin' ? 50000 : 3000)));
+      return total + getAssetValue(item);
     }, 0);
     return acc;
   }, {});
