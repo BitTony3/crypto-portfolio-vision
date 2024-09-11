@@ -35,7 +35,7 @@ const initialPortfolios = [
   },
   {
     name: 'USDT Portfolio',
-    initialAmount: 620000,
+    initialAmount: 600000,
     currentPrice: 1,
     assets: [
       { id: 'tether', amount: 97466, location: 'Tron Network', type: 'Blockchain' },
@@ -66,6 +66,7 @@ const Portfolio = () => {
     <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-primary">Portfolio Overview</CardTitle>
+        <div className="text-xl font-semibold">Total Value: ${totalValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</div>
       </CardHeader>
       <CardContent className="flex-grow overflow-hidden flex flex-col">
         <PortfolioChart pieChartData={pieChartData} totalValue={totalValue} />
@@ -103,11 +104,6 @@ const PortfolioChart = ({ pieChartData, totalValue }) => (
           <Legend verticalAlign="middle" align="right" layout="vertical" />
         </PieChart>
       </ResponsiveContainer>
-    </div>
-    <div className="md:w-1/2 flex flex-col justify-center items-center p-4">
-      <div className="text-3xl font-bold text-primary mb-4">
-        Total Value: ${totalValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-      </div>
     </div>
   </div>
 );
@@ -165,9 +161,9 @@ const PortfolioTable = ({ portfolio }) => {
           <TableHeader>
             <TableRow>
               <TableHead>Asset</TableHead>
+              <TableHead>Amount</TableHead>
               <TableHead>Location</TableHead>
               <TableHead>Type</TableHead>
-              <TableHead>Amount</TableHead>
               <TableHead>Value</TableHead>
             </TableRow>
           </TableHeader>
@@ -175,8 +171,6 @@ const PortfolioTable = ({ portfolio }) => {
             {portfolio.assets.map((item, assetIndex) => (
               <TableRow key={assetIndex}>
                 <TableCell>{getCurrencySymbol(item.id)}</TableCell>
-                <TableCell>{item.location}</TableCell>
-                <TableCell>{item.type}</TableCell>
                 <TableCell className={cn(
                   "font-mono text-sm",
                   item.id === 'bitcoin' && "text-orange-500 font-bold",
@@ -185,6 +179,8 @@ const PortfolioTable = ({ portfolio }) => {
                 )}>
                   {item.amount.toFixed(4)} {getCurrencySymbol(item.id)}
                 </TableCell>
+                <TableCell>{item.location}</TableCell>
+                <TableCell>{item.type}</TableCell>
                 <TableCell>{formatAssetValue(item, portfolio.name)}</TableCell>
               </TableRow>
             ))}
@@ -219,16 +215,7 @@ const calculateTotalValue = (assetTotals, portfolio) => {
 };
 
 const calculateProfit = (totalValue, portfolio) => {
-  switch (portfolio.name) {
-    case 'Bitcoin Portfolio':
-      return totalValue - 5;
-    case 'Ethereum Portfolio':
-      return totalValue - 30;
-    case 'USDT Portfolio':
-      return totalValue - 620000;
-    default:
-      return 0;
-  }
+  return totalValue - portfolio.initialAmount;
 };
 
 const getCurrencySymbol = (id) => {
@@ -242,8 +229,8 @@ const getCurrencySymbol = (id) => {
 
 const getAssetValue = (asset, portfolio) => {
   switch (asset.id) {
-    case 'bitcoin': return asset.amount * portfolio.currentPrice;
-    case 'ethereum': return asset.amount * portfolio.currentPrice;
+    case 'bitcoin': return asset.amount * 50000;
+    case 'ethereum': return asset.amount * 3000;
     case 'tether': return asset.amount;
     default: return 0;
   }
@@ -286,9 +273,9 @@ const formatAssetValue = (asset, portfolioName) => {
   const value = getAssetValue(asset, { currentPrice: portfolioName === 'Bitcoin Portfolio' ? 50000 : 3000 });
   switch (portfolioName) {
     case 'Bitcoin Portfolio':
-      return `${value.toFixed(4)} BTC`;
+      return `${(value / 50000).toFixed(4)} BTC`;
     case 'Ethereum Portfolio':
-      return `${value.toFixed(4)} ETH`;
+      return `${(value / 3000).toFixed(4)} ETH`;
     default:
       return `$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
   }
