@@ -10,6 +10,7 @@ const initialPortfolios = [
   {
     name: 'Bitcoin Portfolio',
     initialAmount: 5,
+    currentPrice: 50000,
     assets: [
       { id: 'bitcoin', amount: 1.2, location: 'Binance', type: 'Exchange' },
       { id: 'bitcoin', amount: 0.8, location: 'OKX', type: 'Exchange' },
@@ -21,6 +22,7 @@ const initialPortfolios = [
   {
     name: 'Ethereum Portfolio',
     initialAmount: 30,
+    currentPrice: 3000,
     assets: [
       { id: 'ethereum', amount: 7.2, location: 'MetaMask', type: 'Software Wallet' },
       { id: 'ethereum', amount: 5.8, location: 'KuCoin', type: 'Exchange' },
@@ -32,6 +34,7 @@ const initialPortfolios = [
   {
     name: 'USDT Portfolio',
     initialAmount: 600000,
+    currentPrice: 1,
     assets: [
       { id: 'tether', amount: 150000, location: 'Tron Network', type: 'Blockchain' },
       { id: 'tether', amount: 100000, location: 'Ethereum Network', type: 'Blockchain' },
@@ -50,21 +53,15 @@ const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#C7F464'
 
 const Portfolio = () => {
   const [activeTab, setActiveTab] = useState(initialPortfolios[0].name);
-  const [prices, setPrices] = useState({
-    bitcoin: 50000,
-    ethereum: 3000,
-    tether: 1,
-  });
 
   const portfolioValues = useMemo(() => {
     return initialPortfolios.reduce((acc, portfolio) => {
       acc[portfolio.name] = portfolio.assets.reduce((total, item) => {
-        const price = prices[item.id];
-        return total + (price ? item.amount * price : 0);
+        return total + (item.amount * portfolio.currentPrice);
       }, 0);
       return acc;
     }, {});
-  }, [prices]);
+  }, []);
 
   const totalValue = useMemo(() => 
     Object.values(portfolioValues).reduce((sum, value) => sum + value, 0),
@@ -122,7 +119,7 @@ const Portfolio = () => {
           </TabsList>
           {initialPortfolios.map((portfolio) => (
             <TabsContent key={portfolio.name} value={portfolio.name}>
-              <PortfolioTable portfolio={portfolio} prices={prices} initialAmount={portfolio.initialAmount} />
+              <PortfolioTable portfolio={portfolio} />
             </TabsContent>
           ))}
         </Tabs>
@@ -131,24 +128,35 @@ const Portfolio = () => {
   );
 };
 
-const PortfolioTable = ({ portfolio, prices, initialAmount }) => {
+const PortfolioTable = ({ portfolio }) => {
   const totalAmount = portfolio.assets.reduce((sum, asset) => sum + (asset.id === portfolio.assets[0].id ? asset.amount : 0), 0);
-  const totalValue = portfolio.assets.reduce((sum, asset) => sum + asset.amount * prices[asset.id], 0);
-  const profit = totalValue - (initialAmount * prices[portfolio.assets[0].id]);
-  const profitPercentage = ((totalValue / (initialAmount * prices[portfolio.assets[0].id])) - 1) * 100;
+  const totalValue = portfolio.assets.reduce((sum, asset) => sum + asset.amount * portfolio.currentPrice, 0);
+  const profit = totalAmount - portfolio.initialAmount;
+  const profitPercentage = ((totalAmount / portfolio.initialAmount) - 1) * 100;
+
+  const getCurrencySymbol = (id) => {
+    switch (id) {
+      case 'bitcoin': return 'BTC';
+      case 'ethereum': return 'ETH';
+      case 'tether': return 'USDT';
+      default: return '';
+    }
+  };
+
+  const currencySymbol = getCurrencySymbol(portfolio.assets[0].id);
 
   return (
     <ScrollArea className="h-[300px] w-full rounded-md border">
       <div className="p-4">
         <div className="mb-4">
           <p className="text-lg font-bold">
-            Overall Balance: {totalAmount.toFixed(4)} {portfolio.assets[0].id.toUpperCase()}
+            Overall Balance: {totalAmount.toFixed(4)} {currencySymbol}
           </p>
           <p className={cn(
             "text-lg",
             profit >= 0 ? "text-green-500" : "text-red-500"
           )}>
-            Profit: {profit.toFixed(2)} USD ({profitPercentage.toFixed(2)}%)
+            Profit: {profit.toFixed(4)} {currencySymbol} ({profitPercentage.toFixed(2)}%)
           </p>
         </div>
         <Table>
@@ -157,13 +165,12 @@ const PortfolioTable = ({ portfolio, prices, initialAmount }) => {
               <TableHead>Location</TableHead>
               <TableHead>Type</TableHead>
               <TableHead className="font-bold text-primary">Amount</TableHead>
-              <TableHead>Value (USD)</TableHead>
+              <TableHead>Value ({currencySymbol})</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {portfolio.assets.map((item, assetIndex) => {
-              const price = prices[item.id] || 0;
-              const value = item.amount * price;
+              const value = item.amount;
               return (
                 <TableRow key={assetIndex}>
                   <TableCell>{item.location}</TableCell>
@@ -174,9 +181,9 @@ const PortfolioTable = ({ portfolio, prices, initialAmount }) => {
                     item.id === 'ethereum' && "text-blue-500 font-bold",
                     item.id === 'tether' && "text-green-500 font-bold"
                   )}>
-                    {item.amount.toFixed(4)} {item.id === 'bitcoin' ? 'BTC' : item.id === 'ethereum' ? 'ETH' : 'USDT'}
+                    {item.amount.toFixed(4)} {getCurrencySymbol(item.id)}
                   </TableCell>
-                  <TableCell>${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
+                  <TableCell>{value.toFixed(4)} {currencySymbol}</TableCell>
                 </TableRow>
               );
             })}

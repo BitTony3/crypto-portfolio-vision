@@ -72,7 +72,7 @@ const Index = () => {
             </div>
           </div>
         </header>
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-8 h-[calc(100vh-64px)] md:h-auto">
           <Portfolio />
         </main>
       </div>
