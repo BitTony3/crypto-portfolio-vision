@@ -36,15 +36,20 @@ const initialPortfolios = [
     initialAmount: 600000,
     currentPrice: 1,
     assets: [
-      { id: 'tether', amount: 150000, location: 'Tron Network', type: 'Blockchain' },
+      { id: 'tether', amount: 100000, location: 'Tron Network', type: 'Blockchain' },
       { id: 'tether', amount: 100000, location: 'Ethereum Network', type: 'Blockchain' },
       { id: 'tether', amount: 80000, location: 'Binance Smart Chain', type: 'Blockchain' },
       { id: 'tether', amount: 75680, location: 'Binance', type: 'Exchange' },
       { id: 'tether', amount: 60000, location: 'KuCoin', type: 'Exchange' },
+      { id: 'tether', amount: 50000, location: 'OKX', type: 'Exchange' },
       { id: 'bitcoin', amount: 1.5, location: 'Binance', type: 'Exchange' },
       { id: 'bitcoin', amount: 1.34, location: 'KuCoin', type: 'Exchange' },
+      { id: 'bitcoin', amount: 0.66, location: 'OKX', type: 'Exchange' },
+      { id: 'bitcoin', amount: 0.5, location: 'Trezor', type: 'Hardware Wallet' },
       { id: 'ethereum', amount: 4, location: 'Binance', type: 'Exchange' },
       { id: 'ethereum', amount: 3, location: 'KuCoin', type: 'Exchange' },
+      { id: 'ethereum', amount: 7, location: 'MetaMask', type: 'Software Wallet' },
+      { id: 'ethereum', amount: 6, location: 'Ethereum Mainnet', type: 'Blockchain' },
     ]
   }
 ];
@@ -57,7 +62,8 @@ const Portfolio = () => {
   const portfolioValues = useMemo(() => {
     return initialPortfolios.reduce((acc, portfolio) => {
       acc[portfolio.name] = portfolio.assets.reduce((total, item) => {
-        return total + (item.amount * portfolio.currentPrice);
+        const price = portfolio.currentPrice;
+        return total + (item.amount * (item.id === portfolio.assets[0].id ? price : (item.id === 'bitcoin' ? 50000 : 3000)));
       }, 0);
       return acc;
     }, {});
@@ -148,12 +154,26 @@ const PortfolioTable = ({ portfolio }) => {
 
   const currencySymbol = getCurrencySymbol(portfolio.assets[0].id);
 
+  const getAssetValue = (asset) => {
+    switch (asset.id) {
+      case 'bitcoin': return asset.amount * 50000;
+      case 'ethereum': return asset.amount * 3000;
+      case 'tether': return asset.amount;
+      default: return 0;
+    }
+  };
+
+  const totalValue = portfolio.assets.reduce((sum, asset) => sum + getAssetValue(asset), 0);
+
   return (
     <ScrollArea className="h-[300px] w-full rounded-md border">
       <div className="p-4">
         <div className="mb-4">
           <p className="text-lg font-bold">
             Overall Balance: {totalAmount.toFixed(4)} {currencySymbol}
+          </p>
+          <p className="text-md">
+            Total Value: {totalValue.toFixed(2)} {currencySymbol}
           </p>
         </div>
         <Table>
@@ -167,7 +187,7 @@ const PortfolioTable = ({ portfolio }) => {
           </TableHeader>
           <TableBody>
             {portfolio.assets.map((item, assetIndex) => {
-              const value = item.amount;
+              const value = getAssetValue(item);
               return (
                 <TableRow key={assetIndex}>
                   <TableCell>{item.location}</TableCell>
