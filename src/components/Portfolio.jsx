@@ -14,11 +14,11 @@ const initialPortfolios = [
     initialAmount: 5,
     currentPrice: 50000,
     assets: [
-      { id: 'bitcoin', amount: 1.218, location: 'Binance', type: 'Exchange' },
-      { id: 'bitcoin', amount: 0.812, location: 'OKX', type: 'Exchange' },
-      { id: 'bitcoin', amount: 1.5225, location: 'Trezor', type: 'Hardware Wallet' },
-      { id: 'bitcoin', amount: 0.71050, location: 'KuCoin', type: 'Exchange' },
-      { id: 'bitcoin', amount: 1.2789, location: 'Bitcoin Network', type: 'Blockchain' },
+      { id: 'bitcoin', amount: 1.23627, location: 'Binance', type: 'Exchange' },
+      { id: 'bitcoin', amount: 0.82418, location: 'OKX', type: 'Exchange' },
+      { id: 'bitcoin', amount: 1.54534, location: 'Trezor', type: 'Hardware Wallet' },
+      { id: 'bitcoin', amount: 0.72116, location: 'KuCoin', type: 'Exchange' },
+      { id: 'bitcoin', amount: 1.29808, location: 'Bitcoin Network', type: 'Blockchain' },
     ]
   },
   {
@@ -26,32 +26,32 @@ const initialPortfolios = [
     initialAmount: 30,
     currentPrice: 3000,
     assets: [
-      { id: 'ethereum', amount: 7.308, location: 'MetaMask', type: 'Software Wallet' },
-      { id: 'ethereum', amount: 5.887, location: 'KuCoin', type: 'Exchange' },
-      { id: 'ethereum', amount: 8.42450, location: 'Base Mainnet', type: 'Blockchain' },
-      { id: 'ethereum', amount: 5.278, location: 'Binance', type: 'Exchange' },
-      { id: 'ethereum', amount: 7.714, location: 'OKX', type: 'Exchange' },
+      { id: 'ethereum', amount: 7.41762, location: 'MetaMask', type: 'Software Wallet' },
+      { id: 'ethereum', amount: 5.97531, location: 'KuCoin', type: 'Exchange' },
+      { id: 'ethereum', amount: 8.55087, location: 'Base Mainnet', type: 'Blockchain' },
+      { id: 'ethereum', amount: 5.35717, location: 'Binance', type: 'Exchange' },
+      { id: 'ethereum', amount: 7.82971, location: 'OKX', type: 'Exchange' },
     ]
   },
   {
     name: 'USDT Portfolio',
-    initialAmount: 580000,
+    initialAmount: 600000,
     currentPrice: 1,
     assets: [
-      { id: 'tether', amount: 98928.09, location: 'Tron Network', type: 'Blockchain' },
-      { id: 'tether', amount: 68568.325, location: 'Ethereum Network', type: 'Blockchain' },
-      { id: 'tether', amount: 40600, location: 'Binance Smart Chain', type: 'Blockchain' },
-      { id: 'tether', amount: 76815.2, location: 'Binance', type: 'Exchange' },
-      { id: 'tether', amount: 60900, location: 'KuCoin', type: 'Exchange' },
-      { id: 'tether', amount: 42630, location: 'OKX', type: 'Exchange' },
-      { id: 'bitcoin', amount: 1.5225, location: 'Binance', type: 'Exchange' },
-      { id: 'bitcoin', amount: 1.3601, location: 'KuCoin', type: 'Exchange' },
-      { id: 'bitcoin', amount: 0.6699, location: 'OKX', type: 'Exchange' },
-      { id: 'bitcoin', amount: 0.5075, location: 'Trezor', type: 'Hardware Wallet' },
-      { id: 'ethereum', amount: 4.06, location: 'Binance', type: 'Exchange' },
-      { id: 'ethereum', amount: 3.045, location: 'KuCoin', type: 'Exchange' },
-      { id: 'ethereum', amount: 7.105, location: 'MetaMask', type: 'Software Wallet' },
-      { id: 'ethereum', amount: 6.09, location: 'Base Mainnet', type: 'Blockchain' },
+      { id: 'tether', amount: 100412.0314, location: 'Tron Network', type: 'Blockchain' },
+      { id: 'tether', amount: 69596.8499, location: 'Ethereum Network', type: 'Blockchain' },
+      { id: 'tether', amount: 609, location: 'Binance Smart Chain', type: 'Blockchain' },
+      { id: 'tether', amount: 77967.428, location: 'Binance', type: 'Exchange' },
+      { id: 'tether', amount: 61813.5, location: 'KuCoin', type: 'Exchange' },
+      { id: 'tether', amount: 43269.45, location: 'OKX', type: 'Exchange' },
+      { id: 'bitcoin', amount: 1.54534, location: 'Binance', type: 'Exchange' },
+      { id: 'bitcoin', amount: 1.38050, location: 'KuCoin', type: 'Exchange' },
+      { id: 'bitcoin', amount: 0.67995, location: 'OKX', type: 'Exchange' },
+      { id: 'bitcoin', amount: 0.51511, location: 'Trezor', type: 'Hardware Wallet' },
+      { id: 'ethereum', amount: 4.1209, location: 'Binance', type: 'Exchange' },
+      { id: 'ethereum', amount: 3.09068, location: 'KuCoin', type: 'Exchange' },
+      { id: 'ethereum', amount: 7.21158, location: 'MetaMask', type: 'Software Wallet' },
+      { id: 'ethereum', amount: 6.18135, location: 'Base Mainnet', type: 'Blockchain' },
     ]
   }
 ];
@@ -220,6 +220,8 @@ const calculateProfit = (totalValue, portfolio) => {
       return totalValue - (5 * 50000);
     case 'Ethereum Portfolio':
       return totalValue - (30 * 3000);
+    case 'USDT Portfolio':
+      return totalValue - 600000;
     default:
       return totalValue - portfolio.initialAmount;
   }
