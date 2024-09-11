@@ -14,11 +14,11 @@ const initialPortfolios = [
     initialAmount: 5,
     currentPrice: 50000,
     assets: [
-      { id: 'bitcoin', amount: 1.23627, location: 'Binance', type: 'Exchange' },
-      { id: 'bitcoin', amount: 0.82418, location: 'OKX', type: 'Exchange' },
-      { id: 'bitcoin', amount: 1.54534, location: 'Trezor', type: 'Hardware Wallet' },
-      { id: 'bitcoin', amount: 0.72116, location: 'KuCoin', type: 'Exchange' },
-      { id: 'bitcoin', amount: 1.29808, location: 'Bitcoin Network', type: 'Blockchain' },
+      { id: 'bitcoin', amount: 1.25481, location: 'Binance', type: 'Exchange' },
+      { id: 'bitcoin', amount: 0.83654, location: 'OKX', type: 'Exchange' },
+      { id: 'bitcoin', amount: 1.56852, location: 'Trezor', type: 'Hardware Wallet' },
+      { id: 'bitcoin', amount: 0.73198, location: 'KuCoin', type: 'Exchange' },
+      { id: 'bitcoin', amount: 1.31755, location: 'Bitcoin Network', type: 'Blockchain' },
     ]
   },
   {
@@ -26,11 +26,11 @@ const initialPortfolios = [
     initialAmount: 30,
     currentPrice: 3000,
     assets: [
-      { id: 'ethereum', amount: 7.41762, location: 'MetaMask', type: 'Software Wallet' },
-      { id: 'ethereum', amount: 5.97531, location: 'KuCoin', type: 'Exchange' },
-      { id: 'ethereum', amount: 8.55087, location: 'Base Mainnet', type: 'Blockchain' },
-      { id: 'ethereum', amount: 5.35717, location: 'Binance', type: 'Exchange' },
-      { id: 'ethereum', amount: 7.82971, location: 'OKX', type: 'Exchange' },
+      { id: 'ethereum', amount: 7.52888, location: 'MetaMask', type: 'Software Wallet' },
+      { id: 'ethereum', amount: 6.06494, location: 'KuCoin', type: 'Exchange' },
+      { id: 'ethereum', amount: 8.67913, location: 'Base Mainnet', type: 'Blockchain' },
+      { id: 'ethereum', amount: 5.43753, location: 'Binance', type: 'Exchange' },
+      { id: 'ethereum', amount: 7.94716, location: 'OKX', type: 'Exchange' },
     ]
   },
   {
@@ -38,20 +38,20 @@ const initialPortfolios = [
     initialAmount: 600000,
     currentPrice: 1,
     assets: [
-      { id: 'tether', amount: 100412.0314, location: 'Tron Network', type: 'Blockchain' },
-      { id: 'tether', amount: 69596.8499, location: 'Ethereum Network', type: 'Blockchain' },
-      { id: 'tether', amount: 609, location: 'Binance Smart Chain', type: 'Blockchain' },
-      { id: 'tether', amount: 77967.428, location: 'Binance', type: 'Exchange' },
-      { id: 'tether', amount: 61813.5, location: 'KuCoin', type: 'Exchange' },
-      { id: 'tether', amount: 43269.45, location: 'OKX', type: 'Exchange' },
-      { id: 'bitcoin', amount: 1.54534, location: 'Binance', type: 'Exchange' },
-      { id: 'bitcoin', amount: 1.38050, location: 'KuCoin', type: 'Exchange' },
-      { id: 'bitcoin', amount: 0.67995, location: 'OKX', type: 'Exchange' },
-      { id: 'bitcoin', amount: 0.51511, location: 'Trezor', type: 'Hardware Wallet' },
-      { id: 'ethereum', amount: 4.1209, location: 'Binance', type: 'Exchange' },
-      { id: 'ethereum', amount: 3.09068, location: 'KuCoin', type: 'Exchange' },
-      { id: 'ethereum', amount: 7.21158, location: 'MetaMask', type: 'Software Wallet' },
-      { id: 'ethereum', amount: 6.18135, location: 'Base Mainnet', type: 'Blockchain' },
+      { id: 'tether', amount: 121918.2518, location: 'Tron Network', type: 'Blockchain' },
+      { id: 'tether', amount: 70640.8026, location: 'Ethereum Network', type: 'Blockchain' },
+      { id: 'tether', amount: 618.1350, location: 'Binance Smart Chain', type: 'Blockchain' },
+      { id: 'tether', amount: 79136.9394, location: 'Binance', type: 'Exchange' },
+      { id: 'tether', amount: 62740.7025, location: 'KuCoin', type: 'Exchange' },
+      { id: 'tether', amount: 43918.4918, location: 'OKX', type: 'Exchange' },
+      { id: 'bitcoin', amount: 1.56852, location: 'Binance', type: 'Exchange' },
+      { id: 'bitcoin', amount: 1.40121, location: 'KuCoin', type: 'Exchange' },
+      { id: 'bitcoin', amount: 0.69015, location: 'OKX', type: 'Exchange' },
+      { id: 'bitcoin', amount: 0.52284, location: 'Trezor', type: 'Hardware Wallet' },
+      { id: 'ethereum', amount: 4.18271, location: 'Binance', type: 'Exchange' },
+      { id: 'ethereum', amount: 3.13704, location: 'KuCoin', type: 'Exchange' },
+      { id: 'ethereum', amount: 7.31975, location: 'MetaMask', type: 'Software Wallet' },
+      { id: 'ethereum', amount: 6.27407, location: 'Base Mainnet', type: 'Blockchain' },
     ]
   }
 ];
@@ -207,7 +207,7 @@ const calculateAssetTotals = (assets) => {
 
 const calculateTotalValue = (assetTotals, portfolio) => {
   if (portfolio.name === 'USDT Portfolio') {
-    return assetTotals.tether + (assetTotals.bitcoin * 50000) + (assetTotals.ethereum * 3000);
+    return assetTotals.tether + (assetTotals.bitcoin * 50000) + (assetTotals.ethereum * 3000) + 20000; // Added 20,000 USDT
   }
   return Object.entries(assetTotals).reduce((total, [id, amount]) => {
     return total + getAssetValue({ id, amount }, portfolio);
@@ -215,58 +215,37 @@ const calculateTotalValue = (assetTotals, portfolio) => {
 };
 
 const calculateProfit = (totalValue, portfolio) => {
-  switch (portfolio.name) {
-    case 'Bitcoin Portfolio':
-      return totalValue - (5 * 50000);
-    case 'Ethereum Portfolio':
-      return totalValue - (30 * 3000);
-    case 'USDT Portfolio':
-      return totalValue - 600000;
-    default:
-      return totalValue - portfolio.initialAmount;
-  }
+  return portfolio.name === 'USDT Portfolio' ? totalValue - 600000 : totalValue - portfolio.initialAmount * portfolio.currentPrice;
 };
 
 const getCurrencySymbol = (id) => {
-  switch (id) {
-    case 'bitcoin': return 'BTC';
-    case 'ethereum': return 'ETH';
-    case 'tether': return 'USDT';
-    default: return '';
-  }
+  const symbols = { bitcoin: 'BTC', ethereum: 'ETH', tether: 'USDT' };
+  return symbols[id] || '';
 };
 
 const getAssetValue = (asset, portfolio) => {
-  switch (asset.id) {
-    case 'bitcoin': return asset.amount * 50000;
-    case 'ethereum': return asset.amount * 3000;
-    case 'tether': return asset.amount;
-    default: return 0;
-  }
+  const prices = { bitcoin: 50000, ethereum: 3000, tether: 1 };
+  return asset.amount * prices[asset.id];
 };
 
 const formatValue = (value, portfolioName) => {
-  switch (portfolioName) {
-    case 'Bitcoin Portfolio':
-      return `${(value / 50000).toFixed(4)} BTC`;
-    case 'Ethereum Portfolio':
-      return `${(value / 3000).toFixed(4)} ETH`;
-    default:
-      return `$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
-  }
+  const formatters = {
+    'Bitcoin Portfolio': (v) => `${(v / 50000).toFixed(4)} BTC`,
+    'Ethereum Portfolio': (v) => `${(v / 3000).toFixed(4)} ETH`,
+    'USDT Portfolio': (v) => `$${v.toLocaleString(undefined, { maximumFractionDigits: 2 })}`,
+  };
+  return formatters[portfolioName](value);
 };
 
 const formatBalance = formatValue;
 
 const formatProfit = (profit, portfolioName) => {
-  switch (portfolioName) {
-    case 'Bitcoin Portfolio':
-      return `${(profit / 50000).toFixed(4)} BTC`;
-    case 'Ethereum Portfolio':
-      return `${(profit / 3000).toFixed(4)} ETH`;
-    default:
-      return `$${profit.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
-  }
+  const formatters = {
+    'Bitcoin Portfolio': (p) => `${(p / 50000).toFixed(4)} BTC`,
+    'Ethereum Portfolio': (p) => `${(p / 3000).toFixed(4)} ETH`,
+    'USDT Portfolio': (p) => `$${p.toLocaleString(undefined, { maximumFractionDigits: 2 })}`,
+  };
+  return formatters[portfolioName](profit);
 };
 
 const formatAssetValue = (asset, portfolioName) => {
