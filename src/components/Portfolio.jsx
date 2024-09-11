@@ -109,10 +109,16 @@ const Portfolio = () => {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3">
             {initialPortfolios.map((portfolio) => (
-              <TabsTrigger key={portfolio.name} value={portfolio.name} className="text-sm">
-                {portfolio.name}
-                <span className="ml-2 text-xs font-semibold">
-                  ${portfolioValues[portfolio.name]?.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+              <TabsTrigger 
+                key={portfolio.name} 
+                value={portfolio.name} 
+                className="text-xs sm:text-sm md:text-base truncate"
+              >
+                <span className="truncate">
+                  {portfolio.name.split(' ')[0]}
+                </span>
+                <span className="hidden sm:inline ml-1 text-xs font-semibold truncate">
+                  {portfolioValues[portfolio.name]?.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                 </span>
               </TabsTrigger>
             ))}
@@ -130,9 +136,6 @@ const Portfolio = () => {
 
 const PortfolioTable = ({ portfolio }) => {
   const totalAmount = portfolio.assets.reduce((sum, asset) => sum + (asset.id === portfolio.assets[0].id ? asset.amount : 0), 0);
-  const totalValue = portfolio.assets.reduce((sum, asset) => sum + asset.amount * portfolio.currentPrice, 0);
-  const profit = totalAmount - portfolio.initialAmount;
-  const profitPercentage = ((totalAmount / portfolio.initialAmount) - 1) * 100;
 
   const getCurrencySymbol = (id) => {
     switch (id) {
@@ -151,12 +154,6 @@ const PortfolioTable = ({ portfolio }) => {
         <div className="mb-4">
           <p className="text-lg font-bold">
             Overall Balance: {totalAmount.toFixed(4)} {currencySymbol}
-          </p>
-          <p className={cn(
-            "text-lg",
-            profit >= 0 ? "text-green-500" : "text-red-500"
-          )}>
-            Profit: {profit.toFixed(4)} {currencySymbol} ({profitPercentage.toFixed(2)}%)
           </p>
         </div>
         <Table>
