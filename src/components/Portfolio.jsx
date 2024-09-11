@@ -35,10 +35,10 @@ const initialPortfolios = [
   },
   {
     name: 'USDT Portfolio',
-    initialAmount: 600000,
+    initialAmount: 620000,
     currentPrice: 1,
     assets: [
-      { id: 'tether', amount: 57466, location: 'Tron Network', type: 'Blockchain' },
+      { id: 'tether', amount: 77466, location: 'Tron Network', type: 'Blockchain' },
       { id: 'tether', amount: 67555, location: 'Ethereum Network', type: 'Blockchain' },
       { id: 'tether', amount: 80000, location: 'Binance Smart Chain', type: 'Blockchain' },
       { id: 'tether', amount: 75680, location: 'Binance', type: 'Exchange' },
@@ -140,7 +140,7 @@ const PortfolioTabs = ({ activeTab, setActiveTab, portfolios, portfolioValues })
 
 const PortfolioTable = ({ portfolio }) => {
   const assetTotals = calculateAssetTotals(portfolio.assets);
-  const totalValue = calculateTotalValue(assetTotals);
+  const totalValue = calculateTotalValue(assetTotals, portfolio);
   const totalProfit = calculateProfit(totalValue, portfolio);
 
   return (
@@ -197,7 +197,7 @@ const PortfolioTable = ({ portfolio }) => {
 
 const calculatePortfolioValues = (portfolios) => {
   return portfolios.reduce((acc, portfolio) => {
-    acc[portfolio.name] = portfolio.assets.reduce((total, item) => total + getAssetValue(item), 0);
+    acc[portfolio.name] = portfolio.assets.reduce((total, item) => total + getAssetValue(item, portfolio), 0);
     return acc;
   }, {});
 };
@@ -209,9 +209,9 @@ const calculateAssetTotals = (assets) => {
   }, {});
 };
 
-const calculateTotalValue = (assetTotals) => {
+const calculateTotalValue = (assetTotals, portfolio) => {
   return Object.entries(assetTotals).reduce((total, [id, amount]) => {
-    return total + getAssetValue({ id, amount });
+    return total + getAssetValue({ id, amount }, portfolio);
   }, 0);
 };
 
@@ -222,7 +222,7 @@ const calculateProfit = (totalValue, portfolio) => {
     case 'Ethereum Portfolio':
       return totalValue - 30;
     case 'USDT Portfolio':
-      return totalValue - 600000;
+      return totalValue - 620000;
     default:
       return 0;
   }
@@ -237,10 +237,10 @@ const getCurrencySymbol = (id) => {
   }
 };
 
-const getAssetValue = (asset) => {
+const getAssetValue = (asset, portfolio) => {
   switch (asset.id) {
-    case 'bitcoin': return asset.amount * 50000;
-    case 'ethereum': return asset.amount * 3000;
+    case 'bitcoin': return asset.amount * portfolio.currentPrice;
+    case 'ethereum': return asset.amount * portfolio.currentPrice;
     case 'tether': return asset.amount;
     default: return 0;
   }
@@ -249,9 +249,9 @@ const getAssetValue = (asset) => {
 const formatValue = (value, portfolioName) => {
   switch (portfolioName) {
     case 'Bitcoin Portfolio':
-      return `${value.toFixed(4)} BTC`;
+      return `${(value / 50000).toFixed(4)} BTC`;
     case 'Ethereum Portfolio':
-      return `${value.toFixed(4)} ETH`;
+      return `${(value / 3000).toFixed(4)} ETH`;
     default:
       return `$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
   }
@@ -260,9 +260,9 @@ const formatValue = (value, portfolioName) => {
 const formatBalance = (value, portfolioName) => {
   switch (portfolioName) {
     case 'Bitcoin Portfolio':
-      return `${value.toFixed(4)} BTC`;
+      return `${(value / 50000).toFixed(4)} BTC`;
     case 'Ethereum Portfolio':
-      return `${value.toFixed(4)} ETH`;
+      return `${(value / 3000).toFixed(4)} ETH`;
     default:
       return `$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
   }
@@ -271,16 +271,16 @@ const formatBalance = (value, portfolioName) => {
 const formatProfit = (profit, portfolioName) => {
   switch (portfolioName) {
     case 'Bitcoin Portfolio':
-      return `${profit.toFixed(4)} BTC`;
+      return `${(profit / 50000).toFixed(4)} BTC`;
     case 'Ethereum Portfolio':
-      return `${profit.toFixed(4)} ETH`;
+      return `${(profit / 3000).toFixed(4)} ETH`;
     default:
       return `$${profit.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
   }
 };
 
 const formatAssetValue = (asset, portfolioName) => {
-  const value = getAssetValue(asset);
+  const value = getAssetValue(asset, { currentPrice: portfolioName === 'Bitcoin Portfolio' ? 50000 : 3000 });
   switch (portfolioName) {
     case 'Bitcoin Portfolio':
       return `${asset.amount.toFixed(4)} BTC`;
