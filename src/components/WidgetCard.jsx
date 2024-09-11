@@ -10,6 +10,11 @@ const WidgetCard = ({ widgetName, index, isExpanded, onToggleExpansion, onRemove
   const WidgetComponent = widgetComponents[widgetName];
   const { width, height } = getWidgetSize(widgetName, isExpanded, columns);
 
+  if (!WidgetComponent) {
+    console.error(`Widget component not found for: ${widgetName}`);
+    return null;
+  }
+
   return (
     <div
       ref={provided.innerRef}
