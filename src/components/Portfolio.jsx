@@ -155,6 +155,7 @@ const PortfolioTable = ({ portfolio }) => {
           </p>
           {portfolio.name === 'USDT Portfolio' && (
             <>
+              <p>USDT Balance: {assetTotals.tether.toFixed(2)} USDT</p>
               <p>BTC Balance: {assetTotals.bitcoin.toFixed(4)} BTC</p>
               <p>ETH Balance: {assetTotals.ethereum.toFixed(4)} ETH</p>
             </>
@@ -165,7 +166,7 @@ const PortfolioTable = ({ portfolio }) => {
             <TableRow>
               <TableHead>Asset</TableHead>
               <TableHead>Location</TableHead>
-              <TableHead>Type</TableHead>
+              <TableHead className="hidden md:table-cell">Type</TableHead>
               <TableHead className="font-bold text-primary">Amount</TableHead>
               <TableHead>Value (USD)</TableHead>
             </TableRow>
@@ -175,7 +176,7 @@ const PortfolioTable = ({ portfolio }) => {
               <TableRow key={assetIndex}>
                 <TableCell>{getCurrencySymbol(item.id)}</TableCell>
                 <TableCell>{item.location}</TableCell>
-                <TableCell>{item.type}</TableCell>
+                <TableCell className="hidden md:table-cell">{item.type}</TableCell>
                 <TableCell className={cn(
                   "font-mono text-sm",
                   item.id === 'bitcoin' && "text-orange-500 font-bold",
