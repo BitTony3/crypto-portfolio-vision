@@ -38,7 +38,7 @@ const initialPortfolios = [
     initialAmount: 620000,
     currentPrice: 1,
     assets: [
-      { id: 'tether', amount: 77466, location: 'Tron Network', type: 'Blockchain' },
+      { id: 'tether', amount: 97466, location: 'Tron Network', type: 'Blockchain' },
       { id: 'tether', amount: 67555, location: 'Ethereum Network', type: 'Blockchain' },
       { id: 'tether', amount: 80000, location: 'Binance Smart Chain', type: 'Blockchain' },
       { id: 'tether', amount: 75680, location: 'Binance', type: 'Exchange' },
@@ -166,8 +166,8 @@ const PortfolioTable = ({ portfolio }) => {
             <TableRow>
               <TableHead>Asset</TableHead>
               <TableHead>Location</TableHead>
-              <TableHead className="hidden md:table-cell">Type</TableHead>
-              <TableHead className="font-bold text-primary md:hidden">Amount</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead>Amount</TableHead>
               <TableHead>Value</TableHead>
             </TableRow>
           </TableHeader>
@@ -176,9 +176,9 @@ const PortfolioTable = ({ portfolio }) => {
               <TableRow key={assetIndex}>
                 <TableCell>{getCurrencySymbol(item.id)}</TableCell>
                 <TableCell>{item.location}</TableCell>
-                <TableCell className="hidden md:table-cell">{item.type}</TableCell>
+                <TableCell>{item.type}</TableCell>
                 <TableCell className={cn(
-                  "font-mono text-sm md:hidden",
+                  "font-mono text-sm",
                   item.id === 'bitcoin' && "text-orange-500 font-bold",
                   item.id === 'ethereum' && "text-blue-500 font-bold",
                   item.id === 'tether' && "text-green-500 font-bold"
@@ -210,6 +210,9 @@ const calculateAssetTotals = (assets) => {
 };
 
 const calculateTotalValue = (assetTotals, portfolio) => {
+  if (portfolio.name === 'USDT Portfolio') {
+    return assetTotals.tether + (assetTotals.bitcoin * 50000) + (assetTotals.ethereum * 3000);
+  }
   return Object.entries(assetTotals).reduce((total, [id, amount]) => {
     return total + getAssetValue({ id, amount }, portfolio);
   }, 0);
@@ -283,9 +286,9 @@ const formatAssetValue = (asset, portfolioName) => {
   const value = getAssetValue(asset, { currentPrice: portfolioName === 'Bitcoin Portfolio' ? 50000 : 3000 });
   switch (portfolioName) {
     case 'Bitcoin Portfolio':
-      return `${asset.amount.toFixed(4)} BTC`;
+      return `${value.toFixed(4)} BTC`;
     case 'Ethereum Portfolio':
-      return `${asset.amount.toFixed(4)} ETH`;
+      return `${value.toFixed(4)} ETH`;
     default:
       return `$${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
   }
