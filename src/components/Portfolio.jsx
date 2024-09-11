@@ -41,7 +41,7 @@ const initialPortfolios = [
       { id: 'tether', amount: 80000, location: 'Binance Smart Chain', type: 'Blockchain' },
       { id: 'tether', amount: 75680, location: 'Binance', type: 'Exchange' },
       { id: 'tether', amount: 60000, location: 'KuCoin', type: 'Exchange' },
-      { id: 'tether', amount: 100000, location: 'OKX', type: 'Exchange' },
+      { id: 'tether', amount: 82000, location: 'OKX', type: 'Exchange' },
       { id: 'bitcoin', amount: 1.5, location: 'Binance', type: 'Exchange' },
       { id: 'bitcoin', amount: 1.34, location: 'KuCoin', type: 'Exchange' },
       { id: 'bitcoin', amount: 0.66, location: 'OKX', type: 'Exchange' },
@@ -58,7 +58,6 @@ const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#C7F464'
 
 const Portfolio = () => {
   const [activeTab, setActiveTab] = useState(initialPortfolios[0].name);
-
   const portfolioValues = useMemo(() => calculatePortfolioValues(initialPortfolios), []);
   const totalValue = useMemo(() => Object.values(portfolioValues).reduce((sum, value) => sum + value, 0), [portfolioValues]);
   const pieChartData = useMemo(() => Object.entries(portfolioValues).map(([name, value]) => ({ name, value })), [portfolioValues]);
@@ -143,6 +142,7 @@ const PortfolioTable = ({ portfolio }) => {
   const totalAmount = portfolio.assets.reduce((sum, asset) => sum + (asset.id === portfolio.assets[0].id ? asset.amount : 0), 0);
   const currencySymbol = getCurrencySymbol(portfolio.assets[0].id);
   const totalValue = portfolio.assets.reduce((sum, asset) => sum + getAssetValue(asset), 0);
+  const totalProfit = totalValue - portfolio.initialAmount * portfolio.currentPrice;
 
   return (
     <ScrollArea className="h-[300px] w-full rounded-md border">
@@ -152,7 +152,7 @@ const PortfolioTable = ({ portfolio }) => {
             Overall Balance: {totalAmount.toFixed(4)} {currencySymbol}
           </p>
           <p className="text-md">
-            Total Value: {totalValue.toFixed(2)} {currencySymbol}
+            Total Profit: {totalProfit.toFixed(2)} {currencySymbol}
           </p>
         </div>
         <Table>
