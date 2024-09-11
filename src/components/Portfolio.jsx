@@ -35,12 +35,12 @@ const initialPortfolios = [
   },
   {
     name: 'USDT Portfolio',
-    initialAmount: 600000,
+    initialAmount: 580000, // Reduced by 20,000
     currentPrice: 1,
     assets: [
       { id: 'tether', amount: 97466, location: 'Tron Network', type: 'Blockchain' },
       { id: 'tether', amount: 67555, location: 'Ethereum Network', type: 'Blockchain' },
-      { id: 'tether', amount: 80000, location: 'Binance Smart Chain', type: 'Blockchain' },
+      { id: 'tether', amount: 40000, location: 'Binance Smart Chain', type: 'Blockchain' }, // Reduced by 40,000
       { id: 'tether', amount: 75680, location: 'Binance', type: 'Exchange' },
       { id: 'tether', amount: 60000, location: 'KuCoin', type: 'Exchange' },
       { id: 'tether', amount: 42000, location: 'OKX', type: 'Exchange' },
@@ -215,7 +215,14 @@ const calculateTotalValue = (assetTotals, portfolio) => {
 };
 
 const calculateProfit = (totalValue, portfolio) => {
-  return totalValue - portfolio.initialAmount;
+  switch (portfolio.name) {
+    case 'Bitcoin Portfolio':
+      return totalValue - (5 * 50000); // 5 BTC initial investment
+    case 'Ethereum Portfolio':
+      return totalValue - (30 * 3000); // 30 ETH initial investment
+    default:
+      return totalValue - portfolio.initialAmount;
+  }
 };
 
 const getCurrencySymbol = (id) => {
