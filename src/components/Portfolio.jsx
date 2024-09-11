@@ -6,9 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
-const portfolios = [
+const initialPortfolios = [
   {
     name: 'Bitcoin Portfolio',
+    initialAmount: 5,
     assets: [
       { id: 'bitcoin', amount: 1.2, location: 'Binance', type: 'Exchange' },
       { id: 'bitcoin', amount: 0.8, location: 'OKX', type: 'Exchange' },
@@ -19,6 +20,7 @@ const portfolios = [
   },
   {
     name: 'Ethereum Portfolio',
+    initialAmount: 30,
     assets: [
       { id: 'ethereum', amount: 7.2, location: 'MetaMask', type: 'Software Wallet' },
       { id: 'ethereum', amount: 5.8, location: 'KuCoin', type: 'Exchange' },
@@ -29,6 +31,7 @@ const portfolios = [
   },
   {
     name: 'USDT Portfolio',
+    initialAmount: 600000,
     assets: [
       { id: 'tether', amount: 150000, location: 'Tron Network', type: 'Blockchain' },
       { id: 'tether', amount: 100000, location: 'Ethereum Network', type: 'Blockchain' },
@@ -46,7 +49,7 @@ const portfolios = [
 const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#C7F464', '#FF8C94', '#91A6FF'];
 
 const Portfolio = () => {
-  const [activeTab, setActiveTab] = useState(portfolios[0].name);
+  const [activeTab, setActiveTab] = useState(initialPortfolios[0].name);
   const [prices, setPrices] = useState({
     bitcoin: null,
     ethereum: null,
@@ -76,7 +79,7 @@ const Portfolio = () => {
   const portfolioValues = useMemo(() => {
     if (!prices.bitcoin || !prices.ethereum) return {};
 
-    return portfolios.reduce((acc, portfolio) => {
+    return initialPortfolios.reduce((acc, portfolio) => {
       acc[portfolio.name] = portfolio.assets.reduce((total, item) => {
         const price = prices[item.id];
         return total + (price ? item.amount * price : 0);
@@ -134,7 +137,7 @@ const Portfolio = () => {
         </div>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mt-4">
           <TabsList className="grid w-full grid-cols-3">
-            {portfolios.map((portfolio) => (
+            {initialPortfolios.map((portfolio) => (
               <TabsTrigger key={portfolio.name} value={portfolio.name} className="text-sm">
                 {portfolio.name}
                 <span className="ml-2 text-xs font-semibold">
@@ -143,9 +146,9 @@ const Portfolio = () => {
               </TabsTrigger>
             ))}
           </TabsList>
-          {portfolios.map((portfolio) => (
+          {initialPortfolios.map((portfolio) => (
             <TabsContent key={portfolio.name} value={portfolio.name}>
-              <PortfolioTable portfolio={portfolio} prices={prices} />
+              <PortfolioTable portfolio={portfolio} prices={prices} initialAmount={portfolio.initialAmount} />
             </TabsContent>
           ))}
         </Tabs>
@@ -154,40 +157,60 @@ const Portfolio = () => {
   );
 };
 
-const PortfolioTable = ({ portfolio, prices }) => (
-  <ScrollArea className="h-[300px] w-full rounded-md border">
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Location</TableHead>
-          <TableHead>Type</TableHead>
-          <TableHead className="font-bold text-primary">Amount</TableHead>
-          <TableHead>Value (USD)</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {portfolio.assets.map((item, assetIndex) => {
-          const price = prices[item.id] || 0;
-          const value = item.amount * price;
-          return (
-            <TableRow key={assetIndex}>
-              <TableCell>{item.location}</TableCell>
-              <TableCell>{item.type}</TableCell>
-              <TableCell className={cn(
-                "font-mono text-sm",
-                item.id === 'bitcoin' && "text-orange-500 font-bold",
-                item.id === 'ethereum' && "text-blue-500 font-bold",
-                item.id === 'tether' && "text-green-500 font-bold"
-              )}>
-                {item.amount.toFixed(4)} {item.id === 'bitcoin' ? 'BTC' : item.id === 'ethereum' ? 'ETH' : 'USDT'}
-              </TableCell>
-              <TableCell>${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
+const PortfolioTable = ({ portfolio, prices, initialAmount }) => {
+  const totalAmount = portfolio.assets.reduce((sum, asset) => sum + (asset.id === portfolio.assets[0].id ? asset.amount : 0), 0);
+  const totalValue = portfolio.assets.reduce((sum, asset) => sum + asset.amount * prices[asset.id], 0);
+  const profit = totalValue - (initialAmount * prices[portfolio.assets[0].id]);
+  const profitPercentage = ((totalValue / (initialAmount * prices[portfolio.assets[0].id])) - 1) * 100;
+
+  return (
+    <ScrollArea className="h-[300px] w-full rounded-md border">
+      <div className="p-4">
+        <div className="mb-4">
+          <p className="text-lg font-bold">
+            Overall Balance: {totalAmount.toFixed(4)} {portfolio.assets[0].id.toUpperCase()}
+          </p>
+          <p className={cn(
+            "text-lg",
+            profit >= 0 ? "text-green-500" : "text-red-500"
+          )}>
+            Profit: {profit.toFixed(2)} USD ({profitPercentage.toFixed(2)}%)
+          </p>
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Location</TableHead>
+              <TableHead>Type</TableHead>
+              <TableHead className="font-bold text-primary">Amount</TableHead>
+              <TableHead>Value (USD)</TableHead>
             </TableRow>
-          );
-        })}
-      </TableBody>
-    </Table>
-  </ScrollArea>
-);
+          </TableHeader>
+          <TableBody>
+            {portfolio.assets.map((item, assetIndex) => {
+              const price = prices[item.id] || 0;
+              const value = item.amount * price;
+              return (
+                <TableRow key={assetIndex}>
+                  <TableCell>{item.location}</TableCell>
+                  <TableCell>{item.type}</TableCell>
+                  <TableCell className={cn(
+                    "font-mono text-sm",
+                    item.id === 'bitcoin' && "text-orange-500 font-bold",
+                    item.id === 'ethereum' && "text-blue-500 font-bold",
+                    item.id === 'tether' && "text-green-500 font-bold"
+                  )}>
+                    {item.amount.toFixed(4)} {item.id === 'bitcoin' ? 'BTC' : item.id === 'ethereum' ? 'ETH' : 'USDT'}
+                  </TableCell>
+                  <TableCell>${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
+    </ScrollArea>
+  );
+};
 
 export default Portfolio;

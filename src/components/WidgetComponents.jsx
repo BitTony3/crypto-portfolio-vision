@@ -48,7 +48,7 @@ export const initialWidgetSizes = {
   NFTMarketplace: { width: 1, height: 1 },
   BlockchainExplorer: { width: 2, height: 1 },
   TopCryptoAssets: { width: 3, height: 1 },
-  Portfolio: { width: 2, height: 2 },
+  Portfolio: { width: 3, height: 2 },
   PortfolioPerformance: { width: 2, height: 1 },
   TradeTerminal: { width: 1, height: 1 },
 };

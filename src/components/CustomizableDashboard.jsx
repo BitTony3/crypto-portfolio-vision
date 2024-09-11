@@ -37,6 +37,12 @@ const CustomizableDashboard = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    if (widgets.length === 0) {
+      addWidget('Portfolio');
+    }
+  }, [widgets, addWidget]);
+
   const onDragStart = () => setIsDragging(true);
   const onDragEnd = (result) => {
     setIsDragging(false);
@@ -115,11 +121,10 @@ const CustomizableDashboard = () => {
             <div
               {...provided.droppableProps}
               ref={provided.innerRef}
-              className={`grid grid-cols-${columns} gap-4`}
+              className="grid gap-4"
               style={{
                 display: 'grid',
                 gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
-                gap: '1rem',
               }}
             >
               {widgets.map((widgetName, index) => (
