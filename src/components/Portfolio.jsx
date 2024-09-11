@@ -33,7 +33,7 @@ const initialPortfolios = [
   },
   {
     name: 'USDT Portfolio',
-    initialAmount: 600000,
+    initialAmount: 580000,
     currentPrice: 1,
     assets: [
       { id: 'tether', amount: 37466, location: 'Tron Network', type: 'Blockchain' },
@@ -41,7 +41,7 @@ const initialPortfolios = [
       { id: 'tether', amount: 80000, location: 'Binance Smart Chain', type: 'Blockchain' },
       { id: 'tether', amount: 75680, location: 'Binance', type: 'Exchange' },
       { id: 'tether', amount: 60000, location: 'KuCoin', type: 'Exchange' },
-      { id: 'tether', amount: 82000, location: 'OKX', type: 'Exchange' },
+      { id: 'tether', amount: 62000, location: 'OKX', type: 'Exchange' },
       { id: 'bitcoin', amount: 1.5, location: 'Binance', type: 'Exchange' },
       { id: 'bitcoin', amount: 1.34, location: 'KuCoin', type: 'Exchange' },
       { id: 'bitcoin', amount: 0.66, location: 'OKX', type: 'Exchange' },
