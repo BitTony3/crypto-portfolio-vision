@@ -38,7 +38,7 @@ const initialPortfolios = [
     initialAmount: 600000,
     currentPrice: 1,
     assets: [
-      { id: 'tether', amount: 121918.2518, location: 'Tron Network', type: 'Blockchain' },
+      { id: 'tether', amount: 101918.2518, location: 'Tron Network', type: 'Blockchain' },
       { id: 'tether', amount: 70640.8026, location: 'Ethereum Network', type: 'Blockchain' },
       { id: 'tether', amount: 618.1350, location: 'Binance Smart Chain', type: 'Blockchain' },
       { id: 'tether', amount: 79136.9394, location: 'Binance', type: 'Exchange' },
@@ -207,7 +207,7 @@ const calculateAssetTotals = (assets) => {
 
 const calculateTotalValue = (assetTotals, portfolio) => {
   if (portfolio.name === 'USDT Portfolio') {
-    return assetTotals.tether + (assetTotals.bitcoin * 50000) + (assetTotals.ethereum * 3000) + 20000; // Added 20,000 USDT
+    return assetTotals.tether + (assetTotals.bitcoin * 50000) + (assetTotals.ethereum * 3000);
   }
   return Object.entries(assetTotals).reduce((total, [id, amount]) => {
     return total + getAssetValue({ id, amount }, portfolio);
@@ -215,7 +215,7 @@ const calculateTotalValue = (assetTotals, portfolio) => {
 };
 
 const calculateProfit = (totalValue, portfolio) => {
-  return portfolio.name === 'USDT Portfolio' ? totalValue - 600000 : totalValue - portfolio.initialAmount * portfolio.currentPrice;
+  return totalValue - portfolio.initialAmount * portfolio.currentPrice;
 };
 
 const getCurrencySymbol = (id) => {
